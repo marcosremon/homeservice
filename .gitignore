@@ -1,0 +1,85 @@
+### Archivos de Configuración Críticos y Secretos ###
+# Los .env con credenciales reales quedan fuera de git; sólo se versiona el ejemplo.
+.env
+.env.*
+!.env.example
+*.local.json
+secrets.json
+
+### Caché y Compilación de Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+### Entornos Virtuales ###
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+### Empaquetado y Distribución ###
+build/
+dist/
+sdist/
+wheels/
+*.egg-info/
+*.egg
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+### Pruebas y Cobertura ###
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.cover
+.hypothesis/
+
+### Herramientas de Análisis y Tipado ###
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+
+### Base de Datos y Migraciones Locales ###
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+### Logs y Temporales ###
+*.log
+logs/
+*.tmp
+*.bak
+~$*
+
+### IDEs y Editores ###
+.idea/
+.vs/
+.vscode/
+*.swp
+*.swo
+
+### Sistema Operativo ###
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### Jupyter / Notebooks ###
+.ipynb_checkpoints/
+
+### Otros ###
+shell-scripts/
+sql/
+perf.data
+perf.data.old
