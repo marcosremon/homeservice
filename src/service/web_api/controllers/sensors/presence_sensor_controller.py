@@ -1,4 +1,4 @@
-import cbv
+from fastapi_utils.cbv import cbv
 from fastapi import APIRouter, Depends, status
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.create_presence_sensor_request import CreatePresenceSensorRequest
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.create_presence_sensor_response import CreatePresenceSensorResponse
