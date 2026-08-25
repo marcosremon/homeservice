@@ -12,20 +12,17 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[4]
 
-
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=_PROJECT_ROOT / ".env",
-        env_file_encoding="utf-8",
-        extra="ignore",
+        env_file = _PROJECT_ROOT / ".env",
+        env_file_encoding = "utf-8",
+        extra = "ignore",
     )
 
     # postgresql+asyncpg://usuario:password@host:puerto/base_de_datos
     database_url: str
     internal_api_key: str
 
-
 @lru_cache
 def get_settings() -> Settings:
-    """Cacheado: el .env se lee una sola vez, como el IConfiguration singleton."""
     return Settings()

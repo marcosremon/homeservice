@@ -1,22 +1,14 @@
 """Composition root: el equivalente a AddInfrastructureServices / builder.Services."""
-
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from application.interface.application.i_presence_sensor_application import IPresenceSensorApplication
 from application.interface.repository.i_presence_sensor_repository import IPresenceSensorRepository
 from application.use_case.presence_sensor_application import PresenceSensorApplication
 from infraestructure.persistence.context.application_db_context import get_session
 from infraestructure.persistence.repository.presence_sensor_repository import PresenceSensorRepository
 
-
-def get_presence_sensor_repository(
-    session: AsyncSession = Depends(get_session),
-) -> IPresenceSensorRepository:
+def get_presence_sensor_repository(session: AsyncSession = Depends(get_session)) -> IPresenceSensorRepository:
     return PresenceSensorRepository(session)
 
-
-def get_presence_sensor_application(
-    presence_sensor_repository: IPresenceSensorRepository = Depends(get_presence_sensor_repository),
-) -> IPresenceSensorApplication:
+def get_presence_sensor_application(presence_sensor_repository: IPresenceSensorRepository = Depends(get_presence_sensor_repository)) -> IPresenceSensorApplication:
     return PresenceSensorApplication(presence_sensor_repository)

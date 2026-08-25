@@ -1,12 +1,13 @@
 import hmac
-import os
 
 from fastapi import Header, HTTPException, status
+
+from transversal.common.configuration.settings import get_settings
 
 
 async def get_api_key(x_api_key: str = Header(default="", alias="X-Api-Key")) -> None:
     """Equivalente a [ApiKeyAuth]. Falla cerrado: sin clave configurada, rechaza."""
-    expected = os.getenv("INTERNAL_API_KEY", "")
+    expected = get_settings().internal_api_key
 
     if not expected:
         raise HTTPException(

@@ -21,11 +21,9 @@ class PresenceSensorRepository(IPresenceSensorRepository):
     async def create_presence_sensor(self, create_presence_sensor_request: CreatePresenceSensorRequest) -> CreatePresenceSensorResponse:
         create_presence_sensor_response: CreatePresenceSensorResponse = CreatePresenceSensorResponse()
         try:
-            # begin() abre transaccion y hace commit al salir, o rollback si peta.
-            # Es BeginTransactionAsync + CommitAsync + RollbackAsync en una linea.
             async with self._session.begin():
                 house_zone: HouseZone | None = await self._session.scalar(
-                    select(HouseZone).where(HouseZone.call_out == create_presence_sensor_request.call_out)
+                    select(HouseZone).where(HouseZone.callout == create_presence_sensor_request.call_out)
                 )
                 if house_zone is None:
                     house_zone: HouseZone = HouseZone(
