@@ -12,13 +12,28 @@ class Settings(BaseSettings):
         extra = "ignore",
     )
 
+    # Equivalente al bloque Kestrel de appsettings.json.
+    app_host: str = "0.0.0.0"
+    app_port: int = 8000
+
     # postgresql+asyncpg://usuario:password@host:puerto/base_de_datos
     database_url: str
     internal_api_key: str
     debug_bypass_key: str = ""
 
     # Equivalente a AlexaSettings de appsettings.json.
+    alexa_version: str = "1.0"
     alexa_skill_id: str = ""
+
+    # Equivalente a GeminiSettings de appsettings.json.
+    gemini_api_key: str = ""
+    gemini_model: str = ""
+
+    # Equivalente a MqttSettings de appsettings.json.
+    mqtt_host: str = ""
+    mqtt_port: int = 1883
+    mqtt_user: str = ""
+    mqtt_password: str = ""
 
     # Equivalente a IRobotSettings de appsettings.json.
     roomba_id: str = ""

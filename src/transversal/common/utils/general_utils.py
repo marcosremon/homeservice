@@ -10,7 +10,7 @@ class GeneralUtils:
 
     @staticmethod
     def is_null_or_white_space(value: str) -> bool:
-        return value is None or value == " "
+        return value is None or value.strip() == ""
 
     @staticmethod
     def parse_enum(enum_type: type[TEnum], value: str, default: TEnum) -> TEnum:

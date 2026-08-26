@@ -41,5 +41,14 @@ app = FastAPI(title="HomeService API", lifespan=lifespan)
 app.include_router(presence_sensor_router, prefix="/api")
 app.include_router(roomba_router, prefix="/api")
 app.include_router(change_computer_status_router, prefix="/api")
-# Alexa va sin el prefijo /api: la URL del endpoint del skill es la que espera Amazon.
-app.include_router(alexa_router)
+# El RoutePrefixConvention de Program.cs mete "api" delante de TODOS los
+# controllers, Alexa incluida: la URL del skill es /api/alexa.
+app.include_router(alexa_router, prefix="/api")
+
+# Equivalente al bloque Kestrel de appsettings.json: `python -m service.web_api.main`
+# levanta el servidor con el host y el puerto del .env, sin pasarlos a mano.
+if __name__ == "__main__":
+    import uvicorn
+
+    settings = get_settings()
+    uvicorn.run(app, host = settings.app_host, port = settings.app_port)

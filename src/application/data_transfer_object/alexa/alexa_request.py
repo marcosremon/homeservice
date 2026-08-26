@@ -1,9 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Any
+
+from transversal.common.alexa.alexa_request.alexa_context import AlexaContext
+from transversal.common.alexa.alexa_request.alexa_request_data import AlexaRequestData
+from transversal.common.alexa.alexa_request.alexa_session import AlexaSession
 
 @dataclass
 class AlexaRequest:
     version: str = "1.0"
-    session: dict[str, Any] | None = None
-    alexa_request_data: dict[str, Any] = field(default_factory = dict)
-    context: dict[str, Any] | None = None
+    session: AlexaSession | None = None
+    alexa_request_data: AlexaRequestData = field(default_factory = AlexaRequestData)
+    context: AlexaContext | None = None

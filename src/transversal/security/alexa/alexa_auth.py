@@ -18,7 +18,6 @@ from transversal.security.alexa.alexa_request_verifier import AlexaRequestVerifi
 def _get_http_client() -> httpx.AsyncClient:
     return httpx.AsyncClient(timeout=10.0)
 
-
 def get_alexa_request_verifier() -> IAlexaRequestVerifier:
     return AlexaRequestVerifier(_get_http_client())
 # endregion

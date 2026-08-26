@@ -11,8 +11,8 @@ class Roomba(Base):
 
     roomba_id: Mapped[int] = mapped_column(BigInteger, primary_key = True, autoincrement = True)
     device_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("device.device_id"))
-    phase: Mapped[str] = mapped_column(default = str(RoombaPhase.STOP))
-    battery_percentage: Mapped[int] = mapped_column(default = 0)
+    phase: Mapped[str] = mapped_column(default = RoombaPhase.STOP.name)
+    battery_percent: Mapped[int] = mapped_column(default = 0)
     bin_full: Mapped[bool] = mapped_column(default = False)
     last_target: Mapped[str] = mapped_column(default = "")
     last_roomba_activation: Mapped[datetime] = mapped_column(default = datetime.min)

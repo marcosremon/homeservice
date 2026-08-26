@@ -2,6 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.interface.application.i_alexa_application import IAlexaApplication
 from application.interface.application.i_change_computer_status_application import IChangeComputerStatusApplication
+from application.interface.application.i_event_application import IEventApplication
 from application.interface.application.i_presence_sensor_application import IPresenceSensorApplication
 from application.interface.application.i_roomba_application import IRoombaApplication
 from application.interface.repository.i_change_computer_status_repository import IChangeComputerStatusRepository
@@ -10,6 +11,7 @@ from application.interface.repository.i_presence_sensor_repository import IPrese
 from application.interface.repository.i_roomba_repository import IRoombaRepository
 from application.use_case.alexa_application import AlexaApplication
 from application.use_case.change_computer_status_application import ChangeComputerStatusApplication
+from application.use_case.event_application import EventApplication
 from application.use_case.presence_sensor_application import PresenceSensorApplication
 from application.use_case.roomba_application import RoombaApplication
 from infraestructure.persistence.context.application_db_context import get_session
@@ -48,7 +50,14 @@ def get_change_computer_status_application(change_computer_status_repository: IC
 
 # region Event
 def build_event_repository(session: AsyncSession) -> IEventRepository:
+    """Fabrica sin Depends: la consume el monitor de presencia."""
     return EventRepository(session)
+
+def get_event_repository(session: AsyncSession = Depends(get_session)) -> IEventRepository:
+    return build_event_repository(session)
+
+def get_event_application(event_repository: IEventRepository = Depends(get_event_repository)) -> IEventApplication:
+    return EventApplication(event_repository)
 # endregion
 
 # region Alexa
