@@ -1,5 +1,5 @@
-from enum import Enum
+from enum import IntEnum
 
-class LightStatus(Enum):
-    OFF = 0,
-    ON = 1,
+class LightStatus(IntEnum):
+    OFF = 0
+    ON = 1

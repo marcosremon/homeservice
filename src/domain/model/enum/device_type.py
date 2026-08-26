@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import IntEnum
 
-class DeviceType(Enum):
-    ROOMBA = 0,
-    PRESENCE_SENSOR = 1,
-    LIGHT = 2,
+class DeviceType(IntEnum):
+    ROOMBA = 0
+    PRESENCE_SENSOR = 1
+    LIGHT = 2

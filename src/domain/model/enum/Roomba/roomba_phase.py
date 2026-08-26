@@ -1,8 +1,8 @@
-from enum import Enum
+from enum import IntEnum
 
-class RoombaPhase(Enum):
-    CHARGE, = 0,
-    RUN, = 1,
-    STOP, = 2,
-    HM_USR_DOCK, = 3,
-    STUCK, = 4,
+class RoombaPhase(IntEnum):
+    CHARGE = 0
+    RUN = 1
+    STOP = 2
+    HM_USR_DOCK = 3
+    STUCK = 4

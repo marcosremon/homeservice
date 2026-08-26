@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import IntEnum
 
-class ResponseCodes(Enum):
+class ResponseCodes(IntEnum):
     OK = 200
     CREATED = 201
     ACCEPTED = 202

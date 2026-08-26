@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import IntEnum
 
-class AlexaRequestType(Enum):
+class AlexaRequestType(IntEnum):
     LAUNCH_REQUEST = 0
