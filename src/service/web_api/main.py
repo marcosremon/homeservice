@@ -6,6 +6,9 @@ from fastapi import FastAPI
 from infraestructure.background_tasks.job.roomba_activation_handler import RoombaActivationHandler
 from infraestructure.background_tasks.worker.presence_sensor_monitor import PresenceSensorMonitor
 from infraestructure.persistence.create_database.database_migrator import create_or_update_database
+from service.web_api.controllers.alexa.alexa_controller import router as alexa_router
+from service.web_api.controllers.computer_status.change_computer_status_controller import router as change_computer_status_router
+from service.web_api.controllers.roomba.roomba_controller import router as roomba_router
 from service.web_api.controllers.sensors.presence_sensor_controller import router as presence_sensor_router
 from transversal.common.configuration.settings import get_settings
 
@@ -33,3 +36,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(title="HomeService API", lifespan=lifespan)
 app.include_router(presence_sensor_router, prefix="/api")
+app.include_router(roomba_router, prefix="/api")
+app.include_router(change_computer_status_router, prefix="/api")
+# Alexa va sin el prefijo /api: la URL del endpoint del skill es la que espera Amazon.
+app.include_router(alexa_router)

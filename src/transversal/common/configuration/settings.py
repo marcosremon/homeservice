@@ -24,6 +24,16 @@ class Settings(BaseSettings):
     internal_api_key: str
     debug_bypass_key: str = ""
 
+    # Equivalente a AlexaSettings de appsettings.json.
+    alexa_skill_id: str = ""
+
+    # Equivalente a LanParametersSettings de appsettings.json. Los nombres llevan
+    # el prefijo lan_ porque las variables del .env se llaman LAN_*.
+    lan_computer_ip: str = ""
+    lan_computer_mac: str = ""
+    lan_broadcast_ip: str = ""
+    lan_cachyos_user: str = ""
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
