@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-
 @dataclass
 class CreatePresenceSensorRequest:
-    call_out: str = ""
+    callout: str = ""
     device_name: str = ""
     device_type: str = ""
     ts: int = 0

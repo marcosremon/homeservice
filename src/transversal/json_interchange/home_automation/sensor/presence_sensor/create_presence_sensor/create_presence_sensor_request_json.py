@@ -1,7 +1,10 @@
 from datetime import datetime
 
+from pydantic.dataclasses import dataclass
+
+@dataclass
 class CreatePresenceSensorRequestJson:
-    call_out: str = ""
+    callout: str = ""
     device_name: str = ""
     device_type: str = ""
     ts: int = 0

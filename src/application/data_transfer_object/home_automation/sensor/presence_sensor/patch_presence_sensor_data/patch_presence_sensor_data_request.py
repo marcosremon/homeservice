@@ -1,7 +1,7 @@
 from pydantic.dataclasses import dataclass
 
 @dataclass
-class PatchPresenceSensorDataRequestJson:
+class PatchPresenceSensorDataRequest:
     callout: str = ""
     device_name: str = ""
     device_type: str = ""
