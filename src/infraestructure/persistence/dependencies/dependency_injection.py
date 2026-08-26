@@ -5,6 +5,7 @@ from application.interface.application.i_change_computer_status_application impo
 from application.interface.application.i_presence_sensor_application import IPresenceSensorApplication
 from application.interface.application.i_roomba_application import IRoombaApplication
 from application.interface.repository.i_change_computer_status_repository import IChangeComputerStatusRepository
+from application.interface.repository.i_event_repository import IEventRepository
 from application.interface.repository.i_presence_sensor_repository import IPresenceSensorRepository
 from application.interface.repository.i_roomba_repository import IRoombaRepository
 from application.use_case.alexa_application import AlexaApplication
@@ -13,6 +14,7 @@ from application.use_case.presence_sensor_application import PresenceSensorAppli
 from application.use_case.roomba_application import RoombaApplication
 from infraestructure.persistence.context.application_db_context import get_session
 from infraestructure.persistence.repository.change_computer_status_repository import ChangeComputerStatusRepository
+from infraestructure.persistence.repository.event_repository import EventRepository
 from infraestructure.persistence.repository.presence_sensor_repository import PresenceSensorRepository
 from infraestructure.persistence.repository.roomba_repository import RoombaRepository
 from transversal.common.configuration.settings import Settings, get_settings
@@ -26,8 +28,11 @@ def get_presence_sensor_application(presence_sensor_repository: IPresenceSensorR
 # endregion
 
 # region Roomba
-def get_roomba_repository(session: AsyncSession = Depends(get_session)) -> IRoombaRepository:
+def build_roomba_repository(session: AsyncSession) -> IRoombaRepository:
     return RoombaRepository(session)
+
+def get_roomba_repository(session: AsyncSession = Depends(get_session)) -> IRoombaRepository:
+    return build_roomba_repository(session)
 
 def get_roomba_application(roomba_repository: IRoombaRepository = Depends(get_roomba_repository)) -> IRoombaApplication:
     return RoombaApplication(roomba_repository)
@@ -39,6 +44,11 @@ def get_change_computer_status_repository(settings: Settings = Depends(get_setti
 
 def get_change_computer_status_application(change_computer_status_repository: IChangeComputerStatusRepository = Depends(get_change_computer_status_repository)) -> IChangeComputerStatusApplication:
     return ChangeComputerStatusApplication(change_computer_status_repository)
+# endregion
+
+# region Event
+def build_event_repository(session: AsyncSession) -> IEventRepository:
+    return EventRepository(session)
 # endregion
 
 # region Alexa

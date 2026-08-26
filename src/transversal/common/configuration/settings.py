@@ -1,10 +1,3 @@
-"""Equivalente a IOptions<T> / appsettings.json de ASP.NET.
-
-Los valores salen de variables de entorno reales; en local se rellenan desde el
-.env de la raiz del proyecto. Si falta algo obligatorio, la app falla al arrancar
-en vez de a la primera peticion.
-"""
-
 from functools import lru_cache
 from pathlib import Path
 
@@ -26,6 +19,14 @@ class Settings(BaseSettings):
 
     # Equivalente a AlexaSettings de appsettings.json.
     alexa_skill_id: str = ""
+
+    # Equivalente a IRobotSettings de appsettings.json.
+    roomba_id: str = ""
+    roomba_port: str = "8883"
+    roomba_blid: str = ""
+    roomba_passwd: str = ""
+    roomba_pmap_id: str = ""
+    roomba_pmap_version: str = ""
 
     # Equivalente a LanParametersSettings de appsettings.json. Los nombres llevan
     # el prefijo lan_ porque las variables del .env se llaman LAN_*.

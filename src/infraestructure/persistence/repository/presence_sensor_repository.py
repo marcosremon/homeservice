@@ -112,7 +112,7 @@ class PresenceSensorRepository(IPresenceSensorRepository):
                         presence_sensor.motion = patch_presence_sensor_data_request.motion
 
                         if patch_presence_sensor_data_request.presence:
-                            presence_sensor.last_detected_presence = datetime.utcnow()
+                            presence_sensor.last_detected_presence = datetime.now(timezone.utc)
 
                         await self._session.commit()
 

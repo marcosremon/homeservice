@@ -6,8 +6,6 @@ from domain.model.enum.Roomba.roomba_target import RoombaTarget
 
 @dataclass
 class PatchRoombaStateRequest:
-    # En C# el default es DateTime.UtcNow evaluado al construir; aqui hace falta
-    # default_factory, porque un default normal se evaluaria al importar el modulo.
     event_time: datetime = field(default_factory = lambda: datetime.now(timezone.utc))
     is_activation: bool = False
     is_finished: bool = False

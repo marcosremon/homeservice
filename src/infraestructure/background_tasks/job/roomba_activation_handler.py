@@ -2,7 +2,11 @@ import asyncio
 from contextlib import asynccontextmanager
 
 from application.data_transfer_object.roomba.patch_roomba_state.patch_roomba_state_request import PatchRoombaStateRequest
+from application.data_transfer_object.roomba.patch_roomba_state.patch_roomba_state_response import PatchRoombaStateResponse
+from application.event.roomba_activated_event import RoombaActivatedEvent
+from application.interface.repository.i_roomba_repository import IRoombaRepository
 from infraestructure.persistence.context.application_db_context import get_session
+from infraestructure.persistence.dependencies.dependency_injection import build_roomba_repository
 
 class RoombaActivationHandler:
     def __init__(self) -> None:
@@ -10,22 +14,20 @@ class RoombaActivationHandler:
 
     # region start
     def start(self) -> None:
-        # TODO: RoombaActivatedEvent.subscribe(self._handle_roomba_activation)
-        # cuando exista el modulo de eventos.
-        pass
+        RoombaActivatedEvent.subscribe(self._handle_roomba_activation)
     # endregion
 
     # region stop
     async def stop(self) -> None:
-        # TODO: RoombaActivatedEvent.unsubscribe(self._handle_roomba_activation)
+        RoombaActivatedEvent.unsubscribe(self._handle_roomba_activation)
         if self._pending:
             await asyncio.gather(*self._pending, return_exceptions = True)
     # endregion
 
     # region _handle_roomba_activation
     def _handle_roomba_activation(self, patch_roomba_state_request: PatchRoombaStateRequest) -> None:
-        """Callback sincrono del evento: crea la tarea y guarda la referencia.
-
+        """
+        Callback sincrono del evento: crea la tarea y guarda la referencia.
         Sin guardarla el recolector de basura puede cargarse la tarea a medias.
         """
         task: asyncio.Task[None] = asyncio.create_task(self._patch_roomba_state(patch_roomba_state_request))
@@ -36,11 +38,12 @@ class RoombaActivationHandler:
     # region _patch_roomba_state
     async def _patch_roomba_state(self, patch_roomba_state_request: PatchRoombaStateRequest) -> None:
         try:
-            # Equivalente a serviceProvider.CreateScope() + GetRequiredService<IRoombaRepository>().
             async with asynccontextmanager(get_session)() as session:
-                # TODO: RoombaRepository(session).patch_roomba_state(patch_roomba_state_request)
-                # y loguear el mensaje si no is_success. El repositorio aun no existe.
-                _ = session, patch_roomba_state_request
+                roomba_repository: IRoombaRepository = build_roomba_repository(session)
+
+                patch_roomba_state_response: PatchRoombaStateResponse = await roomba_repository.patch_roomba_state(patch_roomba_state_request)
+                if not patch_roomba_state_response.is_success:
+                    print(f"RoombaActivationHandler -> {patch_roomba_state_response.message}")
         except Exception as ex:
             print(f"RoombaActivationHandler -> _handle_roomba_activation -> {ex}")
     # endregion

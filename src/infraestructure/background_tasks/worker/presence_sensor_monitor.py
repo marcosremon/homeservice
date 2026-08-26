@@ -1,7 +1,11 @@
 import asyncio
 from contextlib import asynccontextmanager, suppress
 
+from application.data_transfer_object.home_automation.sensor.presence_sensor.get_presence_sensors_status.get_presence_sensors_status_response import GetPresenceSensorsStatusResponse
+from application.interface.repository.i_event_repository import IEventRepository
+from infraestructure.gateway.roomba import roomba_utils
 from infraestructure.persistence.context.application_db_context import get_session
+from infraestructure.persistence.dependencies.dependency_injection import build_event_repository
 
 _INTERVAL_SECONDS = 30
 
@@ -39,19 +43,17 @@ class PresenceSensorMonitor:
 
     # region _run_presence_sensor_job
     async def _run_presence_sensor_job(self) -> None:
-        """
-        El try/except vacio es intencionado, como en .NET: si una vuelta falla no
-        se puede dejar morir la Task, porque nadie la reiniciaria.
-        """
         try:
             # HTTP no hay scope, hay que abrir la sesion a mano y cerrarla aqui.
             async with asynccontextmanager(get_session)() as session:
-                # TODO: IEventRepository.GetPresenceSensorsStatus(session) y, si
-                # is_success e is_house_empty, RoombaUtils.start_roomba_if_house_is_empty
-                # (last_roomba_activation). Ninguno de los dos existe todavia en Python.
-                _ = session
+                event_repository: IEventRepository = build_event_repository(session)
+
+                get_presence_sensors_status_response: GetPresenceSensorsStatusResponse = await event_repository.get_presence_sensors_status()
+
+                if get_presence_sensors_status_response.is_success and get_presence_sensors_status_response.is_house_empty:
+                    await roomba_utils.start_roomba_if_house_is_empty(get_presence_sensors_status_response.last_roomba_activation)
         except asyncio.CancelledError:
-            # Nunca tragarse la cancelacion: es la senal de parada del stop().
+            # Nunca tragarse la cancelacion: es la señal de parada del stop().
             raise
         except Exception:
             pass

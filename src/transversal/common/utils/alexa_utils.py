@@ -3,11 +3,10 @@ from typing import Any
 from fastapi import Request
 from pydantic import TypeAdapter, ValidationError
 
-from transversal.common.utils.general_utils import GenericUtils
+from transversal.common.utils.general_utils import GeneralUtils
 from transversal.json_interchange.alexa.alexa_request_json import AlexaRequestJson
 
 _alexa_request_json_adapter: TypeAdapter[AlexaRequestJson] = TypeAdapter(AlexaRequestJson)
-
 
 # region check_skill_origin
 def check_skill_origin(session: dict[str, Any] | None, skill_id: str) -> bool:
@@ -16,7 +15,7 @@ def check_skill_origin(session: dict[str, Any] | None, skill_id: str) -> bool:
     Amazon manda el id en session.application.applicationId. Falla cerrado: sin
     skill id configurado o sin sesion, se rechaza.
     """
-    if GenericUtils.is_null_or_empty(skill_id) or not session:
+    if GeneralUtils.is_null_or_empty(skill_id) or not session:
         return False
 
     application: Any = session.get("application")

@@ -1,11 +1,3 @@
-"""
-Una static class de C# se traduce en Python a un modulo con funciones sueltas:
-no hace falta clase para agrupar, el propio modulo es el namespace.
-
-    from transversal.common.utils import computer_status_utils
-    await computer_status_utils.computer_status("192.168.1.50")
-"""
-
 import asyncio
 import ipaddress
 import re
@@ -20,15 +12,9 @@ _SSH_KEY_PATH = Path.home() / ".ssh" / "homelab_key"
 
 _MAC_PATTERN = re.compile(r"^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$")
 
-
 # region computer_status
 async def computer_status(ip_address: str) -> bool:
-    """True si el equipo responde al ping.
-
-    Python no trae un equivalente a System.Net.NetworkInformation.Ping: el ICMP
-    en crudo necesita privilegios de root, asi que se delega en el binario ping
-    del sistema, que ya viene con los permisos puestos.
-    """
+    """True si el equipo responde al ping."""
     try:
         if not _is_valid_ip(ip_address):
             return False
@@ -53,14 +39,9 @@ async def computer_status(ip_address: str) -> bool:
         return False
 # endregion
 
-
 # region send_wake_on_lan_packet
 async def send_wake_on_lan_packet(mac_address: str, broadcast_ip: str) -> None:
-    """Envia el magic packet directamente por UDP.
-
-    El C# lanza el binario `wakeonlan`; aqui no hace falta dependencia externa,
-    el paquete son 6 bytes 0xFF seguidos de la MAC repetida 16 veces.
-    """
+    """Envia el magic packet directamente por UDP."""
     if not _MAC_PATTERN.match(mac_address):
         raise ValueError(f"MAC address invalida: {mac_address}")
 
@@ -79,7 +60,6 @@ async def send_wake_on_lan_packet(mac_address: str, broadcast_ip: str) -> None:
     await asyncio.to_thread(_send)
 # endregion
 
-
 # region shutdown_computer
 async def shutdown_computer(ip_address: str, ssh_user: str) -> str:
     is_on = await computer_status(ip_address)
@@ -93,7 +73,6 @@ async def shutdown_computer(ip_address: str, ssh_user: str) -> str:
 
     return "Apagando el ordenador (CachyOS via SSH)."
 # endregion
-
 
 # region _shutdown_via_ssh
 async def _shutdown_via_ssh(ssh_user: str, ssh_host: str) -> tuple[int, str]:
@@ -121,7 +100,6 @@ async def _shutdown_via_ssh(ssh_user: str, ssh_host: str) -> tuple[int, str]:
         return 1, f"El proceso SSH no respondio en {_SSH_TIMEOUT_SECONDS} segundos."
 # endregion
 
-
 # region _run
 async def _run(command: list[str], timeout: float) -> tuple[int, str, str]:
     """
@@ -147,7 +125,6 @@ async def _run(command: list[str], timeout: float) -> tuple[int, str, str]:
         stderr.decode(errors="replace"),
     )
 # endregion
-
 
 # region _is_valid_ip
 def _is_valid_ip(value: str) -> bool:

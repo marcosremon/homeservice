@@ -67,12 +67,9 @@ class RoombaController:
     async def patch_roomba_state(self, patch_roomba_state_request_json: PatchRoombaStateRequestJson) -> PatchRoombaStateResponseJson:
         patch_roomba_state_response_json: PatchRoombaStateResponseJson = PatchRoombaStateResponseJson()
         try:
-            # Equivalente a Enum.TryParse(..., ignoreCase: true, out ...): si el
-            # nombre no existe se cae al valor por defecto en vez de reventar.
             roomba_target: RoombaTarget = GeneralUtils.parse_enum(RoombaTarget, patch_roomba_state_request_json.target, RoombaTarget.FULL_HOUSE)
             roomba_phase: RoombaPhase = GeneralUtils.parse_enum(RoombaPhase, patch_roomba_state_request_json.phase, RoombaPhase.STOP)
 
-            # Equivalente al `== default` de C#: si no mandan hora, se pone la de ahora.
             event_time: datetime = (
                 datetime.now(timezone.utc)
                 if patch_roomba_state_request_json.event_time == datetime.min

@@ -1,9 +1,3 @@
-"""Equivalente a ChangeComputerStatusRepository de C#.
-
-No toca base de datos: habla con la LAN (ping, Wake on LAN y SSH). Se queda en
-Persistence igual que en la solucion .NET para no romper la simetria de capas.
-"""
-
 from application.data_transfer_object.change_computer_status.get_computer_status.get_computer_status_response import GetComputerStatusResponse
 from application.data_transfer_object.change_computer_status.turn_off_computer.turn_off_computer_response import TurnOffComputerResponse
 from application.data_transfer_object.change_computer_status.turn_on_computer.turn_on_computer_response import TurnOnComputerResponse
