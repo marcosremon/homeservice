@@ -2,7 +2,7 @@ import re
 from datetime import timedelta
 
 from fastapi import Request
-from pydantic import TypeAdapter, ValidationError
+from pydantic import TypeAdapter
 
 from domain.model.enum.Alexa.IntentName import IntentName
 from transversal.common.alexa.alexa_request.AlexaSession import AlexaSession
@@ -57,10 +57,18 @@ def ParseAlexaDuration(isoDuration: str) -> timedelta:
 # region parse_alexa_order
 def ParseAlexaOrder(alexaOrder: IntentName) -> str:
     """El prefijo de intent que consumen los services. ConversationIntent no lo es."""
-    if alexaOrder in (IntentName.roomba_order_, IntentName.computer_status_order_, IntentName.light_order_):
-        return alexaOrder.name
+    match alexaOrder:
+        case IntentName.roomba_order_:
+            return IntentName.roomba_order_.name
 
-    return ""
+        case IntentName.computer_status_order_:
+            return IntentName.computer_status_order_.name
+
+        case IntentName.light_order_:
+            return IntentName.light_order_.name
+
+        case _:
+            return ""
 # endregion
 
 # region build_alexa_response
@@ -120,6 +128,6 @@ async def ReadAlexaRequestJson(request: Request) -> AlexaRequestJson | None:
     """
     try:
         return _alexaRequestJsonAdapter.validate_python(await request.json())
-    except (ValueError, ValidationError):
+    except Exception:
         return None
 # endregion

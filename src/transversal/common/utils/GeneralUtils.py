@@ -16,7 +16,7 @@ class GeneralUtils:
     def ParseEnum(enumType: type[TEnum], value: str, default: TEnum) -> TEnum:
         try:
             return enumType[value.strip().upper()]
-        except (KeyError, AttributeError):
+        except Exception:
             return default
 
     @staticmethod
@@ -29,5 +29,5 @@ class GeneralUtils:
         """
         try:
             return enumType[value] if value is not None else None
-        except KeyError:
+        except Exception:
             return None

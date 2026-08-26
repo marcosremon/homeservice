@@ -47,14 +47,14 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
             signatureCertChainUrl = request.headers.get("SignatureCertChainUrl", "")
             signature = request.headers.get("Signature", "")
 
-            return await self.verify(signatureCertChainUrl, signature, rawBody)
+            return await self.Verify(signatureCertChainUrl, signature, rawBody)
         except Exception as ex:
             _logger.warning("AlexaRequestVerifier -> amazon_approve -> %s", ex)
             return False
     # endregion
 
     # region verify
-    async def verify(self, signatureCertChainUrl: str, signature: str, rawBody: bytes) -> bool:
+    async def Verify(self, signatureCertChainUrl: str, signature: str, rawBody: bytes) -> bool:
         """Verifica la firma del request. True solo si el request es legitimo de Amazon."""
         try:
             # 1. Validar que las cabeceras llegaron

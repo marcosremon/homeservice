@@ -1,4 +1,4 @@
-from pydantic import TypeAdapter, ValidationError
+from pydantic import TypeAdapter
 
 from application.data_transfer_object.alexa.AlexaRequest import AlexaRequest
 from application.data_transfer_object.alexa.AlexaResponse import AlexaResponse
@@ -63,7 +63,7 @@ class AlexaService(IAlexaService):
                             history = history,
                         )
 
-                        geminiTurnResponse: GeminiTurnResponse = await self._geminiService.converse(geminiTurnRequest)
+                        geminiTurnResponse: GeminiTurnResponse = await self._geminiService.Converse(geminiTurnRequest)
                         self._writeHistory(alexaResponse, geminiTurnResponse.updatedHistory)
 
                         speechText = geminiTurnResponse.replay
@@ -104,7 +104,7 @@ class AlexaService(IAlexaService):
                 historyJson: str = attributes.get(_HISTORY_ATTRIBUTE, "")
                 if not GeneralUtils.IsNullOrEmpty(historyJson):
                     return _historyAdapter.validate_json(historyJson)
-        except (ValueError, ValidationError) as ex:
+        except Exception as ex:
             print(f"[History read] {ex}")
 
         return []
@@ -117,6 +117,6 @@ class AlexaService(IAlexaService):
             alexaResponse.sessionAttributes = {
                 _HISTORY_ATTRIBUTE: _historyAdapter.dump_json(history).decode("utf-8"),
             }
-        except (ValueError, ValidationError) as ex:
+        except Exception as ex:
             print(f"[History write] {ex}")
     # endregion

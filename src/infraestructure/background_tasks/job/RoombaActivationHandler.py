@@ -13,13 +13,13 @@ class RoombaActivationHandler:
         self._pending: set[asyncio.Task[None]] = set()
 
     # region start
-    def start(self) -> None:
-        RoombaActivatedEvent.subscribe(self._handleRoombaActivation)
+    def Start(self) -> None:
+        RoombaActivatedEvent.Subscribe(self._handleRoombaActivation)
     # endregion
 
     # region stop
-    async def stop(self) -> None:
-        RoombaActivatedEvent.unsubscribe(self._handleRoombaActivation)
+    async def Stop(self) -> None:
+        RoombaActivatedEvent.Unsubscribe(self._handleRoombaActivation)
         if self._pending:
             await asyncio.gather(*self._pending, return_exceptions = True)
     # endregion

@@ -9,21 +9,21 @@ class RoombaActivatedEvent:
 
     # region subscribe
     @staticmethod
-    def subscribe(handler: RoombaActivatedHandler) -> None:
+    def Subscribe(handler: RoombaActivatedHandler) -> None:
         if handler not in RoombaActivatedEvent._handlers:
             RoombaActivatedEvent._handlers.append(handler)
     # endregion
 
     # region unsubscribe
     @staticmethod
-    def unsubscribe(handler: RoombaActivatedHandler) -> None:
+    def Unsubscribe(handler: RoombaActivatedHandler) -> None:
         if handler in RoombaActivatedEvent._handlers:
             RoombaActivatedEvent._handlers.remove(handler)
     # endregion
 
     # region publish
     @staticmethod
-    def publish(patchRoombaStateRequest: PatchRoombaStateRequest) -> None:
+    def Publish(patchRoombaStateRequest: PatchRoombaStateRequest) -> None:
         for handler in list(RoombaActivatedEvent._handlers):
             try:
                 handler(patchRoombaStateRequest)

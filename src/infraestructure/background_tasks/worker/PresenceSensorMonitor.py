@@ -14,13 +14,13 @@ class PresenceSensorMonitor:
         self._task: asyncio.Task[None] | None = None
 
     # region start
-    def start(self) -> None:
+    def Start(self) -> None:
         if self._task is None:
             self._task = asyncio.create_task(self._executeAsync(), name = "presence_sensor_monitor")
     # endregion
 
     # region stop
-    async def stop(self) -> None:
+    async def Stop(self) -> None:
         if self._task is None:
             return
 

@@ -1,3 +1,6 @@
+from functools import lru_cache
+
+import httpx
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.interface.application.IAlexaApplication import IAlexaApplication
@@ -9,6 +12,13 @@ from application.interface.repository.IChangeComputerStatusRepository import ICh
 from application.interface.repository.IEventRepository import IEventRepository
 from application.interface.repository.IPresenceSensorRepository import IPresenceSensorRepository
 from application.interface.repository.IRoombaRepository import IRoombaRepository
+from application.interface.repository.ILightRepository import ILightRepository
+from application.interface.service.IAlexaService import IAlexaService
+from application.interface.service.IComputerStatusService import IComputerStatusService
+from application.interface.service.IGeminiService import IGeminiService
+from application.interface.service.ILightService import ILightService
+from application.interface.service.IMqttService import IMqttService
+from application.interface.service.IRoombaService import IRoombaService
 from application.use_case.AlexaApplication import AlexaApplication
 from application.use_case.ChangeComputerStatusApplication import ChangeComputerStatusApplication
 from application.use_case.EventApplication import EventApplication
@@ -17,6 +27,13 @@ from application.use_case.RoombaApplication import RoombaApplication
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
 from infraestructure.persistence.repository.ChangeComputerStatusRepository import ChangeComputerStatusRepository
 from infraestructure.persistence.repository.EventRepository import EventRepository
+from infraestructure.gateway.AlexaService import AlexaService
+from infraestructure.gateway.ComputerStatusService import ComputerStatusService
+from infraestructure.gateway.GeminiService import GeminiService
+from infraestructure.gateway.LightService import LightService
+from infraestructure.gateway.MqttService import MqttService
+from infraestructure.gateway.RoombaService import RoombaService
+from infraestructure.persistence.repository.LightRepository import LightRepository
 from infraestructure.persistence.repository.PresenceSensorRepository import PresenceSensorRepository
 from infraestructure.persistence.repository.RoombaRepository import RoombaRepository
 from transversal.common.configuration.Settings import Settings, GetSettings
@@ -60,7 +77,48 @@ def GetEventApplication(eventRepository: IEventRepository = Depends(GetEventRepo
     return EventApplication(eventRepository)
 # endregion
 
+# region Light
+def BuildLightRepository(session: AsyncSession) -> ILightRepository:
+    return LightRepository(session)
+
+def GetLightRepository(session: AsyncSession = Depends(GetSession)) -> ILightRepository:
+    return BuildLightRepository(session)
+# endregion
+
+# region Services
+@lru_cache
+def _GetHttpClient() -> httpx.AsyncClient:
+    """Equivalente a IHttpClientFactory: un cliente reutilizado, no uno por peticion."""
+    return httpx.AsyncClient()
+
+@lru_cache
+def GetMqttService() -> IMqttService:
+    """Singleton: la conexion con el broker se comparte entre peticiones."""
+    return MqttService(GetSettings())
+
+def GetLightService(lightRepository: ILightRepository = Depends(GetLightRepository)) -> ILightService:
+    return LightService(GetMqttService(), lightRepository)
+
+def GetRoombaService() -> IRoombaService:
+    return RoombaService()
+
+def GetComputerStatusService(settings: Settings = Depends(GetSettings)) -> IComputerStatusService:
+    return ComputerStatusService(settings)
+
+def GetGeminiService(settings: Settings = Depends(GetSettings)) -> IGeminiService:
+    return GeminiService(_GetHttpClient(), settings)
+
+def GetAlexaService(
+    lightService: ILightService = Depends(GetLightService),
+    roombaService: IRoombaService = Depends(GetRoombaService),
+    geminiService: IGeminiService = Depends(GetGeminiService),
+    computerStatusService: IComputerStatusService = Depends(GetComputerStatusService),
+    settings: Settings = Depends(GetSettings),
+) -> IAlexaService:
+    return AlexaService(lightService, roombaService, geminiService, computerStatusService, settings)
+# endregion
+
 # region Alexa
-def GetAlexaApplication() -> IAlexaApplication:
-    return AlexaApplication()
+def GetAlexaApplication(alexaService: IAlexaService = Depends(GetAlexaService)) -> IAlexaApplication:
+    return AlexaApplication(alexaService)
 # endregion

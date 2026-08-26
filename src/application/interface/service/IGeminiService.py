@@ -5,6 +5,6 @@ from application.data_transfer_object.gemini.GeminiTurnResponse import GeminiTur
 
 class IGeminiService(ABC):
     @abstractmethod
-    async def converse(self, geminiTurnRequest: GeminiTurnRequest) -> GeminiTurnResponse:
+    async def Converse(self, geminiTurnRequest: GeminiTurnRequest) -> GeminiTurnResponse:
         """Devuelve la respuesta hablada y el historial actualizado para reinyectarlo en sessionAttributes."""
         ...

@@ -22,20 +22,19 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         raise RuntimeError("No se pudo crear o actualizar la base de datos.")
 
     # Equivalente a AddHostedService<T>() de Program.cs. Aqui no hay host que los
-    # gestione: se arrancan antes del yield y se paran despues, y el orden de
-    # parada es el inverso al de arranque, igual que hace el host de ASP.NET.
-    backgroundServices: list[PresenceSensorMonitor | RoombaActivationHandler] = [
-        PresenceSensorMonitor(),
-        RoombaActivationHandler(),
-    ]
-    for backgroundService in backgroundServices:
-        backgroundService.start()
+    # gestione: se arrancan antes del yield y se paran despues, en orden inverso,
+    # igual que hace el host de ASP.NET.
+    presenceSensorMonitor: PresenceSensorMonitor = PresenceSensorMonitor()
+    roombaActivationHandler: RoombaActivationHandler = RoombaActivationHandler()
+
+    presenceSensorMonitor.Start()
+    roombaActivationHandler.Start()
 
     try:
         yield
     finally:
-        for backgroundService in reversed(backgroundServices):
-            await backgroundService.stop()
+        await roombaActivationHandler.Stop()
+        await presenceSensorMonitor.Stop()
 
 app = FastAPI(title="HomeService API", lifespan=lifespan)
 app.include_router(presence_sensor_router, prefix="/api")
@@ -45,7 +44,7 @@ app.include_router(change_computer_status_router, prefix="/api")
 # controllers, Alexa incluida: la URL del skill es /api/alexa.
 app.include_router(alexa_router, prefix="/api")
 
-# Equivalente al bloque Kestrel de appsettings.json: `python -m service.web_api.main`
+# Equivalente al bloque Kestrel de appsettings.json: `python -m service.web_api.Main`
 # levanta el servidor con el host y el puerto del .env, sin pasarlos a mano.
 if __name__ == "__main__":
     import uvicorn
