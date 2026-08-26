@@ -26,6 +26,7 @@ from domain.model.entity.presence_sensor import PresenceSensor  # noqa: F401
 from domain.model.entity.roomba import Roomba  # noqa: F401
 # endregion
 
+# region _get_session_factory
 @lru_cache
 def _get_session_factory() -> async_sessionmaker[AsyncSession]:
     """Perezoso: el engine se crea en la primera peticion, no al importar el modulo.
@@ -44,3 +45,4 @@ async def get_session() -> AsyncIterator[AsyncSession]:
     """
     async with _get_session_factory()() as session:
         yield session
+# endregion

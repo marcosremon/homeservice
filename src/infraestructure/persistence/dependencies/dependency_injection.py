@@ -1,4 +1,3 @@
-"""Composition root: el equivalente a AddInfrastructureServices / builder.Services."""
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.interface.application.i_presence_sensor_application import IPresenceSensorApplication

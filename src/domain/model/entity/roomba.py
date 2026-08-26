@@ -6,7 +6,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 from domain.model.entity.base import Base
 from domain.model.enum.Roomba.roomba_phase import RoombaPhase
 
-
 class Roomba(Base):
     __tablename__ = "roomba"
 

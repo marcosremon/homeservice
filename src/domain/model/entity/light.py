@@ -6,7 +6,6 @@ from sqlalchemy.orm import mapped_column, Mapped
 from domain.model.entity.base import Base
 from domain.model.enum.Light.light_location import LightLocation
 
-
 class Light(Base):
     __tablename__ = "light"
 

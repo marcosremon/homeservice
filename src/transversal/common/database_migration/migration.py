@@ -1,5 +1,3 @@
-"""Equivalente a Transversal.Common.DatabaseMigration.Migration."""
-
 from dataclasses import dataclass, field
 
 @dataclass

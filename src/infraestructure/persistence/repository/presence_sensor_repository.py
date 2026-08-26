@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import timezone
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,7 +11,6 @@ from domain.model.entity.house_zone import HouseZone
 from domain.model.entity.presence_sensor import PresenceSensor
 from transversal.common.wrappers.base.response_codes import ResponseCodes
 
-
 class PresenceSensorRepository(IPresenceSensorRepository):
 
     def __init__(self, session: AsyncSession):
@@ -22,9 +21,7 @@ class PresenceSensorRepository(IPresenceSensorRepository):
         create_presence_sensor_response: CreatePresenceSensorResponse = CreatePresenceSensorResponse()
         try:
             async with self._session.begin():
-                house_zone: HouseZone | None = await self._session.scalar(
-                    select(HouseZone).where(HouseZone.callout == create_presence_sensor_request.call_out)
-                )
+                house_zone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.callout == create_presence_sensor_request.call_out))
                 if house_zone is None:
                     house_zone: HouseZone = HouseZone(
                         call_out = create_presence_sensor_request.call_out
@@ -40,7 +37,7 @@ class PresenceSensorRepository(IPresenceSensorRepository):
                     )
                 )
                 if device is None:
-                    device = Device(
+                    device: Device = Device(
                         house_zone_id = house_zone.house_zone_id,
                         device_name = create_presence_sensor_request.device_name,
                         device_type = create_presence_sensor_request.device_type,
@@ -53,7 +50,6 @@ class PresenceSensorRepository(IPresenceSensorRepository):
 
                 last_detected_presence = create_presence_sensor_request.last_detected_presence
                 if last_detected_presence.tzinfo is not None:
-                    # La columna es TIMESTAMP sin zona: asyncpg rechaza datetime con tzinfo.
                     last_detected_presence = last_detected_presence.astimezone(timezone.utc).replace(tzinfo=None)
 
                 presence_sensor: PresenceSensor = PresenceSensor(
