@@ -23,7 +23,7 @@ class LightRepository(ILightRepository):
     async def get_light_by_location(self, get_light_by_location_request: GetLightByLocationRequest) -> GetLightByLocationResponse:
         get_light_by_location_response: GetLightByLocationResponse = GetLightByLocationResponse()
         try:
-            location: str = str(get_light_by_location_request.location)
+            location: str = get_light_by_location_request.location.name
             light: Light | None = await self._session.scalar(select(Light).where(Light.location == location))
             if light is None:
                 get_light_by_location_response.ResponseCode = ResponseCodes.NOT_FOUND
@@ -66,14 +66,14 @@ class LightRepository(ILightRepository):
     # region patch_light_status
     async def patch_light_status(self, light_location: LightLocation, is_on: bool) -> None:
         try:
-            location: str = str(light_location)
-            light: Light | None= await self._session.scalar(select(Light).where(Light.location == location))
+            location: str = light_location.name
+            light: Light | None = await self._session.scalar(select(Light).where(Light.location == location))
             if light is None:
-                print(f"ERROR light {light_location} not found")
+                print(f"ERROR light {light_location.name} not found")
             elif light.is_on == is_on:
                 light.is_on = is_on
                 light.last_updated_at = datetime.now(timezone.utc)
-                print(f"light {light_location} IsOn cambiado a {is_on}")
+                print(f"light {light_location.name} IsOn cambiado a {is_on}")
         except Exception as ex:
             print(f"Unexpected error on LightRepository -> PatchLightStatus {ex}")
     # endregion
