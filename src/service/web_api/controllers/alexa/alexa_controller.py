@@ -1,6 +1,5 @@
 from fastapi_utils.cbv import cbv
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
-from pydantic import TypeAdapter, ValidationError
 from application.data_transfer_object.alexa.alexa_request import AlexaRequest
 from application.data_transfer_object.alexa.alexa_response import AlexaResponse
 from application.interface.application.i_alexa_application import IAlexaApplication
@@ -22,8 +21,6 @@ from transversal.security.filter import debug_bypass
 # de la raiz de la seccion ("/alexa"), sin subruta por debajo.
 router = APIRouter()
 
-_alexa_request_json_adapter = TypeAdapter(AlexaRequestJson)
-
 @cbv(router)
 class AlexaController:
     _alexa_application: IAlexaApplication = Depends(get_alexa_application)
@@ -32,11 +29,7 @@ class AlexaController:
 
     #region SendAlexaOrder
     @router.post("/alexa", status_code = status.HTTP_200_OK)
-    async def send_alexa_order(
-        self,
-        request: Request,
-        x_debug_key: str = Header(default = "", alias = debug_bypass.HEADER_NAME),
-    ) -> AlexaResponseJson:
+    async def send_alexa_order(self, request: Request, x_debug_key: str = Header(default = "", alias = debug_bypass.HEADER_NAME)) -> AlexaResponseJson:
         alexa_response_json: AlexaResponseJson = AlexaResponseJson()
         try:
             # Bypass de pruebas (X-Debug-Key): omite firma de Amazon y validacion de skill.
@@ -49,7 +42,7 @@ class AlexaController:
                     is_success = False,
                 )
             else:
-                alexa_request_json: AlexaRequestJson | None = await self._read_alexa_request_json(request)
+                alexa_request_json: AlexaRequestJson | None = await alexa_utils.read_alexa_request_json(request)
 
                 if alexa_request_json is None or alexa_request_json.alexa_request_data is None:
                     alexa_response_json.base_response_json = BaseResponseJson(
@@ -89,25 +82,8 @@ class AlexaController:
                 is_success = False,
             )
 
-        # Equivalente al return final del C#: si no esta autorizado se corta con 401
-        # y no se le devuelve cuerpo a quien llama.
         if alexa_response_json.base_response_json.response_code_json == ResponseCodesJson.UNAUTHORIZED:
             raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, detail = "Unauthorized")
 
         return alexa_response_json
-    #endregion
-
-    #region _read_alexa_request_json
-    @staticmethod
-    async def _read_alexa_request_json(request: Request) -> AlexaRequestJson | None:
-        """Equivalente a ReadFromJsonAsync<AlexaRequestJson>.
-
-        El cuerpo no se declara como parametro del endpoint porque el verificador
-        de firma necesita leerlo en crudo antes; aqui ya viene cacheado por Starlette.
-        El TypeAdapter es lo que hace respetar los alias ("request", "session").
-        """
-        try:
-            return _alexa_request_json_adapter.validate_python(await request.json())
-        except (ValueError, ValidationError):
-            return None
     #endregion

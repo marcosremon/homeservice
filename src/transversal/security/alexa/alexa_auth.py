@@ -16,7 +16,6 @@ from transversal.security.alexa.alexa_request_verifier import AlexaRequestVerifi
 # region get_alexa_request_verifier
 @lru_cache
 def _get_http_client() -> httpx.AsyncClient:
-    """Equivalente a IHttpClientFactory: un cliente reutilizado, no uno por peticion."""
     return httpx.AsyncClient(timeout=10.0)
 
 

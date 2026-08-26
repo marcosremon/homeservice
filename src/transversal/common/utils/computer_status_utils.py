@@ -1,5 +1,4 @@
-"""Equivalente a ComputerStatusUtils de C#.
-
+"""
 Una static class de C# se traduce en Python a un modulo con funciones sueltas:
 no hace falta clase para agrupar, el propio modulo es el namespace.
 
@@ -125,8 +124,7 @@ async def _shutdown_via_ssh(ssh_user: str, ssh_host: str) -> tuple[int, str]:
 
 # region _run
 async def _run(command: list[str], timeout: float) -> tuple[int, str, str]:
-    """Equivalente a ProcessStartInfo + WaitForExitAsync, con timeout.
-
+    """
     Los argumentos van en lista, nunca en un string: asi no hay shell de por
     medio y no existe el riesgo de inyeccion de comandos.
     """

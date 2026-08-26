@@ -10,25 +10,25 @@ from application.data_transfer_object.change_computer_status.turn_on_computer.tu
 from application.interface.repository.i_change_computer_status_repository import IChangeComputerStatusRepository
 from transversal.common.configuration.settings import Settings
 from transversal.common.utils import computer_status_utils
-from transversal.common.utils.general_utils import GenericUtils
+from transversal.common.utils.general_utils import GeneralUtils
 from transversal.common.wrappers.base.response_codes import ResponseCodes
 
 class ChangeComputerStatusRepository(IChangeComputerStatusRepository):
 
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings) -> None:
         self._settings = settings
 
     #region turn_on_computer
     async def turn_on_computer(self) -> TurnOnComputerResponse:
         turn_on_computer_response: TurnOnComputerResponse = TurnOnComputerResponse()
         try:
-            mac_address = self._settings.lan_computer_mac
-            broadcast_ip = self._settings.lan_broadcast_ip
-            ip_address = self._settings.lan_computer_ip
+            mac_address: str = self._settings.lan_computer_mac
+            broadcast_ip: str = self._settings.lan_broadcast_ip
+            ip_address: str = self._settings.lan_computer_ip
 
-            if (GenericUtils.is_null_or_empty(mac_address) or
-                GenericUtils.is_null_or_empty(broadcast_ip) or
-                GenericUtils.is_null_or_empty(ip_address)
+            if (GeneralUtils.is_null_or_empty(mac_address) or
+                GeneralUtils.is_null_or_empty(broadcast_ip) or
+                GeneralUtils.is_null_or_empty(ip_address)
             ):
                 turn_on_computer_response.response_code = ResponseCodes.UNEXPECTED_ERROR
                 turn_on_computer_response.is_success = False
@@ -55,15 +55,15 @@ class ChangeComputerStatusRepository(IChangeComputerStatusRepository):
     async def turn_off_computer(self) -> TurnOffComputerResponse:
         turn_off_computer_response: TurnOffComputerResponse = TurnOffComputerResponse()
         try:
-            ip_address = self._settings.lan_computer_ip
-            cachy_os_user = self._settings.lan_cachyos_user
+            ip_address: str = self._settings.lan_computer_ip
+            cachy_os_user: str = self._settings.lan_cachyos_user
 
-            if GenericUtils.is_null_or_empty(ip_address) or GenericUtils.is_null_or_empty(cachy_os_user):
+            if GeneralUtils.is_null_or_empty(ip_address) or GeneralUtils.is_null_or_empty(cachy_os_user):
                 turn_off_computer_response.response_code = ResponseCodes.UNEXPECTED_ERROR
                 turn_off_computer_response.is_success = False
                 turn_off_computer_response.message = "LanParameters incompletos en settings (lan_computer_ip, lan_cachyos_user)"
             else:
-                message = await computer_status_utils.shutdown_computer(ip_address, cachy_os_user)
+                message: str = await computer_status_utils.shutdown_computer(ip_address, cachy_os_user)
 
                 turn_off_computer_response.response_code = ResponseCodes.OK
                 turn_off_computer_response.is_success = True
@@ -80,14 +80,14 @@ class ChangeComputerStatusRepository(IChangeComputerStatusRepository):
     async def get_computer_status(self) -> GetComputerStatusResponse:
         get_computer_status_response: GetComputerStatusResponse = GetComputerStatusResponse()
         try:
-            ip_address = self._settings.lan_computer_ip
+            ip_address: str = self._settings.lan_computer_ip
 
-            if GenericUtils.is_null_or_empty(ip_address):
+            if GeneralUtils.is_null_or_empty(ip_address):
                 get_computer_status_response.response_code = ResponseCodes.UNEXPECTED_ERROR
                 get_computer_status_response.is_success = False
                 get_computer_status_response.message = "The ip address is empty on settings"
             else:
-                computer_status = await computer_status_utils.computer_status(ip_address)
+                computer_status: bool = await computer_status_utils.computer_status(ip_address)
 
                 get_computer_status_response.response_code = ResponseCodes.OK
                 get_computer_status_response.computer_status = computer_status

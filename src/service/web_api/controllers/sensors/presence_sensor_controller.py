@@ -7,7 +7,7 @@ from application.data_transfer_object.home_automation.sensor.presence_sensor.pat
 from application.interface.application.i_presence_sensor_application import IPresenceSensorApplication
 from transversal.security.filter.api_key_auth import get_api_key
 from infraestructure.persistence.dependencies.dependency_injection import get_presence_sensor_application
-from transversal.common.utils.general_utils import GenericUtils
+from transversal.common.utils.general_utils import GeneralUtils
 from transversal.common.wrappers.json.response_codes_json import ResponseCodesJson
 from transversal.json_interchange.home_automation.sensor.presence_sensor.create_presence_sensor.create_presence_sensor_request_json import CreatePresenceSensorRequestJson
 from transversal.json_interchange.home_automation.sensor.presence_sensor.create_presence_sensor.create_presence_sensor_response_json import CreatePresenceSensorResponseJson
@@ -28,9 +28,9 @@ class PresenceSensorController:
     async def create_presence_sensor(self, create_presence_sensor_request_json: CreatePresenceSensorRequestJson) -> CreatePresenceSensorResponseJson:
         create_presence_sensor_response_json: CreatePresenceSensorResponseJson = CreatePresenceSensorResponseJson()
         try:
-            if (GenericUtils.is_null_or_empty(create_presence_sensor_request_json.callout) or
-                GenericUtils.is_null_or_empty(create_presence_sensor_request_json.device_name) or
-                GenericUtils.is_null_or_empty(create_presence_sensor_request_json.device_type)
+            if (GeneralUtils.is_null_or_empty(create_presence_sensor_request_json.callout) or
+                GeneralUtils.is_null_or_empty(create_presence_sensor_request_json.device_name) or
+                GeneralUtils.is_null_or_empty(create_presence_sensor_request_json.device_type)
             ):
                 create_presence_sensor_response_json.response_code_json = ResponseCodesJson.INVALID_DATA
                 create_presence_sensor_response_json.is_success = False
@@ -68,9 +68,9 @@ class PresenceSensorController:
     async def patch_presence_sensor_data(self, patch_presence_sensor_data_request_json: PatchPresenceSensorDataRequestJson) -> PatchPresenceSensorDataResponseJson:
         patch_presence_sensor_data_response_json: PatchPresenceSensorDataResponseJson = PatchPresenceSensorDataResponseJson()
         try:
-            if (GenericUtils.is_null_or_empty(patch_presence_sensor_data_request_json.callout) or
-                GenericUtils.is_null_or_empty(patch_presence_sensor_data_request_json.device_name) or
-                GenericUtils.is_null_or_empty(patch_presence_sensor_data_request_json.device_type)
+            if (GeneralUtils.is_null_or_empty(patch_presence_sensor_data_request_json.callout) or
+                GeneralUtils.is_null_or_empty(patch_presence_sensor_data_request_json.device_name) or
+                GeneralUtils.is_null_or_empty(patch_presence_sensor_data_request_json.device_type)
             ):
                 patch_presence_sensor_data_response_json.response_code_json = ResponseCodesJson.INVALID_DATA
                 patch_presence_sensor_data_response_json.is_success = False

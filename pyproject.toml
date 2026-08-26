@@ -1,0 +1,23 @@
+# Configuracion de las herramientas que hacen de "compilador" del proyecto.
+# No hay build: mypy comprueba los tipos y ruff los errores de codigo.
+
+[tool.mypy]
+files = ["src"]
+mypy_path = "src"
+explicit_package_bases = true
+ignore_missing_imports = true
+# Entiende los modelos de pydantic (si no, se inventa errores en Settings).
+plugins = ["pydantic.mypy"]
+
+[tool.ruff]
+src = ["src"]
+line-length = 200
+
+[tool.ruff.lint]
+# Solo errores reales: E (pycodestyle), F (pyflakes: nombres sin definir, imports
+# sin usar), B (bugs tipicos). Nada de reglas de estilo que pelean con el estilo
+# heredado de C# (imports sin ordenar, except Exception a proposito, etc.).
+select = ["E", "F", "B"]
+# B008 se ignora porque Depends()/Header() en el default del parametro es
+# justo como se declara la inyeccion en FastAPI.
+ignore = ["E501", "E741", "B008"]

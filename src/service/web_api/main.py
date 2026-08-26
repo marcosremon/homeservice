@@ -24,7 +24,10 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     # Equivalente a AddHostedService<T>() de Program.cs. Aqui no hay host que los
     # gestione: se arrancan antes del yield y se paran despues, y el orden de
     # parada es el inverso al de arranque, igual que hace el host de ASP.NET.
-    background_services = [PresenceSensorMonitor(), RoombaActivationHandler()]
+    background_services: list[PresenceSensorMonitor | RoombaActivationHandler] = [
+        PresenceSensorMonitor(),
+        RoombaActivationHandler(),
+    ]
     for background_service in background_services:
         background_service.start()
 

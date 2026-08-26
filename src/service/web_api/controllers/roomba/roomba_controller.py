@@ -11,7 +11,7 @@ from domain.model.enum.Roomba.roomba_phase import RoombaPhase
 from domain.model.enum.Roomba.roomba_target import RoombaTarget
 from transversal.security.filter.api_key_auth import get_api_key
 from infraestructure.persistence.dependencies.dependency_injection import get_roomba_application
-from transversal.common.utils.general_utils import GenericUtils
+from transversal.common.utils.general_utils import GeneralUtils
 from transversal.common.wrappers.json.response_codes_json import ResponseCodesJson
 from transversal.json_interchange.roomba.create_roomba.create_roomba_request_json import CreateRoombaRequestJson
 from transversal.json_interchange.roomba.create_roomba.create_roomba_response_json import CreateRoombaResponseJson
@@ -32,9 +32,9 @@ class RoombaController:
     async def create_roomba(self, create_roomba_request_json: CreateRoombaRequestJson) -> CreateRoombaResponseJson:
         create_roomba_response_json: CreateRoombaResponseJson = CreateRoombaResponseJson()
         try:
-            if (GenericUtils.is_null_or_empty(create_roomba_request_json.callout) or
-                GenericUtils.is_null_or_empty(create_roomba_request_json.device_name) or
-                GenericUtils.is_null_or_empty(create_roomba_request_json.device_type)
+            if (GeneralUtils.is_null_or_empty(create_roomba_request_json.callout) or
+                GeneralUtils.is_null_or_empty(create_roomba_request_json.device_name) or
+                GeneralUtils.is_null_or_empty(create_roomba_request_json.device_type)
             ):
                 create_roomba_response_json.response_code_json = ResponseCodesJson.INVALID_DATA
                 create_roomba_response_json.is_success = False
@@ -69,13 +69,18 @@ class RoombaController:
         try:
             # Equivalente a Enum.TryParse(..., ignoreCase: true, out ...): si el
             # nombre no existe se cae al valor por defecto en vez de reventar.
-            roomba_target: RoombaTarget = self._parse_enum(RoombaTarget, patch_roomba_state_request_json.target, RoombaTarget.FULL_HOUSE)
-            roomba_phase: RoombaPhase = self._parse_enum(RoombaPhase, patch_roomba_state_request_json.phase, RoombaPhase.STOP)
+            roomba_target: RoombaTarget = GeneralUtils.parse_enum(RoombaTarget, patch_roomba_state_request_json.target, RoombaTarget.FULL_HOUSE)
+            roomba_phase: RoombaPhase = GeneralUtils.parse_enum(RoombaPhase, patch_roomba_state_request_json.phase, RoombaPhase.STOP)
+
+            # Equivalente al `== default` de C#: si no mandan hora, se pone la de ahora.
+            event_time: datetime = (
+                datetime.now(timezone.utc)
+                if patch_roomba_state_request_json.event_time == datetime.min
+                else patch_roomba_state_request_json.event_time
+            )
 
             patch_roomba_state_request: PatchRoombaStateRequest = PatchRoombaStateRequest(
-                event_time = datetime.now(timezone.utc)
-                    if patch_roomba_state_request_json.event_time == datetime.min
-                    else patch_roomba_state_request_json.event_time,
+                event_time = event_time,
                 is_activation = patch_roomba_state_request_json.is_activation,
                 is_finished = patch_roomba_state_request_json.is_finished,
                 target = roomba_target,
@@ -100,13 +105,4 @@ class RoombaController:
             patch_roomba_state_response_json.message = f"Ha ocurrido un error al actualizar el estado del roomba {ex}."
 
         return patch_roomba_state_response_json
-    #endregion
-
-    #region _parse_enum
-    @staticmethod
-    def _parse_enum(enum_type, value: str, default):
-        try:
-            return enum_type[value.strip().upper()]
-        except (KeyError, AttributeError):
-            return default
     #endregion

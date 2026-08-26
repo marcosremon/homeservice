@@ -9,7 +9,7 @@ from application.interface.repository.i_presence_sensor_repository import IPrese
 from domain.model.entity.device import Device
 from domain.model.entity.house_zone import HouseZone
 from domain.model.entity.presence_sensor import PresenceSensor
-from transversal.common.utils.general_utils import GenericUtils
+from transversal.common.utils.general_utils import GeneralUtils
 from transversal.common.wrappers.base.response_codes import ResponseCodes
 
 class PresenceSensorRepository(IPresenceSensorRepository):
@@ -97,13 +97,13 @@ class PresenceSensorRepository(IPresenceSensorRepository):
                         patch_presence_sensor_data_response.is_success = False
                         patch_presence_sensor_data_response.message = f"No presence sensor found with the name {device.device_name}"
                     else:
-                        if not GenericUtils.is_null_or_empty(patch_presence_sensor_data_request.model):
+                        if not GeneralUtils.is_null_or_empty(patch_presence_sensor_data_request.model):
                             device.model = patch_presence_sensor_data_request.model
 
-                        if not GenericUtils.is_null_or_empty(patch_presence_sensor_data_request.manufacturer):
+                        if not GeneralUtils.is_null_or_empty(patch_presence_sensor_data_request.manufacturer):
                             device.manufacturer = patch_presence_sensor_data_request.manufacturer
 
-                        if not GenericUtils.is_null_or_empty(patch_presence_sensor_data_request.mac_address):
+                        if not GeneralUtils.is_null_or_empty(patch_presence_sensor_data_request.mac_address):
                             device.mac_address = patch_presence_sensor_data_request.mac_address
 
                         presence_sensor.ts = patch_presence_sensor_data_request.ts
