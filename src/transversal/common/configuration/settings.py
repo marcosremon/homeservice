@@ -1,3 +1,4 @@
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -5,51 +6,61 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[4]
 
+def _EnvironmentVariableName(fieldName: str) -> str:
+    """appPort -> APP_PORT.
+
+    pydantic-settings busca la variable de entorno por el nombre del campo. Como
+    los campos van en camelCase, hay que traducirlos al SCREAMING_SNAKE del .env.
+    """
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", fieldName).upper()
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file = _PROJECT_ROOT / ".env",
         env_file_encoding = "utf-8",
         extra = "ignore",
+        alias_generator = _EnvironmentVariableName,
+        populate_by_name = True,
     )
 
     # Equivalente al bloque Kestrel de appsettings.json.
-    app_host: str = "0.0.0.0"
-    app_port: int = 8000
+    appHost: str = "0.0.0.0"
+    appPort: int = 8000
 
     # postgresql+asyncpg://usuario:password@host:puerto/base_de_datos
-    database_url: str
-    internal_api_key: str
-    debug_bypass_key: str = ""
+    databaseUrl: str
+    internalApiKey: str
+    debugBypassKey: str = ""
 
     # Equivalente a AlexaSettings de appsettings.json.
-    alexa_version: str = "1.0"
-    alexa_skill_id: str = ""
+    alexaVersion: str = "1.0"
+    alexaSkillId: str = ""
 
     # Equivalente a GeminiSettings de appsettings.json.
-    gemini_api_key: str = ""
-    gemini_model: str = ""
+    geminiApiKey: str = ""
+    geminiModel: str = ""
 
     # Equivalente a MqttSettings de appsettings.json.
-    mqtt_host: str = ""
-    mqtt_port: int = 1883
-    mqtt_user: str = ""
-    mqtt_password: str = ""
+    mqttHost: str = ""
+    mqttPort: int = 1883
+    mqttUser: str = ""
+    mqttPassword: str = ""
 
     # Equivalente a IRobotSettings de appsettings.json.
-    roomba_id: str = ""
-    roomba_port: str = "8883"
-    roomba_blid: str = ""
-    roomba_passwd: str = ""
-    roomba_pmap_id: str = ""
-    roomba_pmap_version: str = ""
+    roombaId: str = ""
+    roombaPort: str = "8883"
+    roombaBlid: str = ""
+    roombaPasswd: str = ""
+    roombaPmapId: str = ""
+    roombaPmapVersion: str = ""
 
     # Equivalente a LanParametersSettings de appsettings.json. Los nombres llevan
     # el prefijo lan_ porque las variables del .env se llaman LAN_*.
-    lan_computer_ip: str = ""
-    lan_computer_mac: str = ""
-    lan_broadcast_ip: str = ""
-    lan_cachyos_user: str = ""
+    lanComputerIp: str = ""
+    lanComputerMac: str = ""
+    lanBroadcastIp: str = ""
+    lanCachyosUser: str = ""
 
 @lru_cache
-def get_settings() -> Settings:
+def GetSettings() -> Settings:
     return Settings()

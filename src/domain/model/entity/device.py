@@ -1,15 +1,15 @@
 from sqlalchemy import ForeignKey, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
 
-from domain.model.entity.base import Base
+from domain.model.entity.Base import Base
 
 class Device(Base):
     __tablename__ = "device"
 
-    device_id: Mapped[int] = mapped_column(BigInteger, primary_key = True, autoincrement = True)
-    house_zone_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("house_zone.house_zone_id"))
-    device_name: Mapped[str] = mapped_column(default = "")
-    device_type: Mapped[str] = mapped_column(default = "")
+    deviceId: Mapped[int] = mapped_column("device_id", BigInteger, primary_key = True, autoincrement = True)
+    houseZoneId: Mapped[int] = mapped_column("house_zone_id", BigInteger, ForeignKey("house_zone.house_zone_id"))
+    deviceName: Mapped[str] = mapped_column("device_name", default = "")
+    deviceType: Mapped[str] = mapped_column("device_type", default = "")
     model: Mapped[str] = mapped_column(default = "")
     manufacturer: Mapped[str] = mapped_column(default = "")
-    mac_address: Mapped[str] = mapped_column(default = "")
+    macAddress: Mapped[str] = mapped_column("mac_address", default = "")

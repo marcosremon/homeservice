@@ -3,39 +3,39 @@ from collections.abc import AsyncIterator
 
 from fastapi import FastAPI
 
-from infraestructure.background_tasks.job.roomba_activation_handler import RoombaActivationHandler
-from infraestructure.background_tasks.worker.presence_sensor_monitor import PresenceSensorMonitor
-from infraestructure.persistence.create_database.database_migrator import create_or_update_database
-from service.web_api.controllers.alexa.alexa_controller import router as alexa_router
-from service.web_api.controllers.computer_status.change_computer_status_controller import router as change_computer_status_router
-from service.web_api.controllers.roomba.roomba_controller import router as roomba_router
-from service.web_api.controllers.sensors.presence_sensor_controller import router as presence_sensor_router
-from transversal.common.configuration.settings import get_settings
+from infraestructure.background_tasks.job.RoombaActivationHandler import RoombaActivationHandler
+from infraestructure.background_tasks.worker.PresenceSensorMonitor import PresenceSensorMonitor
+from infraestructure.persistence.create_database.DatabaseMigrator import CreateOrUpdateDatabase
+from service.web_api.controllers.alexa.AlexaController import router as alexa_router
+from service.web_api.controllers.computer_status.ChangeComputerStatusController import router as change_computer_status_router
+from service.web_api.controllers.roomba.RoombaController import router as roomba_router
+from service.web_api.controllers.sensors.PresenceSensorController import router as presence_sensor_router
+from transversal.common.configuration.Settings import GetSettings
 
 # Falla al arrancar si el .env o las variables de entorno estan incompletas,
 # igual que la validacion de IOptions con ValidateOnStart() en ASP.NET.
-get_settings()
+GetSettings()
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-    if not await create_or_update_database():
+    if not await CreateOrUpdateDatabase():
         raise RuntimeError("No se pudo crear o actualizar la base de datos.")
 
     # Equivalente a AddHostedService<T>() de Program.cs. Aqui no hay host que los
     # gestione: se arrancan antes del yield y se paran despues, y el orden de
     # parada es el inverso al de arranque, igual que hace el host de ASP.NET.
-    background_services: list[PresenceSensorMonitor | RoombaActivationHandler] = [
+    backgroundServices: list[PresenceSensorMonitor | RoombaActivationHandler] = [
         PresenceSensorMonitor(),
         RoombaActivationHandler(),
     ]
-    for background_service in background_services:
-        background_service.start()
+    for backgroundService in backgroundServices:
+        backgroundService.start()
 
     try:
         yield
     finally:
-        for background_service in reversed(background_services):
-            await background_service.stop()
+        for backgroundService in reversed(backgroundServices):
+            await backgroundService.stop()
 
 app = FastAPI(title="HomeService API", lifespan=lifespan)
 app.include_router(presence_sensor_router, prefix="/api")
@@ -50,5 +50,5 @@ app.include_router(alexa_router, prefix="/api")
 if __name__ == "__main__":
     import uvicorn
 
-    settings = get_settings()
-    uvicorn.run(app, host = settings.app_host, port = settings.app_port)
+    settings = GetSettings()
+    uvicorn.run(app, host = settings.appHost, port = settings.appPort)

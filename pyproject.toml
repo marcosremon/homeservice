@@ -20,4 +20,5 @@ line-length = 200
 select = ["E", "F", "B"]
 # B008 se ignora porque Depends()/Header() en el default del parametro es
 # justo como se declara la inyeccion en FastAPI.
-ignore = ["E501", "E741", "B008"]
+# E701/E702: los if y asignaciones en una sola linea son estilo C# a proposito.
+ignore = ["E501", "E741", "B008", "E701", "E702"]

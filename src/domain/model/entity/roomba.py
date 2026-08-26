@@ -3,24 +3,24 @@ from datetime import datetime
 from sqlalchemy import BigInteger, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from domain.model.entity.base import Base
-from domain.model.enum.Roomba.roomba_phase import RoombaPhase
+from domain.model.entity.Base import Base
+from domain.model.enum.Roomba.RoombaPhase import RoombaPhase
 
 class Roomba(Base):
     __tablename__ = "roomba"
 
-    roomba_id: Mapped[int] = mapped_column(BigInteger, primary_key = True, autoincrement = True)
-    device_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("device.device_id"))
+    roombaId: Mapped[int] = mapped_column("roomba_id", BigInteger, primary_key = True, autoincrement = True)
+    deviceId: Mapped[int] = mapped_column("device_id", BigInteger, ForeignKey("device.device_id"))
     phase: Mapped[str] = mapped_column(default = RoombaPhase.STOP.name)
-    battery_percent: Mapped[int] = mapped_column(default = 0)
-    bin_full: Mapped[bool] = mapped_column(default = False)
-    last_target: Mapped[str] = mapped_column(default = "")
-    last_roomba_activation: Mapped[datetime] = mapped_column(default = datetime.min)
-    last_roomba_end: Mapped[datetime] = mapped_column(default = datetime.min)
-    last_clean_duration_minutes: Mapped[int] = mapped_column(default = 0)
-    error_code: Mapped[int] = mapped_column(default = 0)
-    error_message: Mapped[str] = mapped_column(default = "")
-    pmap_id: Mapped[str] = mapped_column(default = "")
-    user_pmapv_id: Mapped[str] = mapped_column(default = "")
-    is_online: Mapped[bool] = mapped_column(default = False)
-    last_seen: Mapped[datetime] = mapped_column(default = datetime.min)
+    batteryPercent: Mapped[int] = mapped_column("battery_percent", default = 0)
+    binFull: Mapped[bool] = mapped_column("bin_full", default = False)
+    lastTarget: Mapped[str] = mapped_column("last_target", default = "")
+    lastRoombaActivation: Mapped[datetime] = mapped_column("last_roomba_activation", default = datetime.min)
+    lastRoombaEnd: Mapped[datetime] = mapped_column("last_roomba_end", default = datetime.min)
+    lastCleanDurationMinutes: Mapped[int] = mapped_column("last_clean_duration_minutes", default = 0)
+    errorCode: Mapped[int] = mapped_column("error_code", default = 0)
+    errorMessage: Mapped[str] = mapped_column("error_message", default = "")
+    pmapId: Mapped[str] = mapped_column("pmap_id", default = "")
+    userPmapvId: Mapped[str] = mapped_column("user_pmapv_id", default = "")
+    isOnline: Mapped[bool] = mapped_column("is_online", default = False)
+    lastSeen: Mapped[datetime] = mapped_column("last_seen", default = datetime.min)

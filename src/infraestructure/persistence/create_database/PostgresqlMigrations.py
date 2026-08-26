@@ -1,0 +1,12 @@
+from infraestructure.persistence.create_database.migrations.Migration2026072800SchemaBase import Migration2026072800SchemaBase
+from infraestructure.persistence.create_database.migrations.Migration2026072801CreateInitialSensors import Migration2026072801CreateInitialSensors
+from infraestructure.persistence.create_database.migrations.Migration2026072802DeviceAndPresenceSensorMetadata import Migration2026072802DeviceMetadata
+from infraestructure.persistence.create_database.migrations.Migration2026081800LightAndRoombaState import Migration2026081800LightAndRoombaState
+from transversal.common.database_migration.Migration import Migration
+
+POSTGRESQL_MIGRATIONS: list[Migration] = [
+    Migration2026072800SchemaBase(),
+    Migration2026072801CreateInitialSensors(),
+    Migration2026072802DeviceMetadata(),
+    Migration2026081800LightAndRoombaState(),
+]
