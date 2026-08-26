@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     # postgresql+asyncpg://usuario:password@host:puerto/base_de_datos
     database_url: str
     internal_api_key: str
+    debug_bypass_key: str = ""
 
 @lru_cache
 def get_settings() -> Settings:

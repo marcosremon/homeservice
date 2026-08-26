@@ -11,17 +11,11 @@ from transversal.common.configuration.settings import get_settings
 # igual que la validacion de IOptions con ValidateOnStart() en ASP.NET.
 get_settings()
 
-
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-    """Equivalente al DatabaseMigrator.CreateOrUpdateDatabase(...) de Program.cs."""
     if not await create_or_update_database():
         raise RuntimeError("No se pudo crear o actualizar la base de datos.")
-
     yield
 
-
 app = FastAPI(title="HomeService API", lifespan=lifespan)
-
-# prefix="/api" == RoutePrefixConvention("api") de Program.cs
 app.include_router(presence_sensor_router, prefix="/api")
