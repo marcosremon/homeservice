@@ -2,7 +2,7 @@ import hmac
 
 from fastapi import Header, HTTPException, status
 
-from infraestructure.security.filter import debug_bypass
+from transversal.security.filter import debug_bypass
 from transversal.common.configuration.settings import get_settings
 
 async def get_api_key(

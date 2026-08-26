@@ -10,8 +10,8 @@ import httpx
 from fastapi import Depends, Header, HTTPException, Request, status
 
 from application.interface.security.i_alexa_request_verifier import IAlexaRequestVerifier
-from infraestructure.security.filter import debug_bypass
-from infraestructure.security.alexa.alexa_request_verifier import AlexaRequestVerifier
+from transversal.security.filter import debug_bypass
+from transversal.security.alexa.alexa_request_verifier import AlexaRequestVerifier
 
 # region get_alexa_request_verifier
 @lru_cache
