@@ -10,7 +10,7 @@ from service.web_api.controllers.alexa.AlexaController import router as alexa_ro
 from service.web_api.controllers.computer_status.ChangeComputerStatusController import router as change_computer_status_router
 from service.web_api.controllers.roomba.RoombaController import router as roomba_router
 from service.web_api.controllers.sensors.PresenceSensorController import router as presence_sensor_router
-from transversal.common.configuration.Settings import Settings, GetSettings
+from transversal.common.configuration.settings import Settings, GetSettings
 
 # Falla al arrancar si el .env o las variables de entorno estan incompletas,
 # igual que la validacion de IOptions con ValidateOnStart() en ASP.NET.

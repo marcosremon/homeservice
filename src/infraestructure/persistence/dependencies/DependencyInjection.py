@@ -9,9 +9,11 @@ from application.interface.application.IPresenceSensorApplication import IPresen
 from application.interface.application.IRoombaApplication import IRoombaApplication
 from application.interface.repository.IChangeComputerStatusRepository import IChangeComputerStatusRepository
 from application.interface.repository.IEventRepository import IEventRepository
+from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
 from application.interface.repository.IPresenceSensorRepository import IPresenceSensorRepository
 from application.interface.repository.IRoombaRepository import IRoombaRepository
 from application.interface.repository.ILightRepository import ILightRepository
+from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
 from application.interface.service.IAlexaService import IAlexaService
 from application.interface.service.IComputerStatusService import IComputerStatusService
 from application.interface.service.IGeminiService import IGeminiService
@@ -23,6 +25,7 @@ from application.use_case.ChangeComputerStatusApplication import ChangeComputerS
 from application.use_case.EventApplication import EventApplication
 from application.use_case.PresenceSensorApplication import PresenceSensorApplication
 from application.use_case.RoombaApplication import RoombaApplication
+from application.use_case.TemperatureSensorApplication import TemperatureSensorApplication
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
 from infraestructure.persistence.repository.ChangeComputerStatusRepository import ChangeComputerStatusRepository
 from infraestructure.persistence.repository.EventRepository import EventRepository
@@ -35,7 +38,8 @@ from infraestructure.gateway.RoombaService import RoombaService
 from infraestructure.persistence.repository.LightRepository import LightRepository
 from infraestructure.persistence.repository.PresenceSensorRepository import PresenceSensorRepository
 from infraestructure.persistence.repository.RoombaRepository import RoombaRepository
-from transversal.common.configuration.Settings import Settings, GetSettings
+from infraestructure.persistence.repository.TemperatureSensorRepository import TemperatureSensorRepository
+from transversal.common.configuration.settings import Settings, GetSettings
 
 # region PresenceSensor
 def GetPresenceSensorRepository(session: AsyncSession = Depends(GetSession)) -> IPresenceSensorRepository:
@@ -43,6 +47,14 @@ def GetPresenceSensorRepository(session: AsyncSession = Depends(GetSession)) -> 
 
 def GetPresenceSensorApplication(presenceSensorRepository: IPresenceSensorRepository = Depends(GetPresenceSensorRepository)) -> IPresenceSensorApplication:
     return PresenceSensorApplication(presenceSensorRepository)
+# endregion
+
+# region TemperatureSensor
+def GetTemperatureSensorRepository(session: AsyncSession = Depends(GetSession)) -> ITemperatureSensorRepository:
+    return TemperatureSensorRepository(session)
+
+def GetTemperatureSensorApplication(temperatureSensorRepository: ITemperatureSensorRepository = Depends(GetTemperatureSensorRepository)) -> ITemperatureSensorApplication:
+    return TemperatureSensorApplication(temperatureSensorRepository)
 # endregion
 
 # region Roomba

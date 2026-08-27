@@ -1,0 +1,4 @@
+from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
+
+class TemperatureSensorRepository(ITemperatureSensorRepository):
+    pass

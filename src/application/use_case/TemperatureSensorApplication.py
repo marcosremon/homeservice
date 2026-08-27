@@ -1,0 +1,4 @@
+from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
+
+class TemperatureSensorApplication(ITemperatureSensorApplication):
+    pass
