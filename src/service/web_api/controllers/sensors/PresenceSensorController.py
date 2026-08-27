@@ -37,7 +37,7 @@ class PresenceSensorController:
                 createPresenceSensorResponseJson.message = "the callout, device name or device type is invalid"
             else:
                 createPresenceSensorRequest: CreatePresenceSensorRequest = CreatePresenceSensorRequest(
-                    callout = createPresenceSensorRequestJson.callout,
+                    callOut= createPresenceSensorRequestJson.callout,
                     deviceName = createPresenceSensorRequestJson.deviceName,
                     deviceType = createPresenceSensorRequestJson.deviceType,
                     ts = createPresenceSensorRequestJson.ts,

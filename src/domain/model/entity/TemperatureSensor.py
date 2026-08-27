@@ -7,7 +7,7 @@ class TemperatureSensor(Base):
 
     temperatureSensorId: Mapped[int] = mapped_column("temperature_sensor_id", BigInteger, primary_key = True, autoincrement = True)
     deviceId: Mapped[int] = mapped_column("device_id", BigInteger, ForeignKey("device.device_id"))
-    temperatureCelsius: Mapped[float] = mapped_column("temperature_celsius", default = 0.0)
+    temperature: Mapped[float] = mapped_column("temperature_celsius", default = 0.0)
     # este es el valor crudo del sensor adc significa analogic to digital es el valor antes de convertirlo a celsius
     adcVoltage: Mapped[float] = mapped_column("adc_voltage", default = 0.0)
     # esto es para ver cuando fue la ultima medicion de temperatura

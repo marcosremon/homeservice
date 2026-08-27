@@ -1,4 +1,12 @@
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
 from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
+from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
 
 class TemperatureSensorApplication(ITemperatureSensorApplication):
-    pass
+
+    def __init__(self, temperatureSensorRepository: ITemperatureSensorRepository):
+        self._roombaRepository: ITemperatureSensorRepository = temperatureSensorRepository
+
+    async def CreateTemperatureSensor(self, createTemperatureSensorRequest: CreateTemperatureSensorRequest) -> CreateTemperatureSensorResponse:
+        return await self._roombaRepository.CreateTemperatureSensor(createTemperatureSensorRequest)

@@ -1,4 +1,71 @@
+from select import select
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
 from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
+from domain.model.entity.HouseZone import HouseZone
+from domain.model.entity.TemperatureSensor import TemperatureSensor
+from domain.model.entity.device import Device
+from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 
 class TemperatureSensorRepository(ITemperatureSensorRepository):
-    pass
+
+    def __init__(self, session: AsyncSession):
+        self._session: AsyncSession = session
+
+    #region CreateTemperatureSensor
+    async def CreateTemperatureSensor(self, createTemperatureSensorRequest: CreateTemperatureSensorRequest) -> CreateTemperatureSensorResponse:
+        createTemperatureSensorResponse: CreateTemperatureSensorResponse = CreateTemperatureSensorResponse()
+        try:
+            async with self._session.begin():
+                houseZone: HouseZone | None = await self._session.scalar(
+                    select(HouseZone).where(HouseZone.callout == createTemperatureSensorRequest.callOut))
+                if houseZone is None:
+                    houseZone: HouseZone = HouseZone(
+                        callout = createTemperatureSensorRequest.callOut
+                    )
+                    self._session.add(houseZone)
+                    await self._session.flush()
+
+                device: Device | None = await self._session.scalar(select(Device)
+                    .where(Device.houseZoneId == houseZone.houseZoneId and
+                           Device.deviceName == createTemperatureSensorRequest.deviceName and
+                           Device.deviceType == createTemperatureSensorRequest.deviceType))
+                if device is not None:
+                    createTemperatureSensorResponse.responseCode = ResponseCodes.ANY_ROOMBA_EXIST
+                    createTemperatureSensorResponse.isSuccess = False
+                    createTemperatureSensorResponse.message = f"the device with macAddress {createTemperatureSensorRequest.macAddress} and device name {createTemperatureSensorRequest.deviceName} already exists"
+                else:
+                    device: Device = Device(
+                        callOut = createTemperatureSensorRequest.callOut,
+                        deviceName = createTemperatureSensorRequest.deviceName,
+                        deviceType = createTemperatureSensorRequest.deviceType,
+                        model = createTemperatureSensorRequest.model,
+                        manufacturer = createTemperatureSensorRequest.manufacturer,
+                        macAddress = createTemperatureSensorRequest.macAddress,
+                    )
+
+                    self._session.add(device)
+                    await self._session.flush()
+
+                    temperatureSensor: TemperatureSensor = TemperatureSensor(
+                        deviceId = device.deviceId,
+                        temperature = createTemperatureSensorRequest.temperature,
+                        adcVoltage = createTemperatureSensorRequest.adcVoltage,
+                        measureAt = createTemperatureSensorRequest.measureAt,
+                    )
+
+                    self._session.add(temperatureSensor)
+                    await self._session.flush()
+
+            createTemperatureSensorResponse.responseCode = ResponseCodes.CREATED
+            createTemperatureSensorResponse.isSuccess = True
+            createTemperatureSensorResponse.message = f"Temperature Sensor with the name {createTemperatureSensorRequest.deviceName} created successfully."
+        except Exception as ex:
+            createTemperatureSensorResponse.responseCode = ResponseCodes.UNEXPECTED_ERROR
+            createTemperatureSensorResponse.isSuccess = False
+            createTemperatureSensorResponse.message = f"Unexpected error on TemperatureSensorRepository -> createTemperatureSensorResponse: {ex}"
+
+        return createTemperatureSensorResponse
+    #endregion

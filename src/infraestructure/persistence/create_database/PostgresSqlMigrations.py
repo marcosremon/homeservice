@@ -11,4 +11,5 @@ class PostgresSqlMigrations:
         Migration2026072801CreateInitialSensors(),
         Migration2026072802DeviceMetadata(),
         Migration2026081800LightAndRoombaState(),
+        Migration2026082700TemperatureSensor(),
     ]

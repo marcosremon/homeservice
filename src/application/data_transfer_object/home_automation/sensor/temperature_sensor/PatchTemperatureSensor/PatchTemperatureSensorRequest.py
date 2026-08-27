@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class PatchTemperatureSensor:
+class PatchTemperatureSensorRequest:
     callOut: str = ""
     deviceName: str = ""
     deviceType: str = ""

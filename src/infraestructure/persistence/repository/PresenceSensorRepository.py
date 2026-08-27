@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorRequest import CreatePresenceSensorRequest
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorResponse import CreatePresenceSensorResponse
 from application.interface.repository.IPresenceSensorRepository import IPresenceSensorRepository
-from domain.model.entity.Device import Device
+from domain.model.entity.device import Device
 from domain.model.entity.HouseZone import HouseZone
 from domain.model.entity.PresenceSensor import PresenceSensor
 from transversal.common.utils.GeneralUtils import GeneralUtils
@@ -20,19 +20,18 @@ class PresenceSensorRepository(IPresenceSensorRepository):
         createPresenceSensorResponse: CreatePresenceSensorResponse = CreatePresenceSensorResponse()
         try:
             async with self._session.begin():
-                houseZone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.callout == createPresenceSensorRequest.callout))
+                houseZone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.callout == createPresenceSensorRequest.callOut))
                 if houseZone is None:
                     houseZone: HouseZone = HouseZone(
-                        callout = createPresenceSensorRequest.callout
+                        callout = createPresenceSensorRequest.callOut
                     )
                     self._session.add(houseZone)
                     await self._session.flush()
 
                 device: Device | None = await self._session.scalar(select(Device).where(
-                    Device.houseZoneId == houseZone.houseZoneId,
-                                Device.deviceName == createPresenceSensorRequest.deviceName,
-                                Device.deviceType == createPresenceSensorRequest.deviceType
-                            ))
+                    Device.houseZoneId == houseZone.houseZoneId and
+                    Device.deviceName == createPresenceSensorRequest.deviceName and
+                    Device.deviceType == createPresenceSensorRequest.deviceType))
                 if device is None:
                     device: Device = Device(
                         houseZoneId = houseZone.houseZoneId,
@@ -74,7 +73,7 @@ class PresenceSensorRepository(IPresenceSensorRepository):
     async def PatchPresenceSensorData(self, patchPresenceSensorDataRequest: CreatePresenceSensorRequest) -> CreatePresenceSensorResponse:
         patchPresenceSensorDataResponse: CreatePresenceSensorResponse = CreatePresenceSensorResponse()
         try:
-            houseZone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.callout == patchPresenceSensorDataRequest.callout))
+            houseZone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.callout == patchPresenceSensorDataRequest.callOut))
             if houseZone is None:
                 patchPresenceSensorDataResponse.responseCode = ResponseCodes.NOT_FOUND
                 patchPresenceSensorDataResponse.isSuccess = False

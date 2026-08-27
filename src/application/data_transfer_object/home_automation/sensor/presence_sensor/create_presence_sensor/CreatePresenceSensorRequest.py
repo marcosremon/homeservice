@@ -3,7 +3,7 @@ from datetime import datetime
 
 @dataclass
 class CreatePresenceSensorRequest:
-    callout: str = ""
+    callOut: str = ""
     deviceName: str = ""
     deviceType: str = ""
     ts: int = 0

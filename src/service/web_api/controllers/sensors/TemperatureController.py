@@ -1,8 +1,18 @@
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
+from starlette import status
 
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import \
+    CreateTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import \
+    CreateTemperatureSensorResponse
 from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
 from infraestructure.persistence.dependencies.DependencyInjection import GetTemperatureSensorApplication
+from transversal.common.utils.GeneralUtils import GeneralUtils
+from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
+from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor import \
+    CreateTemperatureSensorRequestJson
+from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponseJson import CreateTemperatureSensorResponseJson
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 
 router: APIRouter = APIRouter(
@@ -13,3 +23,47 @@ router: APIRouter = APIRouter(
 @cbv(router)
 class TemperatureController:
     _presenceSensorApplication: ITemperatureSensorApplication = Depends(GetTemperatureSensorApplication)
+
+    #region CreateTemperatureSensor
+    @router.post("/create-temperature-sensor", response_model = CreateTemperatureSensorResponseJson, status_code = status.HTTP_200_OK)
+    async def CreateTemperatureSensor(self, createTemperatureSensorRequestJson: CreateTemperatureSensorRequestJson) -> CreateTemperatureSensorResponseJson:
+        createTemperatureSensorResponseJson: CreateTemperatureSensorResponseJson = CreateTemperatureSensorResponseJson()
+        try:
+            if (GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.callOut) or
+                GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.deviceName) or
+                GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.deviceType) or
+                GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.model) or
+                GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.manufacturer) or
+                GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.macAddress) or
+                createTemperatureSensorRequestJson.temperature == None or
+                createTemperatureSensorRequestJson.adcVoltage == None or
+                createTemperatureSensorRequestJson.measureAt == None
+            ):
+                createTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson.INVALID_DATA
+                createTemperatureSensorResponseJson.isSuccess = False
+                createTemperatureSensorResponseJson.message = "the data is invalid"
+            else:
+                createTemperatureSensorRequest: CreateTemperatureSensorRequest(
+                    callOut = createTemperatureSensorRequestJson.callOut,
+                    deviceName = createTemperatureSensorRequestJson.deviceName,
+                    deviceType = createTemperatureSensorRequestJson.deviceType,
+                    model = createTemperatureSensorRequestJson.model,
+                    manufacturer = createTemperatureSensorRequestJson.manufacturer,
+                    macAddress = createTemperatureSensorRequestJson.macAddress,
+                    temperature = createTemperatureSensorRequestJson.temperature,
+                    adcVoltage = createTemperatureSensorRequestJson.adcVoltage,
+                    measureAt = createTemperatureSensorRequestJson.measureAt,
+                )
+
+                createTemperatureSensorResponse: CreateTemperatureSensorResponse = await self._presenceSensorApplication.CreateTemperatureSensor(createTemperatureSensorRequest)
+
+                createTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson(createTemperatureSensorResponse.responseCode)
+                createTemperatureSensorResponseJson.isSuccess = createTemperatureSensorResponse.isSuccess
+                createTemperatureSensorResponseJson.message = createTemperatureSensorResponse.message
+        except Exception as ex:
+            createTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson.INTERNAL_SERVER_ERROR
+            createTemperatureSensorResponseJson.isSuccess = False
+            createTemperatureSensorResponseJson.message = f"Ha ocurrido un error al modificar los datos del sensor de presencia {ex}."
+
+        return createTemperatureSensorResponseJson
+    # endregion

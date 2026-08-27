@@ -1,7 +1,6 @@
 from sqlalchemy import ForeignKey, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
-
-from domain.model.entity.Base import Base
+from domain.model.entity.base import Base
 
 class Device(Base):
     __tablename__ = "device"

@@ -7,9 +7,9 @@ from application.data_transfer_object.roomba.create_roomba.CreateRoombaResponse 
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateRequest import PatchRoombaStateRequest
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateResponse import PatchRoombaStateResponse
 from application.interface.repository.IRoombaRepository import IRoombaRepository
-from domain.model.entity.Device import Device
+from domain.model.entity.device import Device
 from domain.model.entity.HouseZone import HouseZone
-from domain.model.entity.Roomba import Roomba
+from domain.model.entity.roomba import Roomba
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 

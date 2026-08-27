@@ -12,7 +12,7 @@ from functools import lru_cache
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from domain.model.entity.Base import Base  # noqa: F401
-from transversal.common.configuration.Settings import GetSettings
+from transversal.common.configuration.settings import GetSettings
 
 # region DbSet<T>
 # Estos imports no se usan en el codigo de abajo: estan por su efecto colateral.
