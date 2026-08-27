@@ -1,6 +1,6 @@
 from application.interface.service.IComputerStatusService import IComputerStatusService
 from transversal.common.configuration.Settings import Settings, GetSettings
-from transversal.common.utils import ComputerStatusUtils
+from transversal.common.utils.ComputerStatusUtils import ComputerStatusUtils
 
 class ComputerStatusService(IComputerStatusService):
 

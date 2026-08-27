@@ -1,6 +1,5 @@
 import asyncio
 from contextlib import asynccontextmanager
-
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateRequest import PatchRoombaStateRequest
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateResponse import PatchRoombaStateResponse
 from application.event.RoombaActivatedEvent import RoombaActivatedEvent
@@ -36,7 +35,8 @@ class RoombaActivationHandler:
     # endregion
 
     # region _patch_roomba_state
-    async def _patchRoombaState(self, patchRoombaStateRequest: PatchRoombaStateRequest) -> None:
+    @staticmethod
+    async def _patchRoombaState(patchRoombaStateRequest: PatchRoombaStateRequest) -> None:
         try:
             async with asynccontextmanager(GetSession)() as session:
                 roombaRepository: IRoombaRepository = BuildRoombaRepository(session)

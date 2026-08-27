@@ -1,5 +1,4 @@
 from functools import lru_cache
-
 import httpx
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession

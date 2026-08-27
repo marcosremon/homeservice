@@ -4,9 +4,9 @@ from datetime import timedelta
 from application.data_transfer_object.alexa.AlexaRequest import AlexaRequest
 from application.interface.service.IRoombaService import IRoombaService
 from domain.model.enum.Roomba.RoombaTarget import RoombaTarget
-from infraestructure.gateway.roomba import RoombaUtils
+from infraestructure.gateway.roomba.RoombaUtils import RoombaUtils
 from transversal.common.alexa.alexa_request.AlexaSlot import AlexaSlot
-from transversal.common.utils import AlexaUtils
+from transversal.common.utils.AlexaUtils import AlexaUtils
 from transversal.common.utils.GeneralUtils import GeneralUtils
 
 class RoombaService(IRoombaService):
@@ -40,8 +40,7 @@ class RoombaService(IRoombaService):
             case "roomba_order_pausar_roomba": return await self._pauseRoomba()
             case "roomba_order_enviar_roomba_a_casa": return await self._sendRoombaHome()
 
-            case _:
-                return "Orden no reconocida"
+            case _: return "Orden no reconocida"
     # endregion
 
     # region _startRoombaWithTimerBackground
@@ -71,7 +70,8 @@ class RoombaService(IRoombaService):
     # endregion
 
     # region _startRoombaAfter
-    async def _startRoombaAfter(self, time: str, target: RoombaTarget) -> None:
+    @staticmethod
+    async def _startRoombaAfter(time: str, target: RoombaTarget) -> None:
         try:
             duration: timedelta = AlexaUtils.ParseAlexaDuration(time)
 
@@ -84,16 +84,19 @@ class RoombaService(IRoombaService):
     # endregion
 
     # region _startRoomba
-    async def _startRoomba(self, target: RoombaTarget) -> str:
+    @staticmethod
+    async def _startRoomba(target: RoombaTarget) -> str:
         return await RoombaUtils.StartRoomba(target)
     # endregion
 
     # region _pauseRoomba
-    async def _pauseRoomba(self) -> str:
+    @staticmethod
+    async def _pauseRoomba() -> str:
         return await RoombaUtils.PauseRoomba()
     # endregion
 
     # region _sendRoombaHome
-    async def _sendRoombaHome(self) -> str:
+    @staticmethod
+    async def _sendRoombaHome() -> str:
         return await RoombaUtils.SendRoombaHome()
     # endregion

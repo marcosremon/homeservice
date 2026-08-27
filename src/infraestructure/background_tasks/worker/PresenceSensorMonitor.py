@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager, suppress
 
 from application.data_transfer_object.home_automation.sensor.presence_sensor.get_presence_sensors_status.GetPresenceSensorsStatusResponse import GetPresenceSensorsStatusResponse
 from application.interface.repository.IEventRepository import IEventRepository
-from infraestructure.gateway.roomba import RoombaUtils
+from infraestructure.gateway.roomba.RoombaUtils import RoombaUtils
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
 from infraestructure.persistence.dependencies.DependencyInjection import BuildEventRepository
 
@@ -42,7 +42,8 @@ class PresenceSensorMonitor:
     # endregion
 
     # region _run_presence_sensor_job
-    async def _runPresenceSensorJob(self) -> None:
+    @staticmethod
+    async def _runPresenceSensorJob() -> None:
         try:
             # HTTP no hay scope, hay que abrir la sesion a mano y cerrarla aqui.
             async with asynccontextmanager(GetSession)() as session:

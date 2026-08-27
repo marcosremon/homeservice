@@ -3,7 +3,7 @@ from application.data_transfer_object.change_computer_status.turn_off_computer.T
 from application.data_transfer_object.change_computer_status.turn_on_computer.TurnOnComputerResponse import TurnOnComputerResponse
 from application.interface.repository.IChangeComputerStatusRepository import IChangeComputerStatusRepository
 from transversal.common.configuration.Settings import Settings
-from transversal.common.utils import ComputerStatusUtils
+from transversal.common.utils.ComputerStatusUtils import ComputerStatusUtils
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 

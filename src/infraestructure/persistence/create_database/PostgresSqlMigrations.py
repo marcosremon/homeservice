@@ -4,9 +4,11 @@ from infraestructure.persistence.create_database.migrations.Migration2026072802D
 from infraestructure.persistence.create_database.migrations.Migration2026081800LightAndRoombaState import Migration2026081800LightAndRoombaState
 from transversal.common.database_migration.Migration import Migration
 
-POSTGRESQL_MIGRATIONS: list[Migration] = [
-    Migration2026072800SchemaBase(),
-    Migration2026072801CreateInitialSensors(),
-    Migration2026072802DeviceMetadata(),
-    Migration2026081800LightAndRoombaState(),
-]
+class PostgresSqlMigrations:
+
+    POSTGRESQL_MIGRATIONS: list[Migration] = [
+        Migration2026072800SchemaBase(),
+        Migration2026072801CreateInitialSensors(),
+        Migration2026072802DeviceMetadata(),
+        Migration2026081800LightAndRoombaState(),
+    ]

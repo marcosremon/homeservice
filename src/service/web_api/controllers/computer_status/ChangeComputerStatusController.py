@@ -4,7 +4,7 @@ from application.data_transfer_object.change_computer_status.get_computer_status
 from application.data_transfer_object.change_computer_status.turn_off_computer.TurnOffComputerResponse import TurnOffComputerResponse
 from application.data_transfer_object.change_computer_status.turn_on_computer.TurnOnComputerResponse import TurnOnComputerResponse
 from application.interface.application.IChangeComputerStatusApplication import IChangeComputerStatusApplication
-from transversal.security.filter.ApiKeyAuth import GetApiKey
+from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 from infraestructure.persistence.dependencies.DependencyInjection import GetChangeComputerStatusApplication
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
 from transversal.json_interchange.change_computer_status.get_computer_status.GetComputerStatusResponseJson import GetComputerStatusResponseJson
@@ -13,7 +13,7 @@ from transversal.json_interchange.change_computer_status.turn_on_computer.TurnOn
 
 router = APIRouter(
     prefix = "/change-computer-status",
-    dependencies = [Depends(GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
+    dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
 )
 
 @cbv(router)

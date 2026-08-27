@@ -7,11 +7,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 _PROJECT_ROOT = Path(__file__).resolve().parents[4]
 
 def _EnvironmentVariableName(fieldName: str) -> str:
-    """appPort -> APP_PORT.
-
-    pydantic-settings busca la variable de entorno por el nombre del campo. Como
-    los campos van en camelCase, hay que traducirlos al SCREAMING_SNAKE del .env.
-    """
     return re.sub(r"(?<!^)(?=[A-Z])", "_", fieldName).upper()
 
 class Settings(BaseSettings):
@@ -22,6 +17,8 @@ class Settings(BaseSettings):
         alias_generator = _EnvironmentVariableName,
         populate_by_name = True,
     )
+
+    #region properties
 
     # Equivalente al bloque Kestrel de appsettings.json.
     appHost: str = "0.0.0.0"
@@ -60,6 +57,8 @@ class Settings(BaseSettings):
     lanComputerMac: str = ""
     lanBroadcastIp: str = ""
     lanCachyosUser: str = ""
+
+    #endregion
 
 @lru_cache
 def GetSettings() -> Settings:

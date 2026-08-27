@@ -9,7 +9,7 @@ from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaState
 from application.interface.application.IRoombaApplication import IRoombaApplication
 from domain.model.enum.Roomba.RoombaPhase import RoombaPhase
 from domain.model.enum.Roomba.RoombaTarget import RoombaTarget
-from transversal.security.filter.ApiKeyAuth import GetApiKey
+from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 from infraestructure.persistence.dependencies.DependencyInjection import GetRoombaApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
@@ -20,7 +20,7 @@ from transversal.json_interchange.roomba.patch_roomba_state.PatchRoombaStateResp
 
 router = APIRouter(
     prefix = "/roomba",
-    dependencies = [Depends(GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
+    dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
 )
 
 @cbv(router)

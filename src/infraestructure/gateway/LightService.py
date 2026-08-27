@@ -1,6 +1,7 @@
 from application.data_transfer_object.light.LightDto import LightDto
 from application.data_transfer_object.light.get_light_by_location.GetLightByLocationRequest import GetLightByLocationRequest
 from application.data_transfer_object.light.get_light_by_location.GetLightByLocationResponse import GetLightByLocationResponse
+from application.data_transfer_object.light.patch_light_status.PatchLightStatusRequest import PatchLightStatusRequest
 from application.interface.repository.ILightRepository import ILightRepository
 from application.interface.service.ILightService import ILightService
 from application.interface.service.IMqttService import IMqttService
@@ -51,7 +52,11 @@ class LightService(ILightService):
 
         await self._mqttService.Publish(topic, status)
 
-        await self._lightRepository.PatchLightStatus(lightDto.location, lightStatus == LightStatus.ON)
+        patchLightStatusRequest: PatchLightStatusRequest = PatchLightStatusRequest(
+            lightLocation = lightDto.location,
+            isOn = lightDto.isOn,
+        )
+        await self._lightRepository.PatchLightStatus(patchLightStatusRequest)
     # endregion
 
     # region _getLight

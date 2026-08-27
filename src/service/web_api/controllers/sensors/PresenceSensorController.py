@@ -5,7 +5,7 @@ from application.data_transfer_object.home_automation.sensor.presence_sensor.cre
 from application.data_transfer_object.home_automation.sensor.presence_sensor.patch_presence_sensor_data.PatchPresenceSensorDataRequest import PatchPresenceSensorDataRequest
 from application.data_transfer_object.home_automation.sensor.presence_sensor.patch_presence_sensor_data.PatchPresenceSensorDataResponse import PatchPresenceSensorDataResponse
 from application.interface.application.IPresenceSensorApplication import IPresenceSensorApplication
-from transversal.security.filter.ApiKeyAuth import GetApiKey
+from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 from infraestructure.persistence.dependencies.DependencyInjection import GetPresenceSensorApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
@@ -16,7 +16,7 @@ from transversal.json_interchange.home_automation.sensor.presence_sensor.patch_p
 
 router = APIRouter(
     prefix = "/presence-sensor",
-    dependencies = [Depends(GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
+    dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
 )
 
 @cbv(router)

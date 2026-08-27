@@ -15,12 +15,10 @@ from domain.model.enum.Alexa.IntentName import IntentName
 from transversal.common.alexa.alexa_request.AlexaIntent import AlexaIntent
 from transversal.common.alexa.alexa_request.AlexaSlot import AlexaSlot
 from transversal.common.configuration.Settings import Settings, GetSettings
-from transversal.common.utils import AlexaUtils
+from transversal.common.utils.AlexaUtils import AlexaUtils
 from transversal.common.utils.GeneralUtils import GeneralUtils
 
 _HISTORY_ATTRIBUTE: str = "history"
-_QUERY_SLOT: str = "query"
-
 _historyAdapter: TypeAdapter[list[GeminiTurn]] = TypeAdapter(list[GeminiTurn])
 
 class AlexaService(IAlexaService):

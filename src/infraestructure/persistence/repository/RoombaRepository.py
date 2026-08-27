@@ -32,57 +32,52 @@ class RoombaRepository(IRoombaRepository):
                                                                          .where(HouseZone.callout == createRoombaRequest.callout))
                 if houseZone is None:
                     houseZone = HouseZone(
-                        callout = createRoombaRequest.callout,
+                        callout = createRoombaRequest.callout
                     )
 
                     self._session.add(houseZone)
-                    # flush en vez de commit: manda el INSERT para que Postgres
-                    # asigne el id, pero deja la transaccion abierta.
                     await self._session.flush()
-
-                device: Device | None = await self._session.scalar(select(Device).where(
-                    Device.houseZoneId == houseZone.houseZoneId,
-                    Device.deviceName == createRoombaRequest.deviceName,
-                    Device.deviceType == createRoombaRequest.deviceType
-                ))
-                if device is None:
-                    device = Device(
-                        houseZoneId = houseZone.houseZoneId,
-                        deviceName = createRoombaRequest.deviceName,
-                        deviceType = createRoombaRequest.deviceType,
-                        model = createRoombaRequest.model,
-                        manufacturer = createRoombaRequest.manufacturer,
-                        macAddress = createRoombaRequest.macAddress,
-                    )
-
-                    self._session.add(device)
-                    await self._session.flush()
-
-                roomba: Roomba | None = await self._session.scalar(select(Roomba).where(Roomba.deviceId == device.deviceId))
-                if roomba is not None:
-                    createRoombaResponse.responseCode = ResponseCodes.ANY_ROOMBA_EXIST
-                    createRoombaResponse.isSuccess = True
-                    createRoombaResponse.message = "roomba exist"
-
-                    # Igual que en C#: si no se crea el roomba, la transaccion no
-                    # se confirma y la house_zone y el device recien insertados
-                    # se deshacen.
-                    await self._session.rollback()
                 else:
-                    roomba = Roomba(
-                        deviceId = device.deviceId,
-                        lastRoombaActivation = datetime.min,
-                        lastTarget = "",
-                        lastRoombaEnd = datetime.min,
-                        lastSeen = datetime.min,
-                    )
+                    device: Device | None = await self._session.scalar(select(Device).where(
+                        Device.houseZoneId == houseZone.houseZoneId,
+                        Device.deviceName == createRoombaRequest.deviceName,
+                        Device.deviceType == createRoombaRequest.deviceType
+                    ))
+                    if device is None:
+                        device = Device(
+                            houseZoneId = houseZone.houseZoneId,
+                            deviceName = createRoombaRequest.deviceName,
+                            deviceType = createRoombaRequest.deviceType,
+                            model = createRoombaRequest.model,
+                            manufacturer = createRoombaRequest.manufacturer,
+                            macAddress = createRoombaRequest.macAddress,
+                        )
 
-                    self._session.add(roomba)
-                    await self._session.commit()
+                        self._session.add(device)
+                        await self._session.flush()
+                    else:
+                        roomba: Roomba | None = await self._session.scalar(select(Roomba).where(Roomba.deviceId == device.deviceId))
+                        if roomba is not None:
+                            createRoombaResponse.responseCode = ResponseCodes.ANY_ROOMBA_EXIST
+                            createRoombaResponse.isSuccess = True
+                            createRoombaResponse.message = "roomba exist"
 
-                    createRoombaResponse.responseCode = ResponseCodes.CREATED
-                    createRoombaResponse.isSuccess = True
-                    createRoombaResponse.message = "roomba created"
+                            await self._session.rollback()
+                        else:
+                            roomba = Roomba(
+                                deviceId = device.deviceId,
+                                lastRoombaActivation = datetime.min,
+                                lastTarget = "",
+                                lastRoombaEnd = datetime.min,
+                                lastSeen = datetime.min,
+                            )
+
+                            self._session.add(roomba)
+                            await self._session.commit()
+
+                            createRoombaResponse.responseCode = ResponseCodes.CREATED
+                            createRoombaResponse.isSuccess = True
+                            createRoombaResponse.message = "roomba created"
         except Exception as ex:
             await self._session.rollback()
 

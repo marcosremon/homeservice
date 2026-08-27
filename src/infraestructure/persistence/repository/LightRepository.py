@@ -1,10 +1,10 @@
 from datetime import datetime, timezone
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.data_transfer_object.light.get_light_by_location.GetLightByLocationRequest import GetLightByLocationRequest
 from application.data_transfer_object.light.get_light_by_location.GetLightByLocationResponse import GetLightByLocationResponse
 from application.data_transfer_object.light.LightDto import LightDto
+from application.data_transfer_object.light.patch_light_status.PatchLightStatusRequest import PatchLightStatusRequest
 from application.interface.repository.ILightRepository import ILightRepository
 from domain.model.entity.Device import Device
 from domain.model.entity.HouseZone import HouseZone
@@ -64,16 +64,16 @@ class LightRepository(ILightRepository):
     # endregion
 
     # region patch_light_status
-    async def PatchLightStatus(self, lightLocation: LightLocation, isOn: bool) -> None:
+    async def PatchLightStatus(self, patchLightStatusRequest: PatchLightStatusRequest) -> None:
         try:
-            location: str = lightLocation.name
+            location: str = patchLightStatusRequest.lightLocation.name
             light: Light | None = await self._session.scalar(select(Light).where(Light.location == location))
             if light is None:
-                print(f"ERROR light {lightLocation.name} not found")
-            elif light.isOn == isOn:
-                light.isOn = isOn
+                print(f"ERROR light {patchLightStatusRequest.lightLocation.name} not found")
+            elif light.isOn == patchLightStatusRequest.isOn:
+                light.isOn =patchLightStatusRequest. isOn
                 light.lastUpdatedAt = datetime.now(timezone.utc)
-                print(f"light {lightLocation.name} IsOn cambiado a {isOn}")
+                print(f"light {patchLightStatusRequest.lightLocation.name} IsOn cambiado a {patchLightStatusRequest.isOn}")
         except Exception as ex:
             print(f"Unexpected error on LightRepository -> PatchLightStatus {ex}")
     # endregion

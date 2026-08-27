@@ -6,13 +6,13 @@ from application.interface.application.IAlexaApplication import IAlexaApplicatio
 from application.interface.security.IAlexaRequestVerifier import IAlexaRequestVerifier
 from infraestructure.persistence.dependencies.DependencyInjection import GetAlexaApplication
 from transversal.common.configuration.Settings import Settings, GetSettings
-from transversal.common.utils import AlexaUtils
+from transversal.common.utils.AlexaUtils import AlexaUtils
 from transversal.common.wrappers.json.BaseResponseJson import BaseResponseJson
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
 from transversal.json_interchange.alexa.AlexaRequestJson import AlexaRequestJson
 from transversal.json_interchange.alexa.AlexaResponseJson import AlexaResponseJson
-from transversal.security.alexa.AlexaAuth import GetAlexaRequestVerifier
-from transversal.security.filter import DebugBypass
+from transversal.security.alexa.AlexaAuth import AlexaAuth
+from transversal.security.filter.DebugBypass import DebugBypass
 
 # Aqui no va Depends(get_api_key): quien llama es Amazon, que no conoce la
 # X-Api-Key. La autorizacion es la firma del certificado, verificada dentro del
@@ -24,7 +24,7 @@ router = APIRouter()
 @cbv(router)
 class AlexaController:
     _alexaApplication: IAlexaApplication = Depends(GetAlexaApplication)
-    _alexaRequestVerifier: IAlexaRequestVerifier = Depends(GetAlexaRequestVerifier)
+    _alexaRequestVerifier: IAlexaRequestVerifier = Depends(AlexaAuth.GetAlexaRequestVerifier)
     _settings: Settings = Depends(GetSettings)
 
     #region SendAlexaOrder

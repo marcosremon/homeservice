@@ -40,7 +40,7 @@ app = FastAPI(title="HomeService API", lifespan=lifespan)
 app.include_router(presence_sensor_router, prefix="/api")
 app.include_router(roomba_router, prefix="/api")
 app.include_router(change_computer_status_router, prefix="/api")
-# El RoutePrefixConvention de Program.cs mete "api" delante de TODOS los
+# El RoutePrefixConvention de Program.cs mete "api" delante de todos los
 # controllers, Alexa incluida: la URL del skill es /api/alexa.
 app.include_router(alexa_router, prefix="/api")
 
