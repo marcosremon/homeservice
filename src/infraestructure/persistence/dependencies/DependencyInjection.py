@@ -39,7 +39,7 @@ from infraestructure.persistence.repository.LightRepository import LightReposito
 from infraestructure.persistence.repository.PresenceSensorRepository import PresenceSensorRepository
 from infraestructure.persistence.repository.RoombaRepository import RoombaRepository
 from infraestructure.persistence.repository.TemperatureSensorRepository import TemperatureSensorRepository
-from transversal.common.configuration.settings import Settings, GetSettings
+from transversal.common.configuration.Settings import Settings, GetSettings
 
 # region PresenceSensor
 def GetPresenceSensorRepository(session: AsyncSession = Depends(GetSession)) -> IPresenceSensorRepository:

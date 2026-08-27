@@ -1,7 +1,7 @@
-from dataclasses import dataclass
+from pydantic.dataclasses import dataclass
 
 @dataclass
-class CreateTemperatureSensor:
+class CreateTemperatureSensorRequestJson:
     callOut: str = ""
     deviceName: str = ""
     deviceType: str = ""

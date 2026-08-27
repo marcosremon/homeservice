@@ -10,7 +10,8 @@ from service.web_api.controllers.alexa.AlexaController import router as alexa_ro
 from service.web_api.controllers.computer_status.ChangeComputerStatusController import router as change_computer_status_router
 from service.web_api.controllers.roomba.RoombaController import router as roomba_router
 from service.web_api.controllers.sensors.PresenceSensorController import router as presence_sensor_router
-from transversal.common.configuration.settings import Settings, GetSettings
+from service.web_api.controllers.sensors.TemperatureController import router as temperature_sensor_router
+from transversal.common.configuration.Settings import Settings, GetSettings
 
 # Falla al arrancar si el .env o las variables de entorno estan incompletas,
 # igual que la validacion de IOptions con ValidateOnStart() en ASP.NET.
@@ -38,6 +39,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 app: FastAPI = FastAPI(title = "HomeService API", lifespan = lifespan)
 app.include_router(presence_sensor_router, prefix="/api")
+app.include_router(temperature_sensor_router, prefix="/api")
 app.include_router(roomba_router, prefix = "/api")
 app.include_router(change_computer_status_router, prefix = "/api")
 # El RoutePrefixConvention de Program.cs mete "api" delante de todos los

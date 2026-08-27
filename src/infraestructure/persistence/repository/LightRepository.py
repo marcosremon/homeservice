@@ -30,7 +30,7 @@ class LightRepository(ILightRepository):
                 getLightByLocationResponse.IsSuccess = False
                 getLightByLocationResponse.Message = f"light not found"
             else:
-                device: Device | None = await self._session.scalar(select(Device).where(Device.deviceId == light.deviceId or
+                device: Device | None = await self._session.scalar(select(Device).where(Device.deviceId == light.deviceId,
                                                                                         Device.deviceType == DeviceType.LIGHT.name.lower()))
                 if device is None:
                     getLightByLocationResponse.ResponseCode = ResponseCodes.NOT_FOUND

@@ -29,8 +29,8 @@ class PresenceSensorRepository(IPresenceSensorRepository):
                     await self._session.flush()
 
                 device: Device | None = await self._session.scalar(select(Device).where(
-                    Device.houseZoneId == houseZone.houseZoneId and
-                    Device.deviceName == createPresenceSensorRequest.deviceName and
+                    Device.houseZoneId == houseZone.houseZoneId,
+                    Device.deviceName == createPresenceSensorRequest.deviceName,
                     Device.deviceType == createPresenceSensorRequest.deviceType))
                 if device is None:
                     device: Device = Device(

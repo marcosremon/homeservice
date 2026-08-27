@@ -1,4 +1,4 @@
-from select import select
+from sqlalchemy import select
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
@@ -29,8 +29,8 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
                     await self._session.flush()
 
                 device: Device | None = await self._session.scalar(select(Device)
-                    .where(Device.houseZoneId == houseZone.houseZoneId and
-                           Device.deviceName == createTemperatureSensorRequest.deviceName and
+                    .where(Device.houseZoneId == houseZone.houseZoneId,
+                           Device.deviceName == createTemperatureSensorRequest.deviceName,
                            Device.deviceType == createTemperatureSensorRequest.deviceType))
                 if device is not None:
                     createTemperatureSensorResponse.responseCode = ResponseCodes.ANY_ROOMBA_EXIST
@@ -38,7 +38,7 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
                     createTemperatureSensorResponse.message = f"the device with macAddress {createTemperatureSensorRequest.macAddress} and device name {createTemperatureSensorRequest.deviceName} already exists"
                 else:
                     device: Device = Device(
-                        callOut = createTemperatureSensorRequest.callOut,
+                        houseZoneId = houseZone.houseZoneId,
                         deviceName = createTemperatureSensorRequest.deviceName,
                         deviceType = createTemperatureSensorRequest.deviceType,
                         model = createTemperatureSensorRequest.model,

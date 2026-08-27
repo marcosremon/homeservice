@@ -1,17 +1,13 @@
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
 from starlette import status
-
-from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import \
-    CreateTemperatureSensorRequest
-from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import \
-    CreateTemperatureSensorResponse
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
 from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
 from infraestructure.persistence.dependencies.DependencyInjection import GetTemperatureSensorApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
-from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor import \
-    CreateTemperatureSensorRequestJson
+from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequestJson import CreateTemperatureSensorRequestJson
 from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponseJson import CreateTemperatureSensorResponseJson
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 
@@ -34,7 +30,6 @@ class TemperatureController:
                 GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.deviceType) or
                 GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.model) or
                 GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.manufacturer) or
-                GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.macAddress) or
                 createTemperatureSensorRequestJson.temperature == None or
                 createTemperatureSensorRequestJson.adcVoltage == None or
                 createTemperatureSensorRequestJson.measureAt == None
@@ -43,7 +38,7 @@ class TemperatureController:
                 createTemperatureSensorResponseJson.isSuccess = False
                 createTemperatureSensorResponseJson.message = "the data is invalid"
             else:
-                createTemperatureSensorRequest: CreateTemperatureSensorRequest(
+                createTemperatureSensorRequest: CreateTemperatureSensorRequest = CreateTemperatureSensorRequest(
                     callOut = createTemperatureSensorRequestJson.callOut,
                     deviceName = createTemperatureSensorRequestJson.deviceName,
                     deviceType = createTemperatureSensorRequestJson.deviceType,

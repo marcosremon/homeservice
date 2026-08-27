@@ -1,0 +1,30 @@
+meta {
+  name: Create temperature sensor
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:5131/api/sensors/temperature-sensor/create-temperature-sensor
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Api-Key: {{apiKey}}
+}
+
+body:json {
+  {
+    "callOut": "LIVING_ROOM",
+    "deviceName": "Temperature sensor K307",
+    "deviceType": "TEMPERATURE_SENSOR",
+    "model": "K307 / EOL307",
+    "manufacturer": "Kintech",
+    "macAddress": "AA:BB:CC:DD:EE:FF",
+    "temperature": 21.5,
+    "adcVoltage": 3.28,
+    "measureAt": 1787918400.0
+  }
+}
