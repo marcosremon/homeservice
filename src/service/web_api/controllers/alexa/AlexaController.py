@@ -19,7 +19,7 @@ from transversal.security.filter.DebugBypass import DebugBypass
 # endpoint porque el bypass de pruebas tiene que saltarsela igual que al skill id.
 # Sin prefix: la ruta va entera en el decorador porque el endpoint cuelga
 # de la raiz de la seccion ("/alexa"), sin subruta por debajo.
-router = APIRouter()
+router: APIRouter = APIRouter()
 
 @cbv(router)
 class AlexaController:

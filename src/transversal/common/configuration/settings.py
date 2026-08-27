@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+_PROJECT_ROOT: Path = Path(__file__).resolve().parents[4]
 
 def _EnvironmentVariableName(fieldName: str) -> str:
     return re.sub(r"(?<!^)(?=[A-Z])", "_", fieldName).upper()

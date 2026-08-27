@@ -10,7 +10,7 @@ from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 class ChangeComputerStatusRepository(IChangeComputerStatusRepository):
 
     def __init__(self, settings: Settings) -> None:
-        self._settings = settings
+        self._settings: Settings = settings
 
     #region turn_on_computer
     async def TurnOnComputer(self) -> TurnOnComputerResponse:

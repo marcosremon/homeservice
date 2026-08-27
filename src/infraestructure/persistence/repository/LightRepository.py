@@ -17,7 +17,7 @@ from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 class LightRepository(ILightRepository):
 
     def __init__(self, session: AsyncSession):
-        self._session = session
+        self._session: AsyncSession = session
 
     # region get_light_by_location
     async def GetLightByLocation(self, getLightByLocationRequest: GetLightByLocationRequest) -> GetLightByLocationResponse:

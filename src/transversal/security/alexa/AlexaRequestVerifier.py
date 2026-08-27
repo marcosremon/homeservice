@@ -10,31 +10,33 @@ import base64
 import json
 import logging
 from datetime import datetime, timedelta, timezone
-from urllib.parse import urlparse
+from typing import Any
+from urllib.parse import ParseResult, urlparse
 
 import certifi
 import httpx
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
-from cryptography.x509.verification import PolicyBuilder, Store
+from cryptography.hazmat.primitives.asymmetric.types import CertificatePublicKeyTypes
+from cryptography.x509.verification import PolicyBuilder, ServerVerifier, Store
 from fastapi import Request
 
 from application.interface.security.IAlexaRequestVerifier import IAlexaRequestVerifier
 
-_logger = logging.getLogger(__name__)
+_logger: logging.Logger = logging.getLogger(__name__)
 
-_AMAZON_CERT_DOMAIN = "s3.amazonaws.com"
-_AMAZON_CERT_PATH = "/echo.api/"
-_AMAZON_SAN_ENTRY = "echo-api.amazon.com"
-_MAX_TIMESTAMP_TOLERANCE_SECONDS = 150
+_AMAZON_CERT_DOMAIN: str = "s3.amazonaws.com"
+_AMAZON_CERT_PATH: str = "/echo.api/"
+_AMAZON_SAN_ENTRY: str = "echo-api.amazon.com"
+_MAX_TIMESTAMP_TOLERANCE_SECONDS: int = 150
 
 _certCache: dict[str, x509.Certificate] = {}
-_cacheLock = asyncio.Lock()
+_cacheLock: asyncio.Lock = asyncio.Lock()
 
 class AlexaRequestVerifier(IAlexaRequestVerifier):
     def __init__(self, httpClient: httpx.AsyncClient):
-        self._httpClient = httpClient
+        self._httpClient: httpx.AsyncClient = httpClient
 
     # region amazon_approve
     async def AmazonApprove(self, request: Request) -> bool:
@@ -44,8 +46,8 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
             # despues. No hace falta rebobinar el stream como en C#.
             rawBody: bytes = await request.body()
 
-            signatureCertChainUrl = request.headers.get("SignatureCertChainUrl", "")
-            signature = request.headers.get("Signature", "")
+            signatureCertChainUrl: str = request.headers.get("SignatureCertChainUrl", "")
+            signature: str = request.headers.get("Signature", "")
 
             return await self.Verify(signatureCertChainUrl, signature, rawBody)
         except Exception as ex:
@@ -66,7 +68,7 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
                 return False
 
             # 3 y 4. Obtener (o cachear) el certificado, validando cadena, vigencia y SAN
-            certificate = await self._getCertificate(signatureCertChainUrl)
+            certificate: x509.Certificate | None = await self._getCertificate(signatureCertChainUrl)
             if certificate is None:
                 return False
 
@@ -89,8 +91,8 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
     def _isValidCertificateUrl(url: str) -> bool:
         """PASO 2: Amazon exige que la URL cumpla condiciones muy especificas."""
         try:
-            uri = urlparse(url)
-            port = uri.port
+            uri: ParseResult = urlparse(url)
+            port: int | None = uri.port
         except ValueError:
             return False
 
@@ -104,7 +106,7 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
             return False
 
         # normpath colapsa los /../ que permitirian escapar de /echo.api/
-        normalizedPath = _normalizePath(uri.path)
+        normalizedPath: str = _normalizePath(uri.path)
         if not normalizedPath.lower().startswith(_AMAZON_CERT_PATH):
             return False
 
@@ -115,28 +117,28 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
     async def _getCertificate(self, certUrl: str) -> x509.Certificate | None:
         """PASOS 3 y 4: descargar, validar y cachear el certificado."""
         async with _cacheLock:
-            cached = _certCache.get(certUrl)
+            cached: x509.Certificate | None = _certCache.get(certUrl)
             if cached is not None:
                 # El cacheo es por URL, pero el certificado caduca: revalidamos vigencia.
                 if self._isStillValid(cached):
                     return cached
                 del _certCache[certUrl]
 
-            response = await self._httpClient.get(certUrl)
+            response: httpx.Response = await self._httpClient.get(certUrl)
             response.raise_for_status()
 
             # El fichero de Amazon es un bundle PEM: hoja + intermedios.
-            collection = x509.load_pem_x509_certificates(response.content)
+            collection: list[x509.Certificate] = x509.load_pem_x509_certificates(response.content)
             if not collection:
                 return None
 
-            leaf = collection[0]
-            intermediates = collection[1:]
+            leaf: x509.Certificate = collection[0]
+            intermediates: list[x509.Certificate] = collection[1:]
 
             # build_server_verifier hace de una vez lo que en C# son X509Chain +
             # comprobacion de vigencia + busqueda del SAN echo-api.amazon.com.
-            store = Store(x509.load_pem_x509_certificates(certifi.contents().encode("utf-8")))
-            verifier = PolicyBuilder().store(store).build_server_verifier(x509.DNSName(_AMAZON_SAN_ENTRY))
+            store: Store = Store(x509.load_pem_x509_certificates(certifi.contents().encode("utf-8")))
+            verifier: ServerVerifier = PolicyBuilder().store(store).build_server_verifier(x509.DNSName(_AMAZON_SAN_ENTRY))
 
             try:
                 verifier.verify(leaf, intermediates)
@@ -151,7 +153,7 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
     # region _is_still_valid
     @staticmethod
     def _isStillValid(certificate: x509.Certificate) -> bool:
-        now = datetime.now(timezone.utc)
+        now: datetime = datetime.now(timezone.utc)
         return certificate.not_valid_before_utc <= now <= certificate.not_valid_after_utc
     # endregion
 
@@ -160,11 +162,11 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
     def _verifySignature(certificate: x509.Certificate, rawBody: bytes, base64Signature: str) -> bool:
         """PASO 5: verificar firma criptografica (RSA + SHA1 + PKCS#1 v1.5)."""
         try:
-            publicKey = certificate.public_key()
+            publicKey: CertificatePublicKeyTypes = certificate.public_key()
             if not isinstance(publicKey, rsa.RSAPublicKey):
                 return False
 
-            signatureBytes = base64.b64decode(base64Signature, validate=True)
+            signatureBytes: bytes = base64.b64decode(base64Signature, validate=True)
 
             # verify lanza InvalidSignature si no cuadra; no devuelve bool.
             publicKey.verify(signatureBytes, rawBody, padding.PKCS1v15(), hashes.SHA1())
@@ -178,16 +180,16 @@ class AlexaRequestVerifier(IAlexaRequestVerifier):
     def _isTimestampValid(rawBody: bytes) -> bool:
         """PASO 6: verificar timestamp para evitar replay attacks."""
         try:
-            payload = json.loads(rawBody)
-            timestampStr = payload.get("request", {}).get("timestamp", "")
+            payload: dict[str, Any] = json.loads(rawBody)
+            timestampStr: str = payload.get("request", {}).get("timestamp", "")
             if not timestampStr:
                 return False
 
-            timestamp = datetime.fromisoformat(timestampStr)
+            timestamp: datetime = datetime.fromisoformat(timestampStr)
             if timestamp.tzinfo is None:
                 timestamp = timestamp.replace(tzinfo=timezone.utc)
 
-            difference = abs(datetime.now(timezone.utc) - timestamp)
+            difference: timedelta = abs(datetime.now(timezone.utc) - timestamp)
             return difference <= timedelta(seconds=_MAX_TIMESTAMP_TOLERANCE_SECONDS)
         except Exception:
             return False
@@ -205,7 +207,7 @@ def _normalizePath(path: str) -> str:
             continue
         segments.append(segment)
 
-    normalized = "/" + "/".join(segments)
+    normalized: str = "/" + "/".join(segments)
     if path.endswith("/") and not normalized.endswith("/"):
         normalized += "/"
 

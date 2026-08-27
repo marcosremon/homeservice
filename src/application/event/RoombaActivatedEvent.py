@@ -1,8 +1,9 @@
 from collections.abc import Callable
+from typing import TypeAlias
 
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateRequest import PatchRoombaStateRequest
 
-RoombaActivatedHandler = Callable[[PatchRoombaStateRequest], None]
+RoombaActivatedHandler: TypeAlias = Callable[[PatchRoombaStateRequest], None]
 
 class RoombaActivatedEvent:
     _handlers: list[RoombaActivatedHandler] = []

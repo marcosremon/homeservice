@@ -9,7 +9,7 @@ from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 class EventRepository(IEventRepository):
 
     def __init__(self, session: AsyncSession):
-        self._session = session
+        self._session: AsyncSession = session
 
     # region get_presence_sensors_status
     async def GetPresenceSensorsStatus(self) -> GetPresenceSensorsStatusResponse:

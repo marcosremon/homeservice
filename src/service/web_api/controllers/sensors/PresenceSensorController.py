@@ -14,7 +14,7 @@ from transversal.json_interchange.home_automation.sensor.presence_sensor.create_
 from transversal.json_interchange.home_automation.sensor.presence_sensor.patch_presence_sensor_data.PatchPresenceSensorDataRequestJson import PatchPresenceSensorDataRequestJson
 from transversal.json_interchange.home_automation.sensor.presence_sensor.patch_presence_sensor_data.PatchPresenceSensorDataResponseJson import PatchPresenceSensorDataResponseJson
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix = "/presence-sensor",
     dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
 )

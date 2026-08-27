@@ -7,7 +7,7 @@ from infraestructure.gateway.roomba.RoombaUtils import RoombaUtils
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
 from infraestructure.persistence.dependencies.DependencyInjection import BuildEventRepository
 
-_INTERVAL_SECONDS = 30
+_INTERVAL_SECONDS: int = 30
 
 class PresenceSensorMonitor:
     def __init__(self) -> None:

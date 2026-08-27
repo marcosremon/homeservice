@@ -11,7 +11,7 @@ _QOS_AT_LEAST_ONCE: int = 1
 class MqttService(IMqttService):
 
     def __init__(self, settings: Settings):
-        self._settings = settings
+        self._settings: Settings = settings
         self._client: Client | None = None
         self._connectionLock: asyncio.Lock = asyncio.Lock()
 

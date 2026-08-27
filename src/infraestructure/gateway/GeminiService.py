@@ -46,8 +46,8 @@ _payloadAdapter: TypeAdapter[GeminiPayload] = TypeAdapter(GeminiPayload)
 class GeminiService(IGeminiService):
 
     def __init__(self, httpClient: httpx.AsyncClient, settings: Settings):
-        self._httpClient = httpClient
-        self._settings = settings
+        self._httpClient: httpx.AsyncClient = httpClient
+        self._settings: Settings = settings
 
     # region Converse
     async def Converse(self, geminiTurnRequest: GeminiTurnRequest) -> GeminiTurnResponse:

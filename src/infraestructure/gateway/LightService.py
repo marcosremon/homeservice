@@ -12,8 +12,8 @@ from transversal.common.utils.GeneralUtils import GeneralUtils
 class LightService(ILightService):
 
     def __init__(self, mqttService: IMqttService, lightRepository: ILightRepository):
-        self._mqttService = mqttService
-        self._lightRepository = lightRepository
+        self._mqttService: IMqttService = mqttService
+        self._lightRepository: ILightRepository = lightRepository
 
     # region ExecuteLightOrder
     async def ExecuteLightOrder(self, intentName: str) -> str:

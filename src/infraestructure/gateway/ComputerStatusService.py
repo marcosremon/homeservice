@@ -5,7 +5,7 @@ from transversal.common.utils.ComputerStatusUtils import ComputerStatusUtils
 class ComputerStatusService(IComputerStatusService):
 
     def __init__(self, settings: Settings):
-        self._settings = settings
+        self._settings: Settings = settings
 
     # region send_alexa_order
     async def ExecuteComputerStatusOrder(self, intentName: str) -> str:

@@ -16,7 +16,7 @@ from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 class RoombaRepository(IRoombaRepository):
 
     def __init__(self, session: AsyncSession):
-        self._session = session
+        self._session: AsyncSession = session
 
     # region create_roomba
     async def CreateRoomba(self, createRoombaRequest: CreateRoombaRequest) -> CreateRoombaResponse:

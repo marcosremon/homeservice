@@ -10,7 +10,7 @@ from service.web_api.controllers.alexa.AlexaController import router as alexa_ro
 from service.web_api.controllers.computer_status.ChangeComputerStatusController import router as change_computer_status_router
 from service.web_api.controllers.roomba.RoombaController import router as roomba_router
 from service.web_api.controllers.sensors.PresenceSensorController import router as presence_sensor_router
-from transversal.common.configuration.Settings import GetSettings
+from transversal.common.configuration.Settings import Settings, GetSettings
 
 # Falla al arrancar si el .env o las variables de entorno estan incompletas,
 # igual que la validacion de IOptions con ValidateOnStart() en ASP.NET.
@@ -36,7 +36,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         await roombaActivationHandler.Stop()
         await presenceSensorMonitor.Stop()
 
-app = FastAPI(title="HomeService API", lifespan=lifespan)
+app: FastAPI = FastAPI(title="HomeService API", lifespan=lifespan)
 app.include_router(presence_sensor_router, prefix="/api")
 app.include_router(roomba_router, prefix="/api")
 app.include_router(change_computer_status_router, prefix="/api")
@@ -49,5 +49,5 @@ app.include_router(alexa_router, prefix="/api")
 if __name__ == "__main__":
     import uvicorn
 
-    settings = GetSettings()
+    settings: Settings = GetSettings()
     uvicorn.run(app, host = settings.appHost, port = settings.appPort)

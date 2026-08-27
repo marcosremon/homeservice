@@ -22,7 +22,7 @@ class ComputerStatusUtils:
                 return False
 
             if sys.platform == "win32":
-                command = ["ping", "-n", "1", "-w", str(int(cls._PING_TIMEOUT_SECONDS * 1000)), ipAddress]
+                command: list[str] = ["ping", "-n", "1", "-w", str(int(cls._PING_TIMEOUT_SECONDS * 1000)), ipAddress]
             else:
                 command = ["ping", "-c", "1", "-W", str(int(cls._PING_TIMEOUT_SECONDS) or 1), ipAddress]
 
@@ -51,8 +51,8 @@ class ComputerStatusUtils:
         if not cls._isValidIp(broadcastIp):
             raise ValueError(f"IP de broadcast invalida: {broadcastIp}")
 
-        macBytes = bytes.fromhex(macAddress.replace(":", "").replace("-", ""))
-        magicPacket = b"\xff" * 6 + macBytes * 16
+        macBytes: bytes = bytes.fromhex(macAddress.replace(":", "").replace("-", ""))
+        magicPacket: bytes = b"\xff" * 6 + macBytes * 16
 
         def _send() -> None:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udpSocket:
@@ -66,7 +66,7 @@ class ComputerStatusUtils:
     # region shutdown_computer
     @classmethod
     async def ShutdownComputer(cls, ipAddress: str, sshUser: str) -> str:
-        isOn = await cls.ComputerStatus(ipAddress)
+        isOn: bool = await cls.ComputerStatus(ipAddress)
         if not isOn:
             return "El ordenador ya esta apagado."
 
@@ -87,7 +87,7 @@ class ComputerStatusUtils:
         if not sshUser.isidentifier():
             return 1, f"Usuario SSH invalido: {sshUser}"
 
-        command = [
+        command: list[str] = [
             "ssh",
             "-o", "StrictHostKeyChecking=no",
             "-o", "BatchMode=yes",
@@ -112,7 +112,7 @@ class ComputerStatusUtils:
         Los argumentos van en lista, nunca en un string: asi no hay shell de por
         medio y no existe el riesgo de inyeccion de comandos.
         """
-        process = await asyncio.create_subprocess_exec(
+        process: asyncio.subprocess.Process = await asyncio.create_subprocess_exec(
             *command,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,

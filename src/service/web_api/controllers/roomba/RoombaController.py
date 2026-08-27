@@ -18,7 +18,7 @@ from transversal.json_interchange.roomba.create_roomba.CreateRoombaResponseJson 
 from transversal.json_interchange.roomba.patch_roomba_state.PatchRoombaStateRequestJson import PatchRoombaStateRequestJson
 from transversal.json_interchange.roomba.patch_roomba_state.PatchRoombaStateResponseJson import PatchRoombaStateResponseJson
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix = "/roomba",
     dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
 )

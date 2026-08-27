@@ -8,7 +8,7 @@ class DebugBypass:
     #region IsRequested
     @staticmethod
     def IsRequested(xDebugKey: str) -> bool:
-        expected = GetSettings().debugBypassKey
+        expected: str = GetSettings().debugBypassKey
 
         if not expected or not xDebugKey:
             return False

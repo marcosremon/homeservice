@@ -7,7 +7,7 @@ from application.interface.repository.IChangeComputerStatusRepository import ICh
 class ChangeComputerStatusApplication(IChangeComputerStatusApplication):
 
     def __init__(self, changeComputerStatusRepository: IChangeComputerStatusRepository):
-        self._changeComputerStatusRepository = changeComputerStatusRepository
+        self._changeComputerStatusRepository: IChangeComputerStatusRepository = changeComputerStatusRepository
 
     async def GetComputerStatus(self) -> GetComputerStatusResponse:
         return await self._changeComputerStatusRepository.GetComputerStatus()

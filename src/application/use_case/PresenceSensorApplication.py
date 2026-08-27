@@ -8,7 +8,7 @@ from application.interface.repository.IPresenceSensorRepository import IPresence
 class PresenceSensorApplication(IPresenceSensorApplication):
 
     def __init__(self, presenceSensorRepository: IPresenceSensorRepository):
-        self._presenceSensorRepository = presenceSensorRepository
+        self._presenceSensorRepository: IPresenceSensorRepository = presenceSensorRepository
 
     async def CreatePresenceSensor(self, createPresenceSensorRequest: CreatePresenceSensorRequest) -> CreatePresenceSensorResponse:
         return await self._presenceSensorRepository.CreatePresenceSensor(createPresenceSensorRequest)

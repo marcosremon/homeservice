@@ -6,7 +6,7 @@ from application.interface.service.IAlexaService import IAlexaService
 class AlexaApplication(IAlexaApplication):
 
     def __init__(self, alexaService: IAlexaService):
-        self._alexaService = alexaService
+        self._alexaService: IAlexaService = alexaService
 
     async def SendAlexaOrder(self, alexaRequest: AlexaRequest) -> AlexaResponse:
         return await self._alexaService.SendAlexaOrder(alexaRequest)

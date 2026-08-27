@@ -16,7 +16,7 @@ class ApiKeyAuth:
         if DebugBypass.IsRequested(xDebugKey):
             return
 
-        expected = GetSettings().internalApiKey
+        expected: str = GetSettings().internalApiKey
 
         if not expected:
             raise HTTPException(status_code = status.HTTP_503_SERVICE_UNAVAILABLE, detail = "Internal API key no configurada en el servidor.")

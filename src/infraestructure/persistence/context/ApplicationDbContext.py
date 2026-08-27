@@ -9,7 +9,7 @@ modulo se importa. Los imports de abajo son esa lista.
 from collections.abc import AsyncIterator
 from functools import lru_cache
 
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from domain.model.entity.Base import Base  # noqa: F401
 from transversal.common.configuration.Settings import GetSettings
@@ -33,7 +33,7 @@ def _getSessionFactory() -> async_sessionmaker[AsyncSession]:
 
     Asi el .env ya esta cargado y los tests pueden sobreescribir la configuracion.
     """
-    engine = create_async_engine(GetSettings().databaseUrl, echo=False, pool_pre_ping=True)
+    engine: AsyncEngine = create_async_engine(GetSettings().databaseUrl, echo=False, pool_pre_ping=True)
     return async_sessionmaker(engine, expire_on_commit=False)
 
 async def GetSession() -> AsyncIterator[AsyncSession]:

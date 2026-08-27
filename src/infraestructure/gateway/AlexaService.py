@@ -29,11 +29,11 @@ class AlexaService(IAlexaService):
         computerStatusService: IComputerStatusService,
         settings: Settings,
     ):
-        self._lightService = lightService
-        self._roombaService = roombaService
-        self._geminiService = geminiService
-        self._computerStatusService = computerStatusService
-        self._settings = settings
+        self._lightService: ILightService = lightService
+        self._roombaService: IRoombaService = roombaService
+        self._geminiService: IGeminiService = geminiService
+        self._computerStatusService: IComputerStatusService = computerStatusService
+        self._settings: Settings = settings
 
     # region send_alexa_order
     async def SendAlexaOrder(self, alexaRequest: AlexaRequest) -> AlexaResponse:
@@ -68,7 +68,7 @@ class AlexaService(IAlexaService):
                         keepSessionOpen = True
                 else:
                     message: str = ""
-                    intentNameString = intentName.name
+                    intentNameString: str = intentName.name
 
                     if intentName == IntentName.roomba_order_: message = await self._roombaService.ExecuteRoombaOrder(intentNameString, alexaRequest)
                     if intentName == IntentName.light_order_: message = await self._lightService.ExecuteLightOrder(intentNameString)

@@ -11,7 +11,7 @@ from transversal.json_interchange.change_computer_status.get_computer_status.Get
 from transversal.json_interchange.change_computer_status.turn_off_computer.TurnOffComputerResponseJson import TurnOffComputerResponseJson
 from transversal.json_interchange.change_computer_status.turn_on_computer.TurnOnComputerResponseJson import TurnOnComputerResponseJson
 
-router = APIRouter(
+router: APIRouter = APIRouter(
     prefix = "/change-computer-status",
     dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
 )

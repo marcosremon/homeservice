@@ -15,7 +15,7 @@ from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 class PresenceSensorRepository(IPresenceSensorRepository):
 
     def __init__(self, session: AsyncSession):
-        self._session = session
+        self._session: AsyncSession = session
 
     #region create_presence_sensor
     async def CreatePresenceSensor(self, createPresenceSensorRequest: CreatePresenceSensorRequest) -> CreatePresenceSensorResponse:
@@ -48,7 +48,7 @@ class PresenceSensorRepository(IPresenceSensorRepository):
                     self._session.add(device)
                     await self._session.flush()
 
-                lastDetectedPresence = createPresenceSensorRequest.lastDetectedPresence
+                lastDetectedPresence: datetime = createPresenceSensorRequest.lastDetectedPresence
                 if lastDetectedPresence.tzinfo is not None:
                     lastDetectedPresence = lastDetectedPresence.astimezone(timezone.utc).replace(tzinfo=None)
 
