@@ -1,8 +1,6 @@
 from datetime import timezone, datetime
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorRequest import CreatePresenceSensorRequest
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorResponse import CreatePresenceSensorResponse
 from application.interface.repository.IPresenceSensorRepository import IPresenceSensorRepository
@@ -22,11 +20,10 @@ class PresenceSensorRepository(IPresenceSensorRepository):
         createPresenceSensorResponse: CreatePresenceSensorResponse = CreatePresenceSensorResponse()
         try:
             async with self._session.begin():
-                houseZone: HouseZone | None = await self._session.scalar(select(HouseZone)
-                                                                          .where(HouseZone.callout == createPresenceSensorRequest.callout))
+                houseZone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.callout == createPresenceSensorRequest.callout))
                 if houseZone is None:
                     houseZone: HouseZone = HouseZone(
-                        call_out = createPresenceSensorRequest.callout
+                        callout = createPresenceSensorRequest.callout
                     )
                     self._session.add(houseZone)
                     await self._session.flush()

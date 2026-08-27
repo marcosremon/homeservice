@@ -1,0 +1,33 @@
+meta {
+  name: Patch roomba state
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/roomba/patch-roomba-state
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Api-Key: {{apiKey}}
+}
+
+body:json {
+  {
+    "eventTime": "2026-08-27T12:00:00Z",
+    "isActivation": true,
+    "isFinished": false,
+    "target": "FULL_HOUSE",
+    "phase": "RUN",
+    "batteryPercent": 87,
+    "binFull": false,
+    "errorCode": 0,
+    "errorMessage": "",
+    "pmapId": "",
+    "userPmapvId": "",
+    "isOnline": true
+  }
+}

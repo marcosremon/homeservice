@@ -1,0 +1,15 @@
+meta {
+  name: Turn on computer
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/change-computer-status/turn-on-computer
+  body: none
+  auth: none
+}
+
+headers {
+  X-Api-Key: {{apiKey}}
+}

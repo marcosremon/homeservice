@@ -1,0 +1,32 @@
+meta {
+  name: Create presence sensor
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/presence-sensor/create-presence-sensor
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Api-Key: {{apiKey}}
+}
+
+body:json {
+  {
+    "callout": "sensor_pasillo",
+    "deviceName": "Presence sensor pasillo",
+    "deviceType": "PRESENCE_SENSOR",
+    "ts": 1787918400,
+    "presence": true,
+    "distanceCm": 120,
+    "motion": "moving",
+    "lastDetectedPresence": "2026-08-27T12:00:00Z",
+    "model": "LD2410",
+    "manufacturer": "HiLink",
+    "macAddress": "11:22:33:44:55:66"
+  }
+}

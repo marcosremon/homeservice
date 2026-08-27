@@ -32,14 +32,20 @@ class DatabaseMigrator:
 
         engine: AsyncEngine = create_async_engine(connectionString)
         try:
+            # _openWithRetry ya devuelve la conexion arrancada (await engine.connect()),
+            # asi que un "async with connection" la arrancaria por segunda vez y
+            # asyncpg contesta "connection is already started". Se cierra a mano.
             connection: AsyncConnection = await cls._openWithRetry(engine)
-            async with connection:
+            try:
                 exists: CursorResult[Any] = await connection.exec_driver_sql(
                     "SELECT count(*) FROM information_schema.tables "
                     f"WHERE table_schema = 'public' AND table_name = '{cls._NUMBER_TABLE_VERSION}';"
                 )
                 if exists.scalar_one() == 0:
                     try:
+                        # El SELECT anterior abrio transaccion implicita (autobegin) y begin()
+                        # no puede anidarse sobre ella. El rollback la descarta: solo eran lecturas.
+                        await connection.rollback()
                         async with connection.begin():
                             await connection.exec_driver_sql(
                                 f'CREATE TABLE public."{cls._NUMBER_TABLE_VERSION}" ("{cls._NUMBER_TABLE_VERSION}" integer NOT NULL);'
@@ -65,6 +71,9 @@ class DatabaseMigrator:
 
                 lastCommand: str = ""
                 try:
+                    # El SELECT anterior abrio transaccion implicita (autobegin) y begin()
+                    # no puede anidarse sobre ella. El rollback la descarta: solo eran lecturas.
+                    await connection.rollback()
                     async with connection.begin():
                         for migration in pending:
                             for sql in migration.commands:
@@ -84,6 +93,8 @@ class DatabaseMigrator:
                 except Exception as ex:
                     cls._log(f"ERROR aplicando migraciones. Ultimo comando: {lastCommand}\n{ex}")
                     return False
+            finally:
+                await connection.close()
         except Exception as ex:
             cls._log(f"ERROR inesperado: {ex}")
             return False

@@ -1,0 +1,15 @@
+meta {
+  name: Get computer status
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/change-computer-status/get-computer-status
+  body: none
+  auth: none
+}
+
+headers {
+  X-Api-Key: {{apiKey}}
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Turn off computer
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/change-computer-status/turn-off-computer
+  body: none
+  auth: none
+}
+
+headers {
+  X-Api-Key: {{apiKey}}
+}

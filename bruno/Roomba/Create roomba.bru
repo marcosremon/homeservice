@@ -1,0 +1,27 @@
+meta {
+  name: Create roomba
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/roomba/create-roomba
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Api-Key: {{apiKey}}
+}
+
+body:json {
+  {
+    "callout": "roomba_salon",
+    "deviceName": "Roomba j7",
+    "deviceType": "ROOMBA",
+    "model": "j7+",
+    "manufacturer": "iRobot",
+    "macAddress": "AA:BB:CC:DD:EE:FF"
+  }
+}

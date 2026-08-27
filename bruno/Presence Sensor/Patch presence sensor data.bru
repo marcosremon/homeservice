@@ -1,0 +1,31 @@
+meta {
+  name: Patch presence sensor data
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/presence-sensor/patch-presence-sensor-data
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Api-Key: {{apiKey}}
+}
+
+body:json {
+  {
+    "callout": "sensor_pasillo",
+    "deviceName": "Presence sensor pasillo",
+    "deviceType": "PRESENCE_SENSOR",
+    "model": "LD2410",
+    "manufacturer": "HiLink",
+    "macAddress": "11:22:33:44:55:66",
+    "ts": 1787918460,
+    "presence": false,
+    "distanceCm": 0,
+    "motion": "still"
+  }
+}

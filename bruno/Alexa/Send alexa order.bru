@@ -1,0 +1,43 @@
+meta {
+  name: Send alexa order
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Debug-Key: {{debugKey}}
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "session": {
+      "new": true,
+      "sessionId": "amzn1.echo-api.session.test",
+      "application": {
+        "applicationId": "{{alexaSkillId}}"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.test"
+      },
+      "attributes": {}
+    },
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "amzn1.echo-api.request.test",
+      "timestamp": "2026-08-27T12:00:00Z",
+      "intent": {
+        "name": "roomba_order_limpiar_cocina",
+        "confirmationStatus": "NONE",
+        "slots": {}
+      }
+    }
+  }
+}
