@@ -1,6 +1,6 @@
 from sqlalchemy import BigInteger, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
-from domain.model.entity.base import Base
+from domain.model.entity.Base import Base
 
 class TemperatureSensor(Base):
     __tablename__ = 'temperature_sensor'

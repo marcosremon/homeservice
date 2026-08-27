@@ -6,7 +6,7 @@ from application.data_transfer_object.home_automation.sensor.temperature_sensor.
 from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
 from domain.model.entity.HouseZone import HouseZone
 from domain.model.entity.TemperatureSensor import TemperatureSensor
-from domain.model.entity.device import Device
+from domain.model.entity.Device import Device
 from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 
 class TemperatureSensorRepository(ITemperatureSensorRepository):

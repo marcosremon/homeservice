@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorRequest import CreatePresenceSensorRequest
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorResponse import CreatePresenceSensorResponse
 from application.interface.repository.IPresenceSensorRepository import IPresenceSensorRepository
-from domain.model.entity.device import Device
+from domain.model.entity.Device import Device
 from domain.model.entity.HouseZone import HouseZone
 from domain.model.entity.PresenceSensor import PresenceSensor
 from transversal.common.utils.GeneralUtils import GeneralUtils
