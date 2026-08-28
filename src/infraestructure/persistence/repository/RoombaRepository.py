@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+import fastapi
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.data_transfer_object.roomba.create_roomba.CreateRoombaRequest import CreateRoombaRequest
@@ -28,12 +29,12 @@ class RoombaRepository(IRoombaRepository):
                 createRoombaResponse.isSuccess = False
                 createRoombaResponse.message = "Any roomba exists on bbdd"
             else:
-                # La zona, el dispositivo y la roomba se resuelven en cascada, no
-                # anidados en el else de cada busqueda: si la zona no existia habia
-                # que seguir creando el device y la roomba igualmente.
-                houseZone: HouseZone | None = await self._session.scalar(select(HouseZone)
-                                                                         .where(HouseZone.callout == createRoombaRequest.callout))
-                if houseZone is None:
+                foundHouseZone: HouseZone | None = await self._session.scalar(select(HouseZone)
+                    .where(HouseZone.callout == createRoombaRequest.callout))
+
+                if foundHouseZone is not None:
+                    houseZone: HouseZone = foundHouseZone
+                else:
                     houseZone = HouseZone(
                         callout = createRoombaRequest.callout
                     )
@@ -41,12 +42,15 @@ class RoombaRepository(IRoombaRepository):
                     self._session.add(houseZone)
                     await self._session.flush()
 
-                device: Device | None = await self._session.scalar(select(Device).where(
+                foundDevice: Device | None = await self._session.scalar(select(Device).where(
                     Device.houseZoneId == houseZone.houseZoneId,
                     Device.deviceName == createRoombaRequest.deviceName,
                     Device.deviceType == createRoombaRequest.deviceType
                 ))
-                if device is None:
+
+                if foundDevice is not None:
+                    device: Device = foundDevice
+                else:
                     device = Device(
                         houseZoneId = houseZone.houseZoneId,
                         deviceName = createRoombaRequest.deviceName,

@@ -20,20 +20,26 @@ class PresenceSensorRepository(IPresenceSensorRepository):
         createPresenceSensorResponse: CreatePresenceSensorResponse = CreatePresenceSensorResponse()
         try:
             async with self._session.begin():
-                houseZone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.callout == createPresenceSensorRequest.callOut))
-                if houseZone is None:
-                    houseZone: HouseZone = HouseZone(
+                foundHouseZone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.callout == createPresenceSensorRequest.callOut))
+
+                if foundHouseZone is not None:
+                    houseZone: HouseZone = foundHouseZone
+                else:
+                    houseZone = HouseZone(
                         callout = createPresenceSensorRequest.callOut
                     )
                     self._session.add(houseZone)
                     await self._session.flush()
 
-                device: Device | None = await self._session.scalar(select(Device).where(
+                foundDevice: Device | None = await self._session.scalar(select(Device).where(
                     Device.houseZoneId == houseZone.houseZoneId,
                     Device.deviceName == createPresenceSensorRequest.deviceName,
                     Device.deviceType == createPresenceSensorRequest.deviceType))
-                if device is None:
-                    device: Device = Device(
+
+                if foundDevice is not None:
+                    device: Device = foundDevice
+                else:
+                    device = Device(
                         houseZoneId = houseZone.houseZoneId,
                         deviceName = createPresenceSensorRequest.deviceName,
                         deviceType = createPresenceSensorRequest.deviceType,

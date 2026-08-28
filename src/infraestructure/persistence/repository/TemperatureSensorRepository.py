@@ -21,10 +21,13 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
         createTemperatureSensorResponse: CreateTemperatureSensorResponse = CreateTemperatureSensorResponse()
         try:
             async with self._session.begin():
-                houseZone: HouseZone | None = await self._session.scalar(
+                foundHouseZone: HouseZone | None = await self._session.scalar(
                     select(HouseZone).where(HouseZone.callout == createTemperatureSensorRequest.callOut))
-                if houseZone is None:
-                    houseZone: HouseZone = HouseZone(
+
+                if foundHouseZone is not None:
+                    houseZone: HouseZone = foundHouseZone
+                else:
+                    houseZone = HouseZone(
                         callout = createTemperatureSensorRequest.callOut
                     )
                     self._session.add(houseZone)
