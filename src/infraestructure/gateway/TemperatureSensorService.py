@@ -69,7 +69,8 @@ class TemperatureSensorService(ITemperatureSensorService):
         payload: str = f"{sign}{degrees}"
 
         try:
-            await self._mqttService.Publish(topic, payload)
+            # sin retain: un delta retenido se reaplicaria en cada reconexion.
+            await self._mqttService.Publish(topic, payload, retain = False)
         except Exception as ex:
             print(f"TemperatureSensorService -> _changeThermostatTemperature -> {ex}")
 
@@ -89,8 +90,8 @@ class TemperatureSensorService(ITemperatureSensorService):
             case "cuarto de marcos" | "habitacion de marcos" | "marcos": return ThermostatTarget.MARCOS
             case "cocina y abuela" | "cocina y cuarto de la abuela" | "abuela": return ThermostatTarget.KITCHEN_AND_GRANDMOTHER
             case "cuartos" | "habitaciones" | "dormitorios": return ThermostatTarget.BEDROOMS
-            case "cuarto de los padres y bano" | "cuarto de padres y bano": return ThermostatTarget.BEDROOM_AND_TOILET
-            case "pasillos y bano" | "pasillo y bano": return ThermostatTarget.HALLWAY_AND_TOILET
+            case "cuarto de los padres y baño" | "cuarto de padres y baño": return ThermostatTarget.BEDROOM_AND_TOILET
+            case "pasillos y baño" | "pasillo y baño": return ThermostatTarget.HALLWAY_AND_TOILET
             case "salon" | "comedor": return ThermostatTarget.LIVING_ROOM
             case "casa" | "toda la casa" | "casa entera": return ThermostatTarget.FULL_HOUSE
 

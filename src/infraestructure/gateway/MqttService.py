@@ -16,17 +16,22 @@ class MqttService(IMqttService):
         self._connectionLock: asyncio.Lock = asyncio.Lock()
 
     # region Publish
-    async def Publish(self, topic: str, payload: str) -> None:
+    async def Publish(self, topic: str, payload: str, retain: bool = True) -> None:
+        """retain = False para comandos relativos.
+        El broker reentrega el ultimo mensaje retenido a quien se suscriba, asi
+        que un "+2" retenido se vuelve a aplicar cada vez que el dispositivo se
+        reconecta. Solo tiene sentido retener estados absolutos (ON / OFF).
+        """
         try:
             client: Client = await self._connect()
-            await client.publish(topic, payload = payload, qos = _QOS_AT_LEAST_ONCE, retain = True)
+            await client.publish(topic, payload = payload, qos = _QOS_AT_LEAST_ONCE, retain = retain)
         except MqttError as ex:
             print(f"MqttService -> Publish -> reconectando tras: {ex}")
 
             await self._disconnect()
 
             client = await self._connect()
-            await client.publish(topic, payload = payload, qos = _QOS_AT_LEAST_ONCE, retain = True)
+            await client.publish(topic, payload = payload, qos = _QOS_AT_LEAST_ONCE, retain = retain)
     # endregion
 
     # region _connect
