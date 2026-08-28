@@ -5,8 +5,8 @@ from application.data_transfer_object.light.patch_light_status.PatchLightStatusR
 from application.interface.repository.ILightRepository import ILightRepository
 from application.interface.service.ILightService import ILightService
 from application.interface.service.IMqttService import IMqttService
-from domain.model.enum.Light.LightLocation import LightLocation
-from domain.model.enum.Light.LightStatus import LightStatus
+from domain.model.enum.light.LightLocation import LightLocation
+from domain.model.enum.light.LightStatus import LightStatus
 from transversal.common.utils.GeneralUtils import GeneralUtils
 
 class LightService(ILightService):
@@ -22,8 +22,7 @@ class LightService(ILightService):
 
             case "light_order_apagar_luces_salon": return await self._lightManager(LightLocation.LIVING_ROOM, LightStatus.OFF)
 
-            case _:
-                return "Orden no reconocida"
+            case _: return "Orden no reconocida"
     # endregion
 
     # region _lightManager

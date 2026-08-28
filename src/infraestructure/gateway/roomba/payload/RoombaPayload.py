@@ -14,7 +14,7 @@ class RoombaPayload:
 
     Los campos opcionales son None a proposito: al serializar con
     exclude_none = True desaparecen del JSON, como los
-    [JsonIgnore(WhenWritingNull)] de C#. La Roomba rechaza el comando si le
+    [JsonIgnore(WhenWritingNull)] de C#. La roomba rechaza el comando si le
     llegan campos de region vacios.
     """
     command: str | None = None

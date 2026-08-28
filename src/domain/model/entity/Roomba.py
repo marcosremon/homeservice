@@ -4,7 +4,7 @@ from sqlalchemy import BigInteger, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from domain.model.entity.Base import Base
-from domain.model.enum.Roomba.RoombaPhase import RoombaPhase
+from domain.model.enum.roomba.RoombaPhase import RoombaPhase
 
 class Roomba(Base):
     __tablename__ = 'roomba'

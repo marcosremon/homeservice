@@ -1,5 +1,5 @@
 from pydantic.dataclasses import dataclass
-from domain.model.enum.Light.LightLocation import LightLocation
+from domain.model.enum.light.LightLocation import LightLocation
 
 @dataclass
 class PatchLightStatusRequest:

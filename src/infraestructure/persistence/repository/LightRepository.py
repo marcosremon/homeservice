@@ -9,7 +9,7 @@ from application.interface.repository.ILightRepository import ILightRepository
 from domain.model.entity.Device import Device
 from domain.model.entity.HouseZone import HouseZone
 from domain.model.entity.Light import Light
-from domain.model.enum.Light.LightLocation import LightLocation
+from domain.model.enum.light.LightLocation import LightLocation
 from domain.model.enum.DeviceType import DeviceType
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
@@ -35,13 +35,13 @@ class LightRepository(ILightRepository):
                 if device is None:
                     getLightByLocationResponse.ResponseCode = ResponseCodes.NOT_FOUND
                     getLightByLocationResponse.IsSuccess = False
-                    getLightByLocationResponse.Message = f"No Light found"
+                    getLightByLocationResponse.Message = f"No light found"
                 else:
                     houseZone: HouseZone | None = await self._session.scalar(select(HouseZone).where(HouseZone.houseZoneId == device.houseZoneId))
 
                     getLightByLocationResponse.responseCode = ResponseCodes.OK
                     getLightByLocationResponse.isSuccess = True
-                    getLightByLocationResponse.message = "Light found"
+                    getLightByLocationResponse.message = "light found"
                     getLightByLocationResponse.HouseZone = LightDto(
                         name = device.deviceName,
                         room = houseZone.callout if houseZone is not None else "",

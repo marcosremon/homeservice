@@ -20,6 +20,7 @@ from application.interface.service.IGeminiService import IGeminiService
 from application.interface.service.ILightService import ILightService
 from application.interface.service.IMqttService import IMqttService
 from application.interface.service.IRoombaService import IRoombaService
+from application.interface.service.ITemperatureSensorService import ITemperatureSensorService
 from application.use_case.AlexaApplication import AlexaApplication
 from application.use_case.ChangeComputerStatusApplication import ChangeComputerStatusApplication
 from application.use_case.EventApplication import EventApplication
@@ -35,6 +36,7 @@ from infraestructure.gateway.GeminiService import GeminiService
 from infraestructure.gateway.LightService import LightService
 from infraestructure.gateway.MqttService import MqttService
 from infraestructure.gateway.RoombaService import RoombaService
+from infraestructure.gateway.TemperatureSensorService import TemperatureSensorService
 from infraestructure.persistence.repository.LightRepository import LightRepository
 from infraestructure.persistence.repository.PresenceSensorRepository import PresenceSensorRepository
 from infraestructure.persistence.repository.RoombaRepository import RoombaRepository
@@ -57,7 +59,7 @@ def GetTemperatureSensorApplication(temperatureSensorRepository: ITemperatureSen
     return TemperatureSensorApplication(temperatureSensorRepository)
 # endregion
 
-# region Roomba
+# region roomba
 def BuildRoombaRepository(session: AsyncSession) -> IRoombaRepository:
     return RoombaRepository(session)
 
@@ -88,7 +90,7 @@ def GetEventApplication(eventRepository: IEventRepository = Depends(GetEventRepo
     return EventApplication(eventRepository)
 # endregion
 
-# region Light
+# region light
 def BuildLightRepository(session: AsyncSession) -> ILightRepository:
     return LightRepository(session)
 
@@ -119,17 +121,21 @@ def GetComputerStatusService(settings: Settings = Depends(GetSettings)) -> IComp
 def GetGeminiService(settings: Settings = Depends(GetSettings)) -> IGeminiService:
     return GeminiService(_GetHttpClient(), settings)
 
+def GetTemperatureSensorService(settings: Settings = Depends(GetSettings)) -> ITemperatureSensorService:
+    return TemperatureSensorService(GetMqttService(), settings)
+
 def GetAlexaService(
     lightService: ILightService = Depends(GetLightService),
     roombaService: IRoombaService = Depends(GetRoombaService),
     geminiService: IGeminiService = Depends(GetGeminiService),
     computerStatusService: IComputerStatusService = Depends(GetComputerStatusService),
+    temperatureSensorService: ITemperatureSensorService = Depends(GetTemperatureSensorService),
     settings: Settings = Depends(GetSettings),
 ) -> IAlexaService:
-    return AlexaService(lightService, roombaService, geminiService, computerStatusService, settings)
+    return AlexaService(lightService, roombaService, geminiService, computerStatusService, temperatureSensorService, settings)
 # endregion
 
-# region Alexa
+# region alexa
 def GetAlexaApplication(alexaService: IAlexaService = Depends(GetAlexaService)) -> IAlexaApplication:
     return AlexaApplication(alexaService)
 # endregion

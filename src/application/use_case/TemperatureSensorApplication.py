@@ -1,12 +1,17 @@
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequest import PatchTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponse import PatchTemperatureSensorResponse
 from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
 from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
 
 class TemperatureSensorApplication(ITemperatureSensorApplication):
 
     def __init__(self, temperatureSensorRepository: ITemperatureSensorRepository):
-        self._roombaRepository: ITemperatureSensorRepository = temperatureSensorRepository
+        self._temperatureSensorRepository: ITemperatureSensorRepository = temperatureSensorRepository
 
     async def CreateTemperatureSensor(self, createTemperatureSensorRequest: CreateTemperatureSensorRequest) -> CreateTemperatureSensorResponse:
-        return await self._roombaRepository.CreateTemperatureSensor(createTemperatureSensorRequest)
+        return await self._temperatureSensorRepository.CreateTemperatureSensor(createTemperatureSensorRequest)
+
+    async def PatchTemperatureSensor(self, patchTemperatureSensorRequest: PatchTemperatureSensorRequest) -> PatchTemperatureSensorResponse:
+        return await self._temperatureSensorRepository.PatchTemperatureSensor(patchTemperatureSensorRequest)

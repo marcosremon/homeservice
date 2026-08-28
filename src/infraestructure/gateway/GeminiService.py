@@ -18,13 +18,13 @@ from transversal.common.configuration.Settings import Settings
 from transversal.common.utils.GeneralUtils import GeneralUtils
 
 # Presupuesto de caracteres del historial reenviado en sessionAttributes.
-# La respuesta de Alexa entera no puede pasar de 24KB (incluye voz + historial).
+# La respuesta de alexa entera no puede pasar de 24KB (incluye voz + historial).
 _HISTORY_CHAR_BUDGET: int = 10000
 
-# Alexa rechaza un outputSpeech de mas de 8000 caracteres.
+# alexa rechaza un outputSpeech de mas de 8000 caracteres.
 _MAX_SPEECH_LENGTH: int = 7900
 
-# Justo por debajo del corte de Alexa.
+# Justo por debajo del corte de alexa.
 _REQUEST_TIMEOUT_SECONDS: float = 8.0
 
 # Eres un asistente por voz en un altavoz inteligente. Responde siempre en espanol, de forma natural y conversacional.
@@ -59,7 +59,7 @@ class GeminiService(IGeminiService):
             generationConfig = GenerationConfig(
                 maxOutputTokens = 1024,      # permite respuestas largas (~2-3 min de voz)
                 temperature = 0.7,
-                thinkingConfig = ThinkingConfig(thinkingBudget = 0),   # sin "pensar": rapido, cabe en los 8s de Alexa
+                thinkingConfig = ThinkingConfig(thinkingBudget = 0),   # sin "pensar": rapido, cabe en los 8s de alexa
             ),
         )
 

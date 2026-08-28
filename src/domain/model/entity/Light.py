@@ -4,7 +4,7 @@ from sqlalchemy import BigInteger, ForeignKey
 from sqlalchemy.orm import mapped_column, Mapped
 
 from domain.model.entity.Base import Base
-from domain.model.enum.Light.LightLocation import LightLocation
+from domain.model.enum.light.LightLocation import LightLocation
 
 class Light(Base):
     __tablename__ = "light"

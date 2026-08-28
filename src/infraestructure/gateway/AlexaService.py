@@ -5,13 +5,14 @@ from application.data_transfer_object.alexa.AlexaResponse import AlexaResponse
 from application.data_transfer_object.gemini.GeminiTurn import GeminiTurn
 from application.data_transfer_object.gemini.GeminiTurnRequest import GeminiTurnRequest
 from application.data_transfer_object.gemini.GeminiTurnResponse import GeminiTurnResponse
+from application.interface.service.ITemperatureSensorService import ITemperatureSensorService
 from application.interface.service.IAlexaService import IAlexaService
 from application.interface.service.IComputerStatusService import IComputerStatusService
 from application.interface.service.IGeminiService import IGeminiService
 from application.interface.service.ILightService import ILightService
 from application.interface.service.IRoombaService import IRoombaService
-from domain.model.enum.Alexa.AlexaRequestType import AlexaRequestType
-from domain.model.enum.Alexa.IntentName import IntentName
+from domain.model.enum.alexa.AlexaRequestType import AlexaRequestType
+from domain.model.enum.alexa.IntentName import IntentName
 from transversal.common.alexa.alexa_request.AlexaIntent import AlexaIntent
 from transversal.common.alexa.alexa_request.AlexaSlot import AlexaSlot
 from transversal.common.configuration.Settings import Settings, GetSettings
@@ -27,12 +28,14 @@ class AlexaService(IAlexaService):
         roombaService: IRoombaService,
         geminiService: IGeminiService,
         computerStatusService: IComputerStatusService,
+        temperatureSensorService: ITemperatureSensorService,
         settings: Settings,
     ):
         self._lightService: ILightService = lightService
         self._roombaService: IRoombaService = roombaService
         self._geminiService: IGeminiService = geminiService
         self._computerStatusService: IComputerStatusService = computerStatusService
+        self._temperatureSensorService: ITemperatureSensorService = temperatureSensorService
         self._settings: Settings = settings
 
     # region send_alexa_order
@@ -73,6 +76,7 @@ class AlexaService(IAlexaService):
                     if intentName == IntentName.roomba_order_: message = await self._roombaService.ExecuteRoombaOrder(intentNameString, alexaRequest)
                     if intentName == IntentName.light_order_: message = await self._lightService.ExecuteLightOrder(intentNameString)
                     if intentName == IntentName.computer_status_order_: message = await self._computerStatusService.ExecuteComputerStatusOrder(intentNameString)
+                    if intentName == IntentName.temperature_sensor_order_: message = await self._temperatureSensorService.ExecuteTemperatureSensorOrder(intentNameString, alexaRequest)
 
                     alexaResponse.alexaResponseContent = AlexaUtils.BuildAlexaResponse(intentNameString, message)
             else:
@@ -93,7 +97,7 @@ class AlexaService(IAlexaService):
     def _readHistory(alexaRequest: AlexaRequest) -> list[GeminiTurn]:
         """El historial de la conversacion viaja en los sessionAttributes.
 
-        Alexa devuelve en cada turno lo que le mandamos en el anterior, asi que
+        alexa devuelve en cada turno lo que le mandamos en el anterior, asi que
         es el unico "estado" que tiene la skill.
         """
         try:

@@ -2,7 +2,7 @@ import asyncio
 from datetime import timedelta
 from application.data_transfer_object.alexa.AlexaRequest import AlexaRequest
 from application.interface.service.IRoombaService import IRoombaService
-from domain.model.enum.Roomba.RoombaTarget import RoombaTarget
+from domain.model.enum.roomba.RoombaTarget import RoombaTarget
 from infraestructure.gateway.roomba.RoombaUtils import RoombaUtils
 from transversal.common.alexa.alexa_request.AlexaSlot import AlexaSlot
 from transversal.common.utils.AlexaUtils import AlexaUtils
@@ -48,7 +48,7 @@ class RoombaService(IRoombaService):
         if not alexaSlots:
             return "No se encontro el tiempo indicado."
 
-        # Alexa manda la duracion en uno de estos tres slots segun el intent.
+        # alexa manda la duracion en uno de estos tres slots segun el intent.
         slot: AlexaSlot | None = alexaSlots.get("duracion")
         if slot is None or slot.value is None:
             slot = alexaSlots.get("tiempo")

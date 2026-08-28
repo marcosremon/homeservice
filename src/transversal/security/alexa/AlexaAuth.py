@@ -1,5 +1,5 @@
 """
-Dependencia de FastAPI que corta la peticion con 401 si la firma de Alexa no es
+Dependencia de FastAPI que corta la peticion con 401 si la firma de alexa no es
 valida. Se declara igual que GetApiKey: en el APIRouter (nivel clase) o en el
 decorador del endpoint (nivel metodo).
 """

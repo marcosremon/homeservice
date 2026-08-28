@@ -3,12 +3,20 @@ from fastapi_utils.cbv import cbv
 from starlette import status
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequest import \
+    PatchTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponse import \
+    PatchTemperatureSensorResponse
 from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
 from infraestructure.persistence.dependencies.DependencyInjection import GetTemperatureSensorApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
 from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequestJson import CreateTemperatureSensorRequestJson
 from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponseJson import CreateTemperatureSensorResponseJson
+from transversal.json_interchange.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequestJson import \
+    PatchTemperatureSensorRequestJson
+from transversal.json_interchange.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponseJson import \
+    PatchTemperatureSensorResponseJson
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 
 router: APIRouter = APIRouter(
@@ -62,3 +70,40 @@ class TemperatureController:
 
         return createTemperatureSensorResponseJson
     # endregion
+
+    #region PatchTemperatureSensor
+    @router.post("/patch-temperature-sensor", response_model = PatchTemperatureSensorResponseJson, status_code = status.HTTP_200_OK)
+    async def PatchTemperatureSensor(self, patchTemperatureSensorRequestJson: PatchTemperatureSensorRequestJson) -> PatchTemperatureSensorResponseJson:
+        patchTemperatureSensorResponseJson: PatchTemperatureSensorResponseJson = PatchTemperatureSensorResponseJson()
+        try:
+            if (GeneralUtils.IsNullOrEmpty(patchTemperatureSensorRequestJson.callOut) or
+                GeneralUtils.IsNullOrEmpty(patchTemperatureSensorRequestJson.deviceName) or
+                GeneralUtils.IsNullOrEmpty(patchTemperatureSensorRequestJson.deviceType)
+            ):
+                patchTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson.INVALID_DATA
+                patchTemperatureSensorResponseJson.isSuccess = False
+                patchTemperatureSensorResponseJson.message = "the callOut, device name or device type is invalid"
+            else:
+                patchTemperatureSensorRequest: PatchTemperatureSensorRequest = PatchTemperatureSensorRequest(
+                    callOut = patchTemperatureSensorRequestJson.callOut,
+                    deviceName = patchTemperatureSensorRequestJson.deviceName,
+                    deviceType = patchTemperatureSensorRequestJson.deviceType,
+                    model = patchTemperatureSensorRequestJson.model,
+                    macAddress = patchTemperatureSensorRequestJson.macAddress,
+                    temperature = patchTemperatureSensorRequestJson.temperature,
+                    adcVoltage = patchTemperatureSensorRequestJson.adcVoltage,
+                    measureAt = patchTemperatureSensorRequestJson.measureAt,
+                )
+
+                patchTemperatureSensorResponse: PatchTemperatureSensorResponse = await self._presenceSensorApplication.PatchTemperatureSensor(patchTemperatureSensorRequest)
+
+                patchTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson(patchTemperatureSensorResponse.responseCode)
+                patchTemperatureSensorResponseJson.isSuccess = patchTemperatureSensorResponse.isSuccess
+                patchTemperatureSensorResponseJson.message = patchTemperatureSensorResponse.message
+        except Exception as ex:
+            patchTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson.INTERNAL_SERVER_ERROR
+            patchTemperatureSensorResponseJson.isSuccess = False
+            patchTemperatureSensorResponseJson.message = f"Ha ocurrido un error al modificar los datos del sensor de temperatura {ex}."
+
+        return patchTemperatureSensorResponseJson
+    #endregion

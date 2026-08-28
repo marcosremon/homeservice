@@ -99,7 +99,7 @@ class RoombaRepository(IRoombaRepository):
             if roomba is None:
                 patchRoombaStateResponse.responseCode = ResponseCodes.NOT_FOUND
                 patchRoombaStateResponse.isSuccess = False
-                patchRoombaStateResponse.message = "Roomba not found"
+                patchRoombaStateResponse.message = "roomba not found"
             else:
                 # Las columnas son TIMESTAMP WITHOUT TIME ZONE: si la fecha llega
                 # con zona horaria hay que pasarla a UTC y quitarsela, o Postgres
@@ -140,7 +140,7 @@ class RoombaRepository(IRoombaRepository):
 
                 patchRoombaStateResponse.responseCode = ResponseCodes.OK
                 patchRoombaStateResponse.isSuccess = True
-                patchRoombaStateResponse.message = f"Roomba state updated successfully (phase {roomba.phase}, battery {roomba.batteryPercent}%)."
+                patchRoombaStateResponse.message = f"roomba state updated successfully (phase {roomba.phase}, battery {roomba.batteryPercent}%)."
         except Exception as ex:
             await self._session.rollback()
 

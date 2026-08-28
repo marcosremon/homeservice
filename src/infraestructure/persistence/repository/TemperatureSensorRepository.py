@@ -1,12 +1,14 @@
 from sqlalchemy import select
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequest import PatchTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponse import PatchTemperatureSensorResponse
 from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
 from domain.model.entity.HouseZone import HouseZone
 from domain.model.entity.TemperatureSensor import TemperatureSensor
 from domain.model.entity.Device import Device
+from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.base.ResponseCodes import ResponseCodes
 
 class TemperatureSensorRepository(ITemperatureSensorRepository):
@@ -68,4 +70,55 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
             createTemperatureSensorResponse.message = f"Unexpected error on TemperatureSensorRepository -> createTemperatureSensorResponse: {ex}"
 
         return createTemperatureSensorResponse
+    #endregion
+
+    #region PatchTemperatureSensor
+    async def PatchTemperatureSensor(self, patchTemperatureSensorRequest: PatchTemperatureSensorRequest) -> PatchTemperatureSensorResponse:
+        patchTemperatureSensorResponse: PatchTemperatureSensorResponse = PatchTemperatureSensorResponse()
+        try:
+            houseZone: HouseZone | None = await self._session.scalar(
+                select(HouseZone).where(HouseZone.callout == patchTemperatureSensorRequest.callOut))
+            if houseZone is None:
+                patchTemperatureSensorResponse.responseCode = ResponseCodes.NOT_FOUND
+                patchTemperatureSensorResponse.isSuccess = False
+                patchTemperatureSensorResponse.message = f"House zone {patchTemperatureSensorRequest.callOut} not found"
+            else:
+                device: Device | None = await self._session.scalar(select(Device)
+                    .where(Device.houseZoneId == houseZone.houseZoneId,
+                           Device.deviceName == patchTemperatureSensorRequest.deviceName,
+                           Device.deviceType == patchTemperatureSensorRequest.deviceType))
+                if device is None:
+                    patchTemperatureSensorResponse.responseCode = ResponseCodes.NOT_FOUND
+                    patchTemperatureSensorResponse.isSuccess = False
+                    patchTemperatureSensorResponse.message = f"Device {patchTemperatureSensorRequest.deviceName} not found"
+                else:
+                    temperatureSensor: TemperatureSensor | None = await self._session.scalar(
+                        select(TemperatureSensor).where(TemperatureSensor.deviceId == device.deviceId))
+                    if temperatureSensor is None:
+                        patchTemperatureSensorResponse.responseCode = ResponseCodes.NOT_FOUND
+                        patchTemperatureSensorResponse.isSuccess = False
+                        patchTemperatureSensorResponse.message = f"No temperature sensor found with the name {device.deviceName}"
+                    else:
+                        if not GeneralUtils.IsNullOrEmpty(patchTemperatureSensorRequest.model):
+                            device.model = patchTemperatureSensorRequest.model
+
+                        if not GeneralUtils.IsNullOrEmpty(patchTemperatureSensorRequest.macAddress):
+                            device.macAddress = patchTemperatureSensorRequest.macAddress
+
+                        temperatureSensor.temperature = patchTemperatureSensorRequest.temperature
+                        temperatureSensor.adcVoltage = patchTemperatureSensorRequest.adcVoltage
+                        temperatureSensor.measureAt = patchTemperatureSensorRequest.measureAt
+
+                        await self._session.commit()
+
+                        patchTemperatureSensorResponse.responseCode = ResponseCodes.OK
+                        patchTemperatureSensorResponse.isSuccess = True
+                        patchTemperatureSensorResponse.message = f"Temperature Sensor with the name {device.deviceName} updated successfully."
+        except Exception as ex:
+            await self._session.rollback()
+            patchTemperatureSensorResponse.responseCode = ResponseCodes.UNEXPECTED_ERROR
+            patchTemperatureSensorResponse.isSuccess = False
+            patchTemperatureSensorResponse.message = f"Unexpected error on TemperatureSensorRepository -> PatchTemperatureSensor: {ex}"
+
+        return patchTemperatureSensorResponse
     #endregion

@@ -7,9 +7,9 @@ from aiomqtt import Client, MqttError, ProtocolVersion
 from pydantic import TypeAdapter
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateRequest import PatchRoombaStateRequest
 from application.event.RoombaActivatedEvent import RoombaActivatedEvent
-from domain.model.enum.Roomba.RoombaAction import RoombaAction
-from domain.model.enum.Roomba.RoombaPhase import RoombaPhase
-from domain.model.enum.Roomba.RoombaTarget import RoombaTarget
+from domain.model.enum.roomba.RoombaAction import RoombaAction
+from domain.model.enum.roomba.RoombaPhase import RoombaPhase
+from domain.model.enum.roomba.RoombaTarget import RoombaTarget
 from infraestructure.gateway.roomba.payload.RoombaPayload import RoombaPayload
 from infraestructure.gateway.roomba.payload.RoombaRegion import RoombaRegion
 from infraestructure.gateway.roomba.payload.RoombaRegionParams import RoombaRegionParams
@@ -25,7 +25,7 @@ class RoombaUtils:
     _AUTO_START_FROM: time = time(8, 0)
     _AUTO_START_TO: time = time(21, 0)
 
-    # Espera maxima a que la Roomba confirme la orden (phase: run).
+    # Espera maxima a que la roomba confirme la orden (phase: run).
     _COMMAND_CONFIRMATION_TIMEOUT_SECONDS: float = 8.0
 
     # Pausa entre PAUSE y DOCK al mandarla a casa.
@@ -45,7 +45,7 @@ class RoombaUtils:
     # region _buildClient
     @staticmethod
     def _buildClient(settings: Settings) -> Client:
-        """Cliente MQTT contra la Roomba: TLS 1.2 sin validar el certificado.
+        """Cliente MQTT contra la roomba: TLS 1.2 sin validar el certificado.
 
         El certificado del aparato es autofirmado y su firmware solo habla TLS 1.2
         con cifrados que OpenSSL moderno considera debiles, de ahi el SECLEVEL=1.
@@ -84,7 +84,7 @@ class RoombaUtils:
     def _applyStateMessage(cls, rawPayload: str, roombaState: RoombaState, roombaTarget: RoombaTarget | None) -> None:
         """Vuelca un mensaje del shadow sobre el estado que vamos acumulando.
 
-        Es el ApplicationMessageReceivedAsync de C#. La Roomba manda el estado unas
+        Es el ApplicationMessageReceivedAsync de C#. La roomba manda el estado unas
         veces plano y otras dentro de state.reported, de ahi el desdoble.
         """
         try:
@@ -112,7 +112,7 @@ class RoombaUtils:
             # salir con el error de este mensaje, no con el del anterior.
             if "error" in missionNode:
                 roombaState.errorCode = int(missionNode["error"])
-                roombaState.errorMessage = "" if roombaState.errorCode == 0 else f"El Roomba reporto error: codigo {roombaState.errorCode}"
+                roombaState.errorMessage = "" if roombaState.errorCode == 0 else f"El roomba reporto error: codigo {roombaState.errorCode}"
 
             if "phase" in missionNode:
                 phase: RoombaPhase | None = cls._parsePhase(missionNode["phase"])
@@ -147,10 +147,10 @@ class RoombaUtils:
     # region GetRoomInfo
     @classmethod
     async def GetRoomInfo(cls) -> None:
-        """Vuelca por consola todo lo que dice la Roomba durante 30 segundos.
+        """Vuelca por consola todo lo que dice la roomba durante 30 segundos.
 
         Solo sirve para averiguar los region_id a mano cuando cambias el mapa: mueve
-        la Roomba desde la app de iRobot mientras esto escucha.
+        la roomba desde la app de iRobot mientras esto escucha.
         """
         settings: Settings = GetSettings()
         if GeneralUtils.IsNullOrEmpty(settings.roombaId) or GeneralUtils.IsNullOrEmpty(settings.roombaBlid):
@@ -163,7 +163,7 @@ class RoombaUtils:
                 await client.subscribe("wifistat")
                 await client.subscribe("#")
 
-                print(f"Escuchando {cls._ROOM_INFO_LISTEN_SECONDS:.0f} segundos... mueve el Roomba desde la app para forzar mensajes")
+                print(f"Escuchando {cls._ROOM_INFO_LISTEN_SECONDS:.0f} segundos... mueve el roomba desde la app para forzar mensajes")
 
                 async with asyncio.timeout(cls._ROOM_INFO_LISTEN_SECONDS):
                     async for message in client.messages:
@@ -182,7 +182,7 @@ class RoombaUtils:
     # region GetRoombaPhase
     @classmethod
     async def GetRoombaPhase(cls) -> RoombaPhase | None:
-        """Fase actual de la Roomba, o None si no se puede consultar.
+        """Fase actual de la roomba, o None si no se puede consultar.
 
         None significa "no se pudo preguntar" (aparato apagado, red caida, timeout);
         todas las ordenes de abajo lo tratan como motivo para abortar.
@@ -204,7 +204,7 @@ class RoombaUtils:
                         if roombaState.phaseSeen:
                             return roombaState.phase
         except TimeoutError:
-            print("RoombaUtils -> GetRoombaPhase -> la Roomba no contesto a tiempo")
+            print("RoombaUtils -> GetRoombaPhase -> la roomba no contesto a tiempo")
         except MqttError as ex:
             print(f"RoombaUtils -> GetRoombaPhase -> {ex}")
 
@@ -233,7 +233,7 @@ class RoombaUtils:
 
                 listener: asyncio.Task[None] = asyncio.create_task(cls._listenShadow(client, roombaState, roombaTarget))
                 try:
-                    # La Roomba anuncia su mapa nada mas conectar; hay que darle un
+                    # La roomba anuncia su mapa nada mas conectar; hay que darle un
                     # momento antes de mandar una orden por regiones.
                     await asyncio.sleep(cls._PMAP_DISCOVERY_SECONDS)
 
@@ -275,9 +275,9 @@ class RoombaUtils:
                     ))
 
                     if roombaState.commandAccepted:
-                        print("  -> Roomba confirmo inicio de limpieza (phase: run)")
+                        print("  -> roomba confirmo inicio de limpieza (phase: run)")
                     else:
-                        print("  -> La Roomba no confirmo la orden dentro del margen")
+                        print("  -> La roomba no confirmo la orden dentro del margen")
                 finally:
                     listener.cancel()
         except MqttError as ex:
@@ -323,7 +323,7 @@ class RoombaUtils:
                 isActivatedToday: bool = lastRoombaActivation.date() == now.date()
 
                 if isActivatedToday:
-                    print("Roomba ya se activo hoy, omitiendo.")
+                    print("roomba ya se activo hoy, omitiendo.")
                     return
 
                 if not isValidTime:
@@ -332,11 +332,11 @@ class RoombaUtils:
 
                 roombaPhase: RoombaPhase | None = await cls.GetRoombaPhase()
                 if roombaPhase is None:
-                    print("No se pudo obtener el estado del Roomba, abortando.")
+                    print("No se pudo obtener el estado del roomba, abortando.")
                     return
 
                 if roombaPhase == RoombaPhase.STUCK:
-                    print("Roomba atascado, revisalo manualmente.")
+                    print("roomba atascado, revisalo manualmente.")
                     return
 
                 if roombaPhase == RoombaPhase.RUN or roombaPhase == RoombaPhase.HM_USR_DOCK:
@@ -355,13 +355,13 @@ class RoombaUtils:
             try:
                 roombaPhase: RoombaPhase | None = await cls.GetRoombaPhase()
                 if roombaPhase is None:
-                    return "No se pudo obtener el estado del Roomba."
+                    return "No se pudo obtener el estado del roomba."
 
                 if roombaPhase == RoombaPhase.STUCK:
-                    return "El Roomba esta atascado, revisalo manualmente."
+                    return "El roomba esta atascado, revisalo manualmente."
 
                 if roombaPhase == RoombaPhase.RUN or roombaPhase == RoombaPhase.HM_USR_DOCK:
-                    return "El Roomba ya esta limpiando."
+                    return "El roomba ya esta limpiando."
 
                 await cls.SendRoombaOrder(RoombaAction.START, roombaTarget)
 
@@ -370,7 +370,7 @@ class RoombaUtils:
 
                 return f"Iniciando limpieza de {roombaTarget.name.lower().replace('_', ' ')}."
             except Exception as ex:
-                return f"Error al iniciar el Roomba: {ex}"
+                return f"Error al iniciar el roomba: {ex}"
     # endregion
 
     # region SendRoombaHome
@@ -380,22 +380,22 @@ class RoombaUtils:
             try:
                 roombaPhase: RoombaPhase | None = await cls.GetRoombaPhase()
                 if roombaPhase is None:
-                    return "No se pudo obtener el estado del Roomba."
+                    return "No se pudo obtener el estado del roomba."
 
                 if roombaPhase == RoombaPhase.STUCK:
-                    return "El Roomba esta atascado, revisalo manualmente."
+                    return "El roomba esta atascado, revisalo manualmente."
 
                 if roombaPhase == RoombaPhase.CHARGE or roombaPhase == RoombaPhase.HM_USR_DOCK:
-                    return "El Roomba ya esta en casa."
+                    return "El roomba ya esta en casa."
 
-                # La Roomba ignora el DOCK si viene sin pausa previa.
+                # La roomba ignora el DOCK si viene sin pausa previa.
                 await cls.SendRoombaOrder(RoombaAction.PAUSE)
                 await asyncio.sleep(cls._PAUSE_BEFORE_DOCK_SECONDS)
                 await cls.SendRoombaOrder(RoombaAction.DOCK)
 
-                return "Enviando el Roomba a casa."
+                return "Enviando el roomba a casa."
             except Exception as ex:
-                return f"Error al enviar el Roomba a casa: {ex}"
+                return f"Error al enviar el roomba a casa: {ex}"
     # endregion
 
     # region PauseRoomba
@@ -405,19 +405,19 @@ class RoombaUtils:
             try:
                 roombaPhase: RoombaPhase | None = await cls.GetRoombaPhase()
                 if roombaPhase is None:
-                    return "No se pudo obtener el estado del Roomba."
+                    return "No se pudo obtener el estado del roomba."
 
                 if roombaPhase == RoombaPhase.STUCK:
-                    return "El Roomba esta atascado, revisalo manualmente."
+                    return "El roomba esta atascado, revisalo manualmente."
 
                 if roombaPhase != RoombaPhase.RUN:
-                    return "El Roomba no esta limpiando ahora mismo."
+                    return "El roomba no esta limpiando ahora mismo."
 
                 await cls.SendRoombaOrder(RoombaAction.PAUSE)
 
-                return "Pausando el Roomba."
+                return "Pausando el roomba."
             except Exception as ex:
-                return f"Error al pausar el Roomba: {ex}"
+                return f"Error al pausar el roomba: {ex}"
     # endregion
 
     # region ReactiveRoomba
@@ -427,19 +427,19 @@ class RoombaUtils:
             try:
                 roombaPhase: RoombaPhase | None = await cls.GetRoombaPhase()
                 if roombaPhase is None:
-                    return "No se pudo obtener el estado del Roomba."
+                    return "No se pudo obtener el estado del roomba."
 
                 if roombaPhase == RoombaPhase.STUCK:
-                    return "El Roomba esta atascado, revisalo manualmente."
+                    return "El roomba esta atascado, revisalo manualmente."
 
                 if roombaPhase != RoombaPhase.STOP:
-                    return "El Roomba no esta pausado, no se puede reactivar."
+                    return "El roomba no esta pausado, no se puede reactivar."
 
                 await cls.SendRoombaOrder(RoombaAction.RESUME, roombaTarget)
 
-                return "Reactivando el Roomba."
+                return "Reactivando el roomba."
             except Exception as ex:
-                return f"Error al reactivar el Roomba: {ex}"
+                return f"Error al reactivar el roomba: {ex}"
     # endregion
 
     # region _buildPayload

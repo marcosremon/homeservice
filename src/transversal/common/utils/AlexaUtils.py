@@ -2,7 +2,7 @@ import re
 from datetime import timedelta
 from fastapi import Request
 from pydantic import TypeAdapter
-from domain.model.enum.Alexa.IntentName import IntentName
+from domain.model.enum.alexa.IntentName import IntentName
 from transversal.common.alexa.alexa_request.AlexaSession import AlexaSession
 from transversal.common.alexa.alexa_response.AlexaOutputSpeech import AlexaOutputSpeech
 from transversal.common.alexa.alexa_response.AlexaReprompt import AlexaReprompt
@@ -22,10 +22,10 @@ class AlexaUtils:
     # region parse_alexa_duration
     @classmethod
     def ParseAlexaDuration(cls, isoDuration: str) -> timedelta:
-        """Duracion ISO-8601 de Alexa (P1DT2H30M) a timedelta.
+        """Duracion ISO-8601 de alexa (P1DT2H30M) a timedelta.
 
         Portado tal cual del C#, con su misma limitacion: la "M" de meses y la de
-        minutos comparten patron, asi que "P2M" se lee como 2 minutos. Como Alexa solo
+        minutos comparten patron, asi que "P2M" se lee como 2 minutos. Como alexa solo
         manda duraciones cortas en los slots AMAZON.DURATION, no molesta.
         """
         total: timedelta = timedelta()
@@ -83,7 +83,7 @@ class AlexaUtils:
     def BuildConversationResponse(speechText: str, keepSessionOpen: bool) -> AlexaResponseContent:
         """Respuesta de conversacion: si la sesion sigue abierta, lleva reprompt.
 
-        Sin reprompt, Alexa cierra el microfono aunque should_end_session sea False.
+        Sin reprompt, alexa cierra el microfono aunque should_end_session sea False.
         """
         speech: str = "Si?" if GeneralUtils.IsNullOrEmpty(speechText) else speechText
 

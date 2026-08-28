@@ -1,5 +1,5 @@
 """
-Verifica que una peticion viene realmente de Amazon Alexa siguiendo los pasos que
+Verifica que una peticion viene realmente de Amazon alexa siguiendo los pasos que
 exige Amazon: cabeceras presentes, URL del certificado valida, descarga y cacheo
 del certificado, cadena y SAN validos, firma del cuerpo y timestamp dentro de
 tolerancia (anti-replay).

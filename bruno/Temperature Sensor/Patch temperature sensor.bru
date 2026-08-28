@@ -1,0 +1,29 @@
+meta {
+  name: Patch temperature sensor
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/sensors/temperature-sensor/patch-temperature-sensor
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Api-Key: {{apiKey}}
+}
+
+body:json {
+  {
+    "callOut": "cuarto_marcos",
+    "deviceName": "temperature_sensor_cuarto_marcos",
+    "deviceType": "temperature_sensor",
+    "model": "K307 / EOL307",
+    "macAddress": "AA:BB:CC:DD:EE:FF",
+    "temperature": 22.8,
+    "adcVoltage": 3.31,
+    "measureAt": 1787922000.0
+  }
+}

@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
-from domain.model.enum.Roomba.RoombaPhase import RoombaPhase
-from domain.model.enum.Roomba.RoombaTarget import RoombaTarget
+from domain.model.enum.roomba.RoombaPhase import RoombaPhase
+from domain.model.enum.roomba.RoombaTarget import RoombaTarget
 
 @dataclass
 class PatchRoombaStateRequest:

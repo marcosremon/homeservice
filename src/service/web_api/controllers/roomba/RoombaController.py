@@ -7,8 +7,8 @@ from application.data_transfer_object.roomba.create_roomba.CreateRoombaResponse 
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateRequest import PatchRoombaStateRequest
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateResponse import PatchRoombaStateResponse
 from application.interface.application.IRoombaApplication import IRoombaApplication
-from domain.model.enum.Roomba.RoombaPhase import RoombaPhase
-from domain.model.enum.Roomba.RoombaTarget import RoombaTarget
+from domain.model.enum.roomba.RoombaPhase import RoombaPhase
+from domain.model.enum.roomba.RoombaTarget import RoombaTarget
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 from infraestructure.persistence.dependencies.DependencyInjection import GetRoombaApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils

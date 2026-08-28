@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateRequest import PatchRoombaStateRequest
-from domain.model.enum.Roomba.RoombaPhase import RoombaPhase
+from domain.model.enum.roomba.RoombaPhase import RoombaPhase
 
 @dataclass
 class RoombaState:

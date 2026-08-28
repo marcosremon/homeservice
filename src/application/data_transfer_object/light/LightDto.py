@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from domain.model.enum.Light.LightLocation import LightLocation
+from domain.model.enum.light.LightLocation import LightLocation
 
 @dataclass
 class LightDto:
