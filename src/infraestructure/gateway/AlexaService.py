@@ -73,8 +73,6 @@ class AlexaService(IAlexaService):
                         keepSessionOpen = True
                 else:
                     message: str = ""
-                    # los servicios discriminan por el nombre completo del intent,
-                    # no por el prefijo que guarda el enum.
                     intentNameString: str = rawIntentName
 
                     if intentName == IntentName.roomba_order_: message = await self._roombaService.ExecuteRoombaOrder(intentNameString, alexaRequest)
@@ -124,7 +122,7 @@ class AlexaService(IAlexaService):
     def _readHistory(alexaRequest: AlexaRequest) -> list[GeminiTurn]:
         """El historial de la conversacion viaja en los sessionAttributes.
 
-        alexa devuelve en cada turno lo que le mandamos en el anterior, asi que
+        alexa devuelve en cada turno lo que le mandamos en el anterior, asi que_historyAdapter
         es el unico "estado" que tiene la skill.
         """
         try:

@@ -1,0 +1,52 @@
+meta {
+  name: Send alexa order temperature
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:5131/api/alexa
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Debug-Key: {{debugKey}}
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "session": {
+      "new": true,
+      "sessionId": "amzn1.echo-api.session.test",
+      "application": {
+        "applicationId": "{{alexaSkillId}}"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.test"
+      },
+      "attributes": {}
+    },
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "amzn1.echo-api.request.test",
+      "timestamp": "2026-08-27T12:00:00Z",
+      "intent": {
+        "name": "temperature_sensor_order_bajar_x_temperatura_en_x_habitacion",
+        "confirmationStatus": "NONE",
+        "slots": {
+          "grados": {
+            "name": "grados",
+            "value": "4"
+          },
+          "habitacion": {
+            "name": "habitacion",
+            "value": "salón"
+          }
+        }
+      }
+    }
+  }
+}
