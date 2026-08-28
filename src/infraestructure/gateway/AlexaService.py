@@ -46,11 +46,13 @@ class AlexaService(IAlexaService):
             speechText: str = ""
             keepSessionOpen: bool = False
 
+            rawIntentName: str = intent.name if intent is not None else ""
+
             isLaunchRequest: bool = GeneralUtils.ParseEnumExact(AlexaRequestType, alexaRequest.alexaRequestData.type) == AlexaRequestType.LaunchRequest
             if isLaunchRequest:
                 speechText = "Hola, ya puedes hablar conmigo. ¿Qué quieres saber?"
                 keepSessionOpen = True
-            elif (intentName := GeneralUtils.ParseEnumExact(IntentName, intent.name if intent is not None else None)) is not None:
+            elif (intentName := self._resolveIntentName(rawIntentName)) is not None:
                 if intentName == IntentName.ConversationIntent:
                     querySlot: AlexaSlot | None = intent.slots.get("query") if intent is not None and intent.slots is not None else None
                     userText: str = querySlot.value if querySlot is not None and querySlot.value is not None else ""
@@ -71,7 +73,9 @@ class AlexaService(IAlexaService):
                         keepSessionOpen = True
                 else:
                     message: str = ""
-                    intentNameString: str = intentName.name
+                    # los servicios discriminan por el nombre completo del intent,
+                    # no por el prefijo que guarda el enum.
+                    intentNameString: str = rawIntentName
 
                     if intentName == IntentName.roomba_order_: message = await self._roombaService.ExecuteRoombaOrder(intentNameString, alexaRequest)
                     if intentName == IntentName.light_order_: message = await self._lightService.ExecuteLightOrder(intentNameString)
@@ -80,7 +84,7 @@ class AlexaService(IAlexaService):
 
                     alexaResponse.alexaResponseContent = AlexaUtils.BuildAlexaResponse(intentNameString, message)
             else:
-                print(f"AlexaService -> intent desconocido: {intent.name if intent is not None else None}")
+                print(f"AlexaService -> intent desconocido: {rawIntentName}")
                 speechText = "No te he entendido, ¿puedes repetir?"
                 keepSessionOpen = True
 
@@ -90,6 +94,29 @@ class AlexaService(IAlexaService):
             print(f"Unexpected error on AlexaService -> send_alexa_order -> {ex}")
 
         return alexaResponse
+    # endregion
+
+    # region _resolveIntentName
+    @staticmethod
+    def _resolveIntentName(rawIntentName: str) -> IntentName | None:
+        """Alexa manda el nombre completo del intent, el enum guarda el prefijo.
+
+        "ConversationIntent" coincide letra a letra, pero los intents de dominio
+        llegan como "<prefijo><orden>" (p.ej. "light_order_encender_luces_salon"),
+        asi que ahi hay que resolver por prefijo o nunca encontrariamos el miembro.
+        """
+        if GeneralUtils.IsNullOrEmpty(rawIntentName):
+            return None
+
+        exactIntentName: IntentName | None = GeneralUtils.ParseEnumExact(IntentName, rawIntentName)
+        if exactIntentName is not None:
+            return exactIntentName
+
+        for intentName in IntentName:
+            if intentName.name.endswith("_") and rawIntentName.startswith(intentName.name):
+                return intentName
+
+        return None
     # endregion
 
     # region _read_history

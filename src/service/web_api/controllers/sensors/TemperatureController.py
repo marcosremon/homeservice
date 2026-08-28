@@ -26,7 +26,7 @@ router: APIRouter = APIRouter(
 
 @cbv(router)
 class TemperatureController:
-    _presenceSensorApplication: ITemperatureSensorApplication = Depends(GetTemperatureSensorApplication)
+    _temperatureSensorApplication: ITemperatureSensorApplication = Depends(GetTemperatureSensorApplication)
 
     #region CreateTemperatureSensor
     @router.post("/create-temperature-sensor", response_model = CreateTemperatureSensorResponseJson, status_code = status.HTTP_200_OK)
@@ -58,7 +58,7 @@ class TemperatureController:
                     measureAt = createTemperatureSensorRequestJson.measureAt,
                 )
 
-                createTemperatureSensorResponse: CreateTemperatureSensorResponse = await self._presenceSensorApplication.CreateTemperatureSensor(createTemperatureSensorRequest)
+                createTemperatureSensorResponse: CreateTemperatureSensorResponse = await self._temperatureSensorApplication.CreateTemperatureSensor(createTemperatureSensorRequest)
 
                 createTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson(createTemperatureSensorResponse.responseCode)
                 createTemperatureSensorResponseJson.isSuccess = createTemperatureSensorResponse.isSuccess
@@ -66,7 +66,7 @@ class TemperatureController:
         except Exception as ex:
             createTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson.INTERNAL_SERVER_ERROR
             createTemperatureSensorResponseJson.isSuccess = False
-            createTemperatureSensorResponseJson.message = f"Ha ocurrido un error al modificar los datos del sensor de presencia {ex}."
+            createTemperatureSensorResponseJson.message = f"Ha ocurrido un error al crear el sensor de temperatura {ex}."
 
         return createTemperatureSensorResponseJson
     # endregion
@@ -95,7 +95,7 @@ class TemperatureController:
                     measureAt = patchTemperatureSensorRequestJson.measureAt,
                 )
 
-                patchTemperatureSensorResponse: PatchTemperatureSensorResponse = await self._presenceSensorApplication.PatchTemperatureSensor(patchTemperatureSensorRequest)
+                patchTemperatureSensorResponse: PatchTemperatureSensorResponse = await self._temperatureSensorApplication.PatchTemperatureSensor(patchTemperatureSensorRequest)
 
                 patchTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson(patchTemperatureSensorResponse.responseCode)
                 patchTemperatureSensorResponseJson.isSuccess = patchTemperatureSensorResponse.isSuccess

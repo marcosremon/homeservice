@@ -35,7 +35,7 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
                            Device.deviceName == createTemperatureSensorRequest.deviceName,
                            Device.deviceType == createTemperatureSensorRequest.deviceType))
                 if device is not None:
-                    createTemperatureSensorResponse.responseCode = ResponseCodes.ANY_ROOMBA_EXIST
+                    createTemperatureSensorResponse.responseCode = ResponseCodes.CONFLICT
                     createTemperatureSensorResponse.isSuccess = False
                     createTemperatureSensorResponse.message = f"the device with macAddress {createTemperatureSensorRequest.macAddress} and device name {createTemperatureSensorRequest.deviceName} already exists"
                 else:
@@ -61,9 +61,9 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
                     self._session.add(temperatureSensor)
                     await self._session.flush()
 
-            createTemperatureSensorResponse.responseCode = ResponseCodes.CREATED
-            createTemperatureSensorResponse.isSuccess = True
-            createTemperatureSensorResponse.message = f"Temperature Sensor with the name {createTemperatureSensorRequest.deviceName} created successfully."
+                    createTemperatureSensorResponse.responseCode = ResponseCodes.CREATED
+                    createTemperatureSensorResponse.isSuccess = True
+                    createTemperatureSensorResponse.message = f"Temperature Sensor with the name {createTemperatureSensorRequest.deviceName} created successfully."
         except Exception as ex:
             createTemperatureSensorResponse.responseCode = ResponseCodes.UNEXPECTED_ERROR
             createTemperatureSensorResponse.isSuccess = False
@@ -105,9 +105,14 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
                         if not GeneralUtils.IsNullOrEmpty(patchTemperatureSensorRequest.macAddress):
                             device.macAddress = patchTemperatureSensorRequest.macAddress
 
-                        temperatureSensor.temperature = patchTemperatureSensorRequest.temperature
-                        temperatureSensor.adcVoltage = patchTemperatureSensorRequest.adcVoltage
-                        temperatureSensor.measureAt = patchTemperatureSensorRequest.measureAt
+                        if patchTemperatureSensorRequest.temperature is not None:
+                            temperatureSensor.temperature = patchTemperatureSensorRequest.temperature
+
+                        if patchTemperatureSensorRequest.adcVoltage is not None:
+                            temperatureSensor.adcVoltage = patchTemperatureSensorRequest.adcVoltage
+
+                        if patchTemperatureSensorRequest.measureAt is not None:
+                            temperatureSensor.measureAt = patchTemperatureSensorRequest.measureAt
 
                         await self._session.commit()
 

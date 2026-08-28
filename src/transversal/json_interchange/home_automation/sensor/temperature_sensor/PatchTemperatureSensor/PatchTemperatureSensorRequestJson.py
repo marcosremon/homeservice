@@ -7,6 +7,6 @@ class PatchTemperatureSensorRequestJson:
     deviceType: str = ""
     model: str = ""
     macAddress: str = ""
-    temperature: float = 0.0
-    adcVoltage: float = 0.0
-    measureAt: float = 0.0
+    temperature: float | None = None
+    adcVoltage: float | None = None
+    measureAt: float | None = None
