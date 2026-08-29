@@ -13,7 +13,7 @@ from transversal.json_interchange.change_computer_status.turn_on_computer.TurnOn
 
 router: APIRouter = APIRouter(
     prefix = "/change-computer-status",
-    dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
+    dependencies = [Depends(ApiKeyAuth.GetApiKey)], # filtro de seguridad
 )
 
 @cbv(router)

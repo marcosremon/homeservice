@@ -3,25 +3,21 @@ from fastapi_utils.cbv import cbv
 from starlette import status
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
-from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequest import \
-    PatchTemperatureSensorRequest
-from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponse import \
-    PatchTemperatureSensorResponse
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequest import PatchTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponse import PatchTemperatureSensorResponse
 from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
 from infraestructure.persistence.dependencies.DependencyInjection import GetTemperatureSensorApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
 from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequestJson import CreateTemperatureSensorRequestJson
 from transversal.json_interchange.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponseJson import CreateTemperatureSensorResponseJson
-from transversal.json_interchange.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequestJson import \
-    PatchTemperatureSensorRequestJson
-from transversal.json_interchange.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponseJson import \
-    PatchTemperatureSensorResponseJson
+from transversal.json_interchange.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequestJson import PatchTemperatureSensorRequestJson
+from transversal.json_interchange.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponseJson import PatchTemperatureSensorResponseJson
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 
 router: APIRouter = APIRouter(
-    prefix="/sensors/temperature-sensor",
-    dependencies=[Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
+    prefix = "/sensors/temperature-sensor",
+    dependencies = [Depends(ApiKeyAuth.GetApiKey)], # filtro de seguridad
 )
 
 @cbv(router)

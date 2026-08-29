@@ -16,7 +16,7 @@ from transversal.json_interchange.home_automation.sensor.presence_sensor.patch_p
 
 router: APIRouter = APIRouter(
     prefix = "/sensor/presence-sensor",
-    dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
+    dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # filtro de seguridad
 )
 
 @cbv(router)

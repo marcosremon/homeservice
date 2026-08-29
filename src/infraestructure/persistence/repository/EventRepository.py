@@ -27,8 +27,7 @@ class EventRepository(IEventRepository):
                     getPresenceSensorsStatusResponse.isSuccess = False
                     getPresenceSensorsStatusResponse.message = "No roomba found."
                 else:
-                    getPresenceSensorsStatusResponse.isHouseEmpty = not any(
-                        ps.presence for ps in presenceSensors)
+                    getPresenceSensorsStatusResponse.isHouseEmpty = not any(ps.presence for ps in presenceSensors)
                     getPresenceSensorsStatusResponse.lastRoombaActivation = roomba.lastRoombaActivation
                     getPresenceSensorsStatusResponse.responseCode = ResponseCodes.OK
                     getPresenceSensorsStatusResponse.isSuccess = True

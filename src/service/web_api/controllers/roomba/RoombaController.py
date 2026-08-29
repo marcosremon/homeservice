@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-
 from fastapi_utils.cbv import cbv
 from fastapi import APIRouter, Depends, status
 from application.data_transfer_object.roomba.create_roomba.CreateRoombaRequest import CreateRoombaRequest
@@ -20,7 +19,7 @@ from transversal.json_interchange.roomba.patch_roomba_state.PatchRoombaStateResp
 
 router: APIRouter = APIRouter(
     prefix = "/roomba",
-    dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # equivalente a [ApiKeyAuth] a nivel de clase
+    dependencies = [Depends(ApiKeyAuth.GetApiKey)],  # filtro de seguridad
 )
 
 @cbv(router)
