@@ -1,4 +1,5 @@
 import asyncio
+from contextlib import AsyncExitStack
 import json
 import ssl
 from datetime import datetime, time, timezone
@@ -34,6 +35,12 @@ class RoombaUtils:
     # Margen para que el shadow nos diga el pmap_id antes de mandar la orden.
     _PMAP_DISCOVERY_SECONDS: float = 3.0
 
+    # La roomba solo acepta un cliente MQTT y tarda ~2,5s en volver a escuchar
+    # tras cerrar una conexion: sin reintentos, la segunda orden seguida se come
+    # un ECONNREFUSED.
+    _CONNECT_RETRY_ATTEMPTS: int = 5
+    _CONNECT_RETRY_SECONDS: float = 2.5
+
     # Espera maxima a que el shadow conteste con la fase actual.
     _PHASE_QUERY_TIMEOUT_SECONDS: float = 5.0
 
@@ -68,9 +75,26 @@ class RoombaUtils:
             username = settings.roombaBlid,
             password = settings.roombaPasswd,
             identifier = settings.roombaBlid,
-            protocol = ProtocolVersion.V31,
+            protocol = ProtocolVersion.V311,
             tls_context = tlsContext,
         )
+    # endregion
+
+    # region _connect
+    @classmethod
+    async def _connect(cls, settings: Settings, exitStack: AsyncExitStack) -> Client:
+        """Conecta reintentando: tras cerrar una sesion la roomba rechaza un rato."""
+        lastError: Exception = MqttError("sin intentos")
+
+        for attempt in range(cls._CONNECT_RETRY_ATTEMPTS):
+            try:
+                return await exitStack.enter_async_context(cls._buildClient(settings))
+            except (MqttError, OSError) as ex:
+                lastError = ex
+                if attempt < cls._CONNECT_RETRY_ATTEMPTS - 1:
+                    await asyncio.sleep(cls._CONNECT_RETRY_SECONDS)
+
+        raise MqttError(f"no se pudo conectar tras {cls._CONNECT_RETRY_ATTEMPTS} intentos: {lastError}")
     # endregion
 
     # region _decodePayload
@@ -81,7 +105,7 @@ class RoombaUtils:
 
     # region _applyStateMessage
     @classmethod
-    def _applyStateMessage(cls, rawPayload: str, roombaState: RoombaState, roombaTarget: RoombaTarget | None) -> None:
+    def _applyStateMessage(cls, rawPayload: str, roombaState: RoombaState, roombaTarget: RoombaTarget | None, roombaAction: RoombaAction | None = None) -> None:
         """Vuelca un mensaje del shadow sobre el estado que vamos acumulando.
 
         Es el ApplicationMessageReceivedAsync de C#. La roomba manda el estado unas
@@ -120,12 +144,30 @@ class RoombaUtils:
                     roombaState.phase = phase
                     roombaState.phaseSeen = True
 
-                if phase == RoombaPhase.RUN and not roombaState.commandAccepted:
+                # Solo un START cuenta como activacion: al pausar o mandarla a
+                # casa el shadow sigue diciendo "run" un rato, y eso machacaba
+                # last_roomba_activation con la hora de la pausa.
+                if phase == RoombaPhase.RUN and not roombaState.commandAccepted and roombaAction == RoombaAction.START:
                     roombaState.commandAccepted = True
                     roombaState.activationEvents.append(cls.BuildActivationRequest(
                         roombaPhase = RoombaPhase.RUN,
                         roombaTarget = roombaTarget,
                         isActivation = True,
+                        batteryPercent = roombaState.battery,
+                        binFull = roombaState.binFull,
+                        errorCode = roombaState.errorCode,
+                        errorMessage = roombaState.errorMessage,
+                        pmapId = roombaState.pmapId,
+                        userPmapvId = roombaState.pmapVersion,
+                    ))
+
+                # Vuelta a la base o a cargar: la mision ha terminado.
+                if phase in (RoombaPhase.CHARGE, RoombaPhase.HM_USR_DOCK) and not roombaState.finishSeen:
+                    roombaState.finishSeen = True
+                    roombaState.activationEvents.append(cls.BuildActivationRequest(
+                        roombaPhase = phase,
+                        roombaTarget = roombaTarget,
+                        isFinished = True,
                         batteryPercent = roombaState.battery,
                         binFull = roombaState.binFull,
                         errorCode = roombaState.errorCode,
@@ -139,9 +181,9 @@ class RoombaUtils:
 
     # region _listenShadow
     @classmethod
-    async def _listenShadow(cls, client: Client, roombaState: RoombaState, roombaTarget: RoombaTarget | None) -> None:
+    async def _listenShadow(cls, client: Client, roombaState: RoombaState, roombaTarget: RoombaTarget | None, roombaAction: RoombaAction | None = None) -> None:
         async for message in client.messages:
-            cls._applyStateMessage(cls._decodePayload(message.payload), roombaState, roombaTarget)
+            cls._applyStateMessage(cls._decodePayload(message.payload), roombaState, roombaTarget, roombaAction)
     # endregion
 
     # region GetRoomInfo
@@ -158,7 +200,9 @@ class RoombaUtils:
             return
 
         try:
-            async with cls._buildClient(settings) as client:
+            async with AsyncExitStack() as exitStack:
+                client: Client = await cls._connect(settings, exitStack)
+
                 await client.subscribe(f"$aws/things/{settings.roombaBlid}/shadow/update")
                 await client.subscribe("wifistat")
                 await client.subscribe("#")
@@ -194,7 +238,9 @@ class RoombaUtils:
 
         roombaState: RoombaState = RoombaState()
         try:
-            async with cls._buildClient(settings) as client:
+            async with AsyncExitStack() as exitStack:
+                client: Client = await cls._connect(settings, exitStack)
+
                 await client.subscribe(f"$aws/things/{settings.roombaBlid}/shadow/update")
 
                 async with asyncio.timeout(cls._PHASE_QUERY_TIMEOUT_SECONDS):
@@ -227,11 +273,13 @@ class RoombaUtils:
         roombaState: RoombaState = RoombaState()
 
         try:
-            async with cls._buildClient(settings) as client:
+            async with AsyncExitStack() as exitStack:
+                client: Client = await cls._connect(settings, exitStack)
+
                 await client.subscribe(f"$aws/things/{settings.roombaBlid}/shadow/update")
                 await client.subscribe("wifistat")
 
-                listener: asyncio.Task[None] = asyncio.create_task(cls._listenShadow(client, roombaState, roombaTarget))
+                listener: asyncio.Task[None] = asyncio.create_task(cls._listenShadow(client, roombaState, roombaTarget, roombaAction))
                 try:
                     # La roomba anuncia su mapa nada mas conectar; hay que darle un
                     # momento antes de mandar una orden por regiones.
@@ -266,6 +314,7 @@ class RoombaUtils:
                     RoombaActivatedEvent.Publish(cls.BuildActivationRequest(
                         roombaPhase = roombaState.phase,
                         roombaTarget = roombaTarget,
+                        isFinished = roombaState.phase in (RoombaPhase.CHARGE, RoombaPhase.HM_USR_DOCK) and not roombaState.finishSeen,
                         batteryPercent = roombaState.battery,
                         binFull = roombaState.binFull,
                         errorCode = roombaState.errorCode,
@@ -290,6 +339,7 @@ class RoombaUtils:
         roombaPhase: RoombaPhase,
         roombaTarget: RoombaTarget | None = None,
         isActivation: bool = False,
+        isFinished: bool = False,
         batteryPercent: int = 0,
         binFull: bool = False,
         errorCode: int = 0,
@@ -300,6 +350,7 @@ class RoombaUtils:
         return PatchRoombaStateRequest(
             eventTime = datetime.now(timezone.utc),
             isActivation = isActivation,
+            isFinished = isFinished,
             target = roombaTarget if roombaTarget is not None else RoombaTarget.FULL_HOUSE,
             phase = roombaPhase,
             batteryPercent = batteryPercent,

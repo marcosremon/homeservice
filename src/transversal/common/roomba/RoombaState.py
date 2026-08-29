@@ -13,4 +13,5 @@ class RoombaState:
     phase: RoombaPhase = RoombaPhase.STOP
     phaseSeen: bool = False
     commandAccepted: bool = False
+    finishSeen: bool = False
     activationEvents: list[PatchRoombaStateRequest] = field(default_factory = list)
