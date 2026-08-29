@@ -75,10 +75,12 @@ class AlexaService(IAlexaService):
                     message: str = ""
                     intentNameString: str = rawIntentName
 
-                    if intentName == IntentName.roomba_order_: message = await self._roombaService.ExecuteRoombaOrder(intentNameString, alexaRequest)
-                    if intentName == IntentName.light_order_: message = await self._lightService.ExecuteLightOrder(intentNameString)
-                    if intentName == IntentName.computer_status_order_: message = await self._computerStatusService.ExecuteComputerStatusOrder(intentNameString)
-                    if intentName == IntentName.temperature_sensor_order_: message = await self._temperatureSensorService.ExecuteTemperatureSensorOrder(intentNameString, alexaRequest)
+                    match intentName:
+                        case IntentName.computer_status_order_: message = await self._computerStatusService.ExecuteComputerStatusOrder(intentNameString)
+                        case IntentName.roomba_order_: message = await self._roombaService.ExecuteRoombaOrder(intentNameString, alexaRequest)
+                        case IntentName.light_order_: message = await self._lightService.ExecuteLightOrder(intentNameString)
+                        case IntentName.roomba_order_: message = await self._roombaService.ExecuteRoombaOrder(intentNameString, alexaRequest)
+                        case IntentName.temperature_sensor_order_: message = await self._temperatureSensorService.ExecuteTemperatureSensorOrder(intentNameString, alexaRequest)
 
                     alexaResponse.alexaResponseContent = AlexaUtils.BuildAlexaResponse(intentNameString, message)
             else:

@@ -79,8 +79,8 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
     async def PatchTemperatureSensor(self, patchTemperatureSensorRequest: PatchTemperatureSensorRequest) -> PatchTemperatureSensorResponse:
         patchTemperatureSensorResponse: PatchTemperatureSensorResponse = PatchTemperatureSensorResponse()
         try:
-            houseZone: HouseZone | None = await self._session.scalar(
-                select(HouseZone).where(HouseZone.callout == patchTemperatureSensorRequest.callOut))
+            houseZone: HouseZone | None = await self._session.scalar(select(HouseZone)
+                .where(HouseZone.callout == patchTemperatureSensorRequest.callOut))
             if houseZone is None:
                 patchTemperatureSensorResponse.responseCode = ResponseCodes.NOT_FOUND
                 patchTemperatureSensorResponse.isSuccess = False
@@ -95,8 +95,8 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
                     patchTemperatureSensorResponse.isSuccess = False
                     patchTemperatureSensorResponse.message = f"Device {patchTemperatureSensorRequest.deviceName} not found"
                 else:
-                    temperatureSensor: TemperatureSensor | None = await self._session.scalar(
-                        select(TemperatureSensor).where(TemperatureSensor.deviceId == device.deviceId))
+                    temperatureSensor: TemperatureSensor | None = await self._session.scalar(select(TemperatureSensor)
+                        .where(TemperatureSensor.deviceId == device.deviceId))
                     if temperatureSensor is None:
                         patchTemperatureSensorResponse.responseCode = ResponseCodes.NOT_FOUND
                         patchTemperatureSensorResponse.isSuccess = False
