@@ -1,4 +1,5 @@
 import unicodedata
+from datetime import datetime, timezone
 from enum import Enum
 from typing import TypeVar
 
@@ -32,6 +33,24 @@ class GeneralUtils:
         decomposed: str = unicodedata.normalize("NFD", value)
 
         return "".join(char for char in decomposed if unicodedata.category(char) != "Mn")
+    #endregion
+
+    #region ToNaiveUtc
+    @staticmethod
+    def ToNaiveUtc(value: datetime) -> datetime:
+        """Pasa la fecha a UTC y le quita el tzinfo.
+
+        Los sensores mandan el instante como epoch, asi que pydantic lo
+        deserializa como aware, pero las columnas son TIMESTAMP WITHOUT TIME
+        ZONE y asyncpg revienta al mezclar aware y naive.
+        """
+        if value is None:
+            return value
+
+        if value.tzinfo is None:
+            return value
+
+        return value.astimezone(timezone.utc).replace(tzinfo = None)
     #endregion
 
     #region ParseEnum

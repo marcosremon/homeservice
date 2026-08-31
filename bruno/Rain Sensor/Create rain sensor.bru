@@ -1,0 +1,31 @@
+meta {
+  name: Create rain sensor
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:5131/api/sensors/rain-sensor/create-rain-sensor
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Api-Key: {{apiKey}}
+}
+
+body:json {
+  {
+    "callOut": "TERRAZA",
+    "deviceName": "rain_sensor_terraza",
+    "deviceType": "RAIN_SENSOR",
+    "model": "YL-83 / MH-RD",
+    "manufacturer": "Generic",
+    "macAddress": "AA:BB:CC:DD:EE:01",
+    "adcValue": 4095,
+    "wetnessPercent": 0,
+    "isRaining": false,
+    "measureAt": 1787918400.0
+  }
+}

@@ -1,0 +1,30 @@
+meta {
+  name: Patch rain sensor
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:5131/api/sensors/rain-sensor/patch-rain-sensor
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  X-Api-Key: {{apiKey}}
+}
+
+body:json {
+  {
+    "callOut": "TERRAZA",
+    "deviceName": "rain_sensor_terraza",
+    "deviceType": "RAIN_SENSOR",
+    "model": "YL-83 / MH-RD",
+    "macAddress": "AA:BB:CC:DD:EE:01",
+    "adcValue": 1200,
+    "wetnessPercent": 71,
+    "isRaining": true,
+    "measureAt": 1787922000.0
+  }
+}
