@@ -95,6 +95,7 @@ class RainSensorController:
                 patchRainSensorResponseJson.responseCodeJson = ResponseCodesJson(patchRainSensorResponse.responseCode)
                 patchRainSensorResponseJson.isSuccess = patchRainSensorResponse.isSuccess
                 patchRainSensorResponseJson.message = patchRainSensorResponse.message
+                patchRainSensorResponseJson.rainStarted = patchRainSensorResponse.rainStarted
         except Exception as ex:
             patchRainSensorResponseJson.responseCodeJson = ResponseCodesJson.INTERNAL_SERVER_ERROR
             patchRainSensorResponseJson.isSuccess = False

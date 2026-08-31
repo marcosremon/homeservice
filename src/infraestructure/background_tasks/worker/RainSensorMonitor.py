@@ -1,7 +1,8 @@
 import asyncio
 from contextlib import asynccontextmanager, suppress
 from datetime import datetime, timedelta, timezone
-from sqlalchemy import select, update, Sequence
+from collections.abc import Sequence
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from domain.model.entity.RainSensor import RainSensor
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
@@ -47,16 +48,10 @@ class RainSensorMonitor:
         try:
             async with asynccontextmanager(GetSession)() as session:
                 await cls._expireRainStatus(session)
-
-                isRaining: bool = await cls._isRaining(session)
-
-                if isRaining:
-                    # TODO: decidir que se hace cuando llueve enviar notificacion a mi movil
-
-                    pass
         except asyncio.CancelledError:
             raise
-        except Exception:
+        except Exception as ex:
+            print(f"error en RainSensorMonitor -> _runRainSensorJob {ex}")
             pass
     # endregion
 
@@ -66,19 +61,11 @@ class RainSensorMonitor:
         rainingSensors: Sequence[RainSensor] = (await session.scalars(select(RainSensor)
             .where(RainSensor.isRaining))).all()
 
+        expiryLimit: datetime = datetime.now(timezone.utc).replace(tzinfo = None) - timedelta(minutes = _RAIN_EXPIRY_MINUTES)
+
         for rainSensor in rainingSensors:
-            expiryLimit: datetime = datetime.now(timezone.utc).replace(tzinfo = None) - timedelta(minutes = _RAIN_EXPIRY_MINUTES)
             if rainSensor.lastDetectedRain < expiryLimit:
                 rainSensor.isRaining = False
 
         await session.commit()
-    # endregion
-
-    # region _isRaining
-    @staticmethod
-    async def _isRaining(session: AsyncSession) -> bool:
-        rainSensor: RainSensor | None = await session.scalar(select(RainSensor)
-            .where(RainSensor.isRaining).limit(1))
-
-        return rainSensor is not None
     # endregion

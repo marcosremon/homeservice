@@ -6,11 +6,13 @@ from application.interface.application.IAlexaApplication import IAlexaApplicatio
 from application.interface.application.IChangeComputerStatusApplication import IChangeComputerStatusApplication
 from application.interface.application.IEventApplication import IEventApplication
 from application.interface.application.IPresenceSensorApplication import IPresenceSensorApplication
+from application.interface.application.IRainSensorApplication import IRainSensorApplication
 from application.interface.application.IRoombaApplication import IRoombaApplication
 from application.interface.repository.IChangeComputerStatusRepository import IChangeComputerStatusRepository
 from application.interface.repository.IEventRepository import IEventRepository
 from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
 from application.interface.repository.IPresenceSensorRepository import IPresenceSensorRepository
+from application.interface.repository.IRainSensorRepository import IRainSensorRepository
 from application.interface.repository.IRoombaRepository import IRoombaRepository
 from application.interface.repository.ILightRepository import ILightRepository
 from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
@@ -19,12 +21,14 @@ from application.interface.service.IComputerStatusService import IComputerStatus
 from application.interface.service.IGeminiService import IGeminiService
 from application.interface.service.ILightService import ILightService
 from application.interface.service.IMqttService import IMqttService
+from application.interface.service.INotificationService import INotificationService
 from application.interface.service.IRoombaService import IRoombaService
 from application.interface.service.ITemperatureSensorService import ITemperatureSensorService
 from application.use_case.AlexaApplication import AlexaApplication
 from application.use_case.ChangeComputerStatusApplication import ChangeComputerStatusApplication
 from application.use_case.EventApplication import EventApplication
 from application.use_case.PresenceSensorApplication import PresenceSensorApplication
+from application.use_case.RainSensorApplication import RainSensorApplication
 from application.use_case.RoombaApplication import RoombaApplication
 from application.use_case.TemperatureSensorApplication import TemperatureSensorApplication
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
@@ -35,10 +39,12 @@ from infraestructure.gateway.ComputerStatusService import ComputerStatusService
 from infraestructure.gateway.GeminiService import GeminiService
 from infraestructure.gateway.LightService import LightService
 from infraestructure.gateway.MqttService import MqttService
+from infraestructure.gateway.NotificationService import NotificationService
 from infraestructure.gateway.RoombaService import RoombaService
 from infraestructure.gateway.TemperatureSensorService import TemperatureSensorService
 from infraestructure.persistence.repository.LightRepository import LightRepository
 from infraestructure.persistence.repository.PresenceSensorRepository import PresenceSensorRepository
+from infraestructure.persistence.repository.RainSensorRepository import RainSensorRepository
 from infraestructure.persistence.repository.RoombaRepository import RoombaRepository
 from infraestructure.persistence.repository.TemperatureSensorRepository import TemperatureSensorRepository
 from transversal.common.configuration.Settings import Settings, GetSettings
@@ -57,6 +63,18 @@ def GetTemperatureSensorRepository(session: AsyncSession = Depends(GetSession)) 
 
 def GetTemperatureSensorApplication(temperatureSensorRepository: ITemperatureSensorRepository = Depends(GetTemperatureSensorRepository)) -> ITemperatureSensorApplication:
     return TemperatureSensorApplication(temperatureSensorRepository)
+# endregion
+
+# region RainSensor
+def BuildRainSensorRepository(session: AsyncSession) -> IRainSensorRepository:
+    """Fabrica sin Depends: la consume el monitor de lluvia."""
+    return RainSensorRepository(session)
+
+def GetRainSensorRepository(session: AsyncSession = Depends(GetSession)) -> IRainSensorRepository:
+    return BuildRainSensorRepository(session)
+
+def GetRainSensorApplication(rainSensorRepository: IRainSensorRepository = Depends(GetRainSensorRepository)) -> IRainSensorApplication:
+    return RainSensorApplication(rainSensorRepository, BuildNotificationService())
 # endregion
 
 # region roomba
@@ -103,6 +121,13 @@ def GetLightRepository(session: AsyncSession = Depends(GetSession)) -> ILightRep
 def _GetHttpClient() -> httpx.AsyncClient:
     """Equivalente a IHttpClientFactory: un cliente reutilizado, no uno por peticion."""
     return httpx.AsyncClient()
+
+def BuildNotificationService() -> INotificationService:
+    """Fabrica sin Depends: la consumen la application y los monitores."""
+    return NotificationService(_GetHttpClient(), GetSettings())
+
+def GetNotificationService() -> INotificationService:
+    return BuildNotificationService()
 
 @lru_cache
 def GetMqttService() -> IMqttService:

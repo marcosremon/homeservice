@@ -20,7 +20,6 @@ class Settings(BaseSettings):
 
     #region properties
 
-    # Equivalente al bloque Kestrel de appsettings.json.
     appHost: str = "0.0.0.0"
     appPort: int = 8000
 
@@ -29,21 +28,17 @@ class Settings(BaseSettings):
     internalApiKey: str
     debugBypassKey: str = ""
 
-    # Equivalente a AlexaSettings de appsettings.json.
     alexaVersion: str = "1.0"
     alexaSkillId: str = ""
 
-    # Equivalente a GeminiSettings de appsettings.json.
     geminiApiKey: str = ""
     geminiModel: str = ""
 
-    # Equivalente a MqttSettings de appsettings.json.
     mqttHost: str = ""
     mqttPort: int = 1883
     mqttUser: str = ""
     mqttPassword: str = ""
 
-    # Equivalente a IRobotSettings de appsettings.json.
     roombaId: str = ""
     roombaPort: str = "8883"
     roombaBlid: str = ""
@@ -51,7 +46,10 @@ class Settings(BaseSettings):
     roombaPmapId: str = ""
     roombaPmapVersion: str = ""
 
-    # Equivalente a LanParametersSettings de appsettings.json. Los nombres llevan
+    # cualquiera que lo conozca puede publicar y leer, por eso no tiene default.
+    ntfyBaseUrl: str = "https://ntfy.sh"
+    ntfyTopic: str = ""
+
     # el prefijo lan_ porque las variables del .env se llaman LAN_*.
     lanComputerIp: str = ""
     lanComputerMac: str = ""

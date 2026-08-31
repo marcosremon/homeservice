@@ -111,6 +111,8 @@ class RainSensorRepository(IRainSensorRepository):
                         if not GeneralUtils.IsNullOrEmpty(patchRainSensorRequest.macAddress):
                             device.macAddress = patchRainSensorRequest.macAddress
 
+                        wasRaining: bool = rainSensor.isRaining
+
                         rainSensor.adcValue = patchRainSensorRequest.adcValue
                         rainSensor.wetnessPercent = patchRainSensorRequest.wetnessPercent
                         rainSensor.isRaining = patchRainSensorRequest.isRaining
@@ -121,6 +123,7 @@ class RainSensorRepository(IRainSensorRepository):
 
                         await self._session.commit()
 
+                        patchRainSensorResponse.rainStarted = not wasRaining and patchRainSensorRequest.isRaining
                         patchRainSensorResponse.responseCode = ResponseCodes.OK
                         patchRainSensorResponse.isSuccess = True
                         patchRainSensorResponse.message = f"Rain Sensor with the name {device.deviceName} updated successfully."
