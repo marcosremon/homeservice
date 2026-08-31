@@ -34,9 +34,9 @@ class TemperatureController:
                 GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.deviceType) or
                 GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.model) or
                 GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.manufacturer) or
-                createTemperatureSensorRequestJson.temperature == None or
-                createTemperatureSensorRequestJson.adcVoltage == None or
-                createTemperatureSensorRequestJson.measureAt == None
+                createTemperatureSensorRequestJson.temperature == 0.0 or
+                createTemperatureSensorRequestJson.adcVoltage == 0.0 or
+                createTemperatureSensorRequestJson.measureAt == 0.0
             ):
                 createTemperatureSensorResponseJson.responseCodeJson = ResponseCodesJson.INVALID_DATA
                 createTemperatureSensorResponseJson.isSuccess = False

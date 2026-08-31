@@ -25,6 +25,7 @@ from domain.model.entity.Light import Light  # noqa: F401
 from domain.model.entity.PresenceSensor import PresenceSensor  # noqa: F401
 from domain.model.entity.RainSensor import RainSensor  # noqa: F401
 from domain.model.entity.Roomba import Roomba  # noqa: F401
+from domain.model.entity.TemperatureSensor import TemperaturaSensro  # noqa: F401
 # endregion
 
 # region _get_session_factory

@@ -34,10 +34,6 @@ class RainSensorMonitor:
 
     # region _executeAsync
     async def _executeAsync(self) -> None:
-        """
-        El sleep va antes del trabajo, igual que en PresenceSensorMonitor: el primer
-        chequeo no ocurre en el arranque sino pasado el intervalo.
-        """
         while True:
             await asyncio.sleep(_INTERVAL_SECONDS)
             await self._runRainSensorJob()
@@ -59,8 +55,7 @@ class RainSensorMonitor:
     # region _expireRainStatus
     @staticmethod
     async def _expireRainStatus(session: AsyncSession) -> None:
-        rainingSensors: Sequence[RainSensor] = (await session.scalars(select(RainSensor)
-            .where(RainSensor.isRaining))).all()
+        rainingSensors: list[RainSensor] = list(await session.scalars(select(RainSensor).where(RainSensor.isRaining)))
 
         expiryLimit: datetime = GeneralUtils.UtcNow() - timedelta(minutes = _RAIN_EXPIRY_MINUTES)
 

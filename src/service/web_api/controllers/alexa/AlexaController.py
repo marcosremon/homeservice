@@ -1,5 +1,5 @@
 from fastapi_utils.cbv import cbv
-from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Header, Request, status
 from application.data_transfer_object.alexa.AlexaRequest import AlexaRequest
 from application.data_transfer_object.alexa.AlexaResponse import AlexaResponse
 from application.interface.application.IAlexaApplication import IAlexaApplication
@@ -31,31 +31,26 @@ class AlexaController:
     @router.post("/alexa", status_code = status.HTTP_200_OK)
     async def SendAlexaOrder(self, request: Request, xDebugKey: str = Header(default = "", alias = DebugBypass.HEADER_NAME)) -> AlexaResponseJson:
         alexaResponseJson: AlexaResponseJson = AlexaResponseJson()
+        baseResponseJson: BaseResponseJson = BaseResponseJson()
         try:
             # Bypass de pruebas (X-Debug-Key): omite firma de Amazon y validacion de skill.
             bypass: bool = DebugBypass.IsRequested(xDebugKey)
 
             if not bypass and not await self._alexaRequestVerifier.AmazonApprove(request):
-                alexaResponseJson.baseResponseJson = BaseResponseJson(
-                    responseCodeJson = ResponseCodesJson.UNAUTHORIZED,
-                    message = "Llamada realizada por un dispositivo no autorizado",
-                    isSuccess = False,
-                )
+                baseResponseJson.responseCodeJson = ResponseCodesJson.UNAUTHORIZED
+                baseResponseJson.isSuccess = False
+                baseResponseJson.message = "Llamada realizada por un dispositivo no autorizado"
             else:
                 alexaRequestJson: AlexaRequestJson | None = await AlexaUtils.ReadAlexaRequestJson(request)
 
                 if alexaRequestJson is None or alexaRequestJson.alexaRequestData is None:
-                    alexaResponseJson.baseResponseJson = BaseResponseJson(
-                        responseCodeJson = ResponseCodesJson.BAD_REQUEST,
-                        message = "AlexaController -> send_alexa_order -> alexa_request_data nula o ausente",
-                        isSuccess = False,
-                    )
+                    baseResponseJson.responseCodeJson = ResponseCodesJson.BAD_REQUEST
+                    baseResponseJson.message = "AlexaController -> send_alexa_order -> alexa_request_data nula o ausente"
+                    baseResponseJson.isSuccess = False
                 elif not bypass and not AlexaUtils.CheckSkillOrigin(alexaRequestJson.session, self._settings.alexaSkillId):
-                    alexaResponseJson.baseResponseJson = BaseResponseJson(
-                        responseCodeJson = ResponseCodesJson.UNAUTHORIZED,
-                        message = "Peticion de una skill no autorizada",
-                        isSuccess = False,
-                    )
+                    baseResponseJson.responseCodeJson = ResponseCodesJson.UNAUTHORIZED
+                    baseResponseJson.message = "Peticion de una skill no autorizada"
+                    baseResponseJson.isSuccess = False
                 else:
                     alexaRequest: AlexaRequest = AlexaRequest(
                         version = alexaRequestJson.version,
@@ -66,24 +61,19 @@ class AlexaController:
 
                     alexaResponse: AlexaResponse = await self._alexaApplication.SendAlexaOrder(alexaRequest)
 
+                    baseResponseJson.responseCodeJson = ResponseCodesJson.OK
+                    baseResponseJson.message = "All success"
+                    baseResponseJson.isSuccess = True
+
                     alexaResponseJson.version = alexaResponse.version
                     alexaResponseJson.sessionAttributes = alexaResponse.sessionAttributes
                     alexaResponseJson.alexaResponseContent = alexaResponse.alexaResponseContent
-                    alexaResponseJson.baseResponseJson = BaseResponseJson(
-                        responseCodeJson = ResponseCodesJson.OK,
-                        message = "All success",
-                        isSuccess = True,
-                    )
+                    alexaResponseJson.baseResponseJson = baseResponseJson
         except Exception as ex:
             print(f"AlexaController -> send_alexa_order -> Error inesperado {ex}")
-            alexaResponseJson.baseResponseJson = BaseResponseJson(
-                responseCodeJson = ResponseCodesJson.UNEXPECTED_ERROR,
-                message = "Error inesperado al procesar la peticion",
-                isSuccess = False,
-            )
-
-        if alexaResponseJson.baseResponseJson.responseCodeJson == ResponseCodesJson.UNAUTHORIZED:
-            raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, detail = "Unauthorized")
+            baseResponseJson.responseCodeJson = ResponseCodesJson.UNEXPECTED_ERROR
+            baseResponseJson.message = "Error inesperado al procesar la peticion"
+            baseResponseJson.isSuccess = False
 
         return alexaResponseJson
     #endregion
