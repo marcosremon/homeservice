@@ -11,19 +11,19 @@ class RoombaActivationHandler:
     def __init__(self) -> None:
         self._pending: set[asyncio.Task[None]] = set()
 
-    # region start
+    # region Start
     def Start(self) -> None:
         RoombaActivatedEvent.Subscribe(self._handleRoombaActivation)
     # endregion
 
-    # region stop
+    # region Stop
     async def Stop(self) -> None:
         RoombaActivatedEvent.Unsubscribe(self._handleRoombaActivation)
         if self._pending:
             await asyncio.gather(*self._pending, return_exceptions = True)
     # endregion
 
-    # region _handle_roomba_activation
+    # region _handleRoombaActivation
     def _handleRoombaActivation(self, patchRoombaStateRequest: PatchRoombaStateRequest) -> None:
         """
         Callback sincrono del evento: crea la tarea y guarda la referencia.
@@ -34,7 +34,7 @@ class RoombaActivationHandler:
         task.add_done_callback(self._pending.discard)
     # endregion
 
-    # region _patch_roomba_state
+    # region _patchRoombaState
     @staticmethod
     async def _patchRoombaState(patchRoombaStateRequest: PatchRoombaStateRequest) -> None:
         try:

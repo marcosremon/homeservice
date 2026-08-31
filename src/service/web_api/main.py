@@ -5,6 +5,8 @@ from fastapi import FastAPI
 
 from infraestructure.background_tasks.job.RoombaActivationHandler import RoombaActivationHandler
 from infraestructure.background_tasks.worker.PresenceSensorMonitor import PresenceSensorMonitor
+from infraestructure.background_tasks.worker.RainSensorMonitor import RainSensorMonitor
+from infraestructure.background_tasks.worker.RainSensorMonitor import RainSensorMonitor
 from infraestructure.persistence.create_database.DatabaseMigrator import DatabaseMigrator
 from service.web_api.controllers.alexa.AlexaController import router as alexa_router
 from service.web_api.controllers.computer_status.ChangeComputerStatusController import router as change_computer_status_router
@@ -26,15 +28,18 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     # gestione: se arrancan antes del yield y se paran despues, en orden inverso,
     # igual que hace el host de ASP.NET.
     presenceSensorMonitor: PresenceSensorMonitor = PresenceSensorMonitor()
+    rainSensorMonitor: RainSensorMonitor = RainSensorMonitor()
     roombaActivationHandler: RoombaActivationHandler = RoombaActivationHandler()
 
     presenceSensorMonitor.Start()
+    rainSensorMonitor.Start()
     roombaActivationHandler.Start()
 
     try:
         yield
     finally:
         await roombaActivationHandler.Stop()
+        await rainSensorMonitor.Stop()
         await presenceSensorMonitor.Stop()
 
 app: FastAPI = FastAPI(title = "HomeService API", lifespan = lifespan)

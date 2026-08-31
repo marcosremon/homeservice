@@ -13,13 +13,13 @@ class PresenceSensorMonitor:
     def __init__(self) -> None:
         self._task: asyncio.Task[None] | None = None
 
-    # region start
+    # region Start
     def Start(self) -> None:
         if self._task is None:
             self._task = asyncio.create_task(self._executeAsync(), name = "presence_sensor_monitor")
     # endregion
 
-    # region stop
+    # region Stop
     async def Stop(self) -> None:
         if self._task is None:
             return
@@ -30,7 +30,7 @@ class PresenceSensorMonitor:
         self._task = None
     # endregion
 
-    # region _execute_async
+    # region _executeAsync
     async def _executeAsync(self) -> None:
         """
         El sleep va antes del trabajo, igual que WaitForNextTickAsync: el primer
@@ -41,7 +41,7 @@ class PresenceSensorMonitor:
             await self._runPresenceSensorJob()
     # endregion
 
-    # region _run_presence_sensor_job
+    # region _runPresenceSensorJob
     @staticmethod
     async def _runPresenceSensorJob() -> None:
         try:

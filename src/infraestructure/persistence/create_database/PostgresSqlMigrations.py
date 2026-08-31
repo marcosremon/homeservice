@@ -3,6 +3,7 @@ from infraestructure.persistence.create_database.migrations.Migration2026072801C
 from infraestructure.persistence.create_database.migrations.Migration2026072802DeviceAndPresenceSensorMetadata import Migration2026072802DeviceMetadata
 from infraestructure.persistence.create_database.migrations.Migration2026081800LightAndRoombaState import Migration2026081800LightAndRoombaState
 from infraestructure.persistence.create_database.migrations.Migration2026082700TemperatureSensor import Migration2026082700TemperatureSensor
+from infraestructure.persistence.create_database.migrations.Migration2026083000RainSensor import Migration2026083000RainSensor
 from transversal.common.database_migration.Migration import Migration
 
 class PostgresSqlMigrations:
@@ -13,4 +14,5 @@ class PostgresSqlMigrations:
         Migration2026072802DeviceMetadata(),
         Migration2026081800LightAndRoombaState(),
         Migration2026082700TemperatureSensor(),
+        Migration2026083000RainSensor(),
     ]

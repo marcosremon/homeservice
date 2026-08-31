@@ -23,6 +23,7 @@ from domain.model.entity.Device import Device  # noqa: F401
 from domain.model.entity.HouseZone import HouseZone  # noqa: F401
 from domain.model.entity.Light import Light  # noqa: F401
 from domain.model.entity.PresenceSensor import PresenceSensor  # noqa: F401
+from domain.model.entity.RainSensor import RainSensor  # noqa: F401
 from domain.model.entity.Roomba import Roomba  # noqa: F401
 # endregion
 
