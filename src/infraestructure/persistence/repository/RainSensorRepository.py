@@ -55,13 +55,15 @@ class RainSensorRepository(IRainSensorRepository):
                     self._session.add(device)
                     await self._session.flush()
 
+                    measureAt: datetime = GeneralUtils.UtcNow()
+
                     rainSensor: RainSensor = RainSensor(
                         deviceId = device.deviceId,
                         adcValue = createRainSensorRequest.adcValue,
                         wetnessPercent = createRainSensorRequest.wetnessPercent,
                         isRaining = createRainSensorRequest.isRaining,
-                        measureAt = createRainSensorRequest.measureAt,
-                        lastDetectedRain = createRainSensorRequest.measureAt if createRainSensorRequest.isRaining else datetime.min
+                        measureAt = measureAt,
+                        lastDetectedRain = measureAt if createRainSensorRequest.isRaining else datetime.min
                     )
 
                     self._session.add(rainSensor)
@@ -111,15 +113,17 @@ class RainSensorRepository(IRainSensorRepository):
                         if not GeneralUtils.IsNullOrEmpty(patchRainSensorRequest.macAddress):
                             device.macAddress = patchRainSensorRequest.macAddress
 
+                        measureAt: datetime = GeneralUtils.UtcNow()
+
                         wasRaining: bool = rainSensor.isRaining
 
                         rainSensor.adcValue = patchRainSensorRequest.adcValue
                         rainSensor.wetnessPercent = patchRainSensorRequest.wetnessPercent
                         rainSensor.isRaining = patchRainSensorRequest.isRaining
-                        rainSensor.measureAt = patchRainSensorRequest.measureAt
+                        rainSensor.measureAt = measureAt
 
                         if patchRainSensorRequest.isRaining:
-                            rainSensor.lastDetectedRain = patchRainSensorRequest.measureAt
+                            rainSensor.lastDetectedRain = measureAt
 
                         await self._session.commit()
 

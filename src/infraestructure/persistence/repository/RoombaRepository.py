@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 import fastapi
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -104,12 +104,9 @@ class RoombaRepository(IRoombaRepository):
                 patchRoombaStateResponse.isSuccess = False
                 patchRoombaStateResponse.message = "roomba not found"
             else:
-                # Las columnas son TIMESTAMP WITHOUT TIME ZONE: si la fecha llega
-                # con zona horaria hay que pasarla a UTC y quitarsela, o Postgres
-                # rechaza el UPDATE.
-                eventTime: datetime = patchRoombaStateRequest.eventTime
-                if eventTime.tzinfo is not None:
-                    eventTime = eventTime.astimezone(timezone.utc).replace(tzinfo = None)
+                # La hora del evento la pone el servidor al procesar la peticion,
+                # no la que mande el dispositivo.
+                eventTime: datetime = GeneralUtils.UtcNow()
 
                 if patchRoombaStateRequest.isActivation:
                     roomba.lastRoombaActivation = eventTime

@@ -348,7 +348,6 @@ class RoombaUtils:
         userPmapvId: str = "",
     ) -> PatchRoombaStateRequest:
         return PatchRoombaStateRequest(
-            eventTime = datetime.now(timezone.utc),
             isActivation = isActivation,
             isFinished = isFinished,
             target = roombaTarget if roombaTarget is not None else RoombaTarget.FULL_HOUSE,

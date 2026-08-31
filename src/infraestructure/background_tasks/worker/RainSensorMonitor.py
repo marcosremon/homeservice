@@ -1,11 +1,12 @@
 import asyncio
 from contextlib import asynccontextmanager, suppress
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from collections.abc import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from domain.model.entity.RainSensor import RainSensor
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
+from transversal.common.utils.GeneralUtils import GeneralUtils
 
 _INTERVAL_SECONDS: int = 60
 _RAIN_EXPIRY_MINUTES: int = 5
@@ -61,7 +62,7 @@ class RainSensorMonitor:
         rainingSensors: Sequence[RainSensor] = (await session.scalars(select(RainSensor)
             .where(RainSensor.isRaining))).all()
 
-        expiryLimit: datetime = datetime.now(timezone.utc).replace(tzinfo = None) - timedelta(minutes = _RAIN_EXPIRY_MINUTES)
+        expiryLimit: datetime = GeneralUtils.UtcNow() - timedelta(minutes = _RAIN_EXPIRY_MINUTES)
 
         for rainSensor in rainingSensors:
             if rainSensor.lastDetectedRain < expiryLimit:

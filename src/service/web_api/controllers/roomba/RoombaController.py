@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from fastapi_utils.cbv import cbv
 from fastapi import APIRouter, Depends, status
 from application.data_transfer_object.roomba.create_roomba.CreateRoombaRequest import CreateRoombaRequest
@@ -69,14 +68,7 @@ class RoombaController:
             roombaTarget: RoombaTarget = GeneralUtils.ParseEnum(RoombaTarget, patchRoombaStateRequestJson.target, RoombaTarget.FULL_HOUSE)
             roombaPhase: RoombaPhase = GeneralUtils.ParseEnum(RoombaPhase, patchRoombaStateRequestJson.phase, RoombaPhase.STOP)
 
-            eventTime: datetime = (
-                datetime.now(timezone.utc)
-                if patchRoombaStateRequestJson.eventTime == datetime.min
-                else patchRoombaStateRequestJson.eventTime
-            )
-
             patchRoombaStateRequest: PatchRoombaStateRequest = PatchRoombaStateRequest(
-                eventTime = eventTime,
                 isActivation = patchRoombaStateRequestJson.isActivation,
                 isFinished = patchRoombaStateRequestJson.isFinished,
                 target = roombaTarget,

@@ -49,7 +49,6 @@ class RainSensorController:
                     adcValue = createRainSensorRequestJson.adcValue,
                     wetnessPercent = createRainSensorRequestJson.wetnessPercent,
                     isRaining = createRainSensorRequestJson.isRaining,
-                    measureAt = GeneralUtils.ToNaiveUtc(createRainSensorRequestJson.measureAt),
                 )
 
                 createRainSensorResponse: CreateRainSensorResponse = await self._rainSensorApplication.CreateRainSensor(createRainSensorRequest)
@@ -87,7 +86,6 @@ class RainSensorController:
                     adcValue = patchRainSensorRequestJson.adcValue,
                     wetnessPercent = patchRainSensorRequestJson.wetnessPercent,
                     isRaining = patchRainSensorRequestJson.isRaining,
-                    measureAt = GeneralUtils.ToNaiveUtc(patchRainSensorRequestJson.measureAt),
                 )
 
                 patchRainSensorResponse: PatchRainSensorResponse = await self._rainSensorApplication.PatchRainSensor(patchRainSensorRequest)

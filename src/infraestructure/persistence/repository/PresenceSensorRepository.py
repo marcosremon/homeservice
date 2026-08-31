@@ -1,4 +1,4 @@
-from datetime import timezone, datetime
+from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorRequest import CreatePresenceSensorRequest
@@ -50,9 +50,7 @@ class PresenceSensorRepository(IPresenceSensorRepository):
                     self._session.add(device)
                     await self._session.flush()
 
-                lastDetectedPresence: datetime = createPresenceSensorRequest.lastDetectedPresence
-                if lastDetectedPresence.tzinfo is not None:
-                    lastDetectedPresence = lastDetectedPresence.astimezone(timezone.utc).replace(tzinfo=None)
+                lastDetectedPresence: datetime = GeneralUtils.UtcNow() if createPresenceSensorRequest.presence else datetime.min
 
                 presenceSensor: PresenceSensor = PresenceSensor(
                     deviceId = device.deviceId,
@@ -114,7 +112,7 @@ class PresenceSensorRepository(IPresenceSensorRepository):
                         presenceSensor.motion = patchPresenceSensorDataRequest.motion
 
                         if patchPresenceSensorDataRequest.presence:
-                            presenceSensor.lastDetectedPresence = datetime.now(timezone.utc)
+                            presenceSensor.lastDetectedPresence = GeneralUtils.UtcNow()
 
                         await self._session.commit()
 

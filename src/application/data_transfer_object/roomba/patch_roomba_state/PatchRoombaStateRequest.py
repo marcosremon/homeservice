@@ -1,12 +1,10 @@
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from dataclasses import dataclass
 
 from domain.model.enum.roomba.RoombaPhase import RoombaPhase
 from domain.model.enum.roomba.RoombaTarget import RoombaTarget
 
 @dataclass
 class PatchRoombaStateRequest:
-    eventTime: datetime = field(default_factory = lambda: datetime.now(timezone.utc))
     isActivation: bool = False
     isFinished: bool = False
     target: RoombaTarget = RoombaTarget.FULL_HOUSE

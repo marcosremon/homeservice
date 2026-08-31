@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.data_transfer_object.light.get_light_by_location.GetLightByLocationRequest import GetLightByLocationRequest
@@ -72,7 +72,7 @@ class LightRepository(ILightRepository):
                 print(f"ERROR light {patchLightStatusRequest.lightLocation.name} not found")
             elif light.isOn == patchLightStatusRequest.isOn:
                 light.isOn =patchLightStatusRequest. isOn
-                light.lastUpdatedAt = datetime.now(timezone.utc)
+                light.lastStatusChange = GeneralUtils.UtcNow()
                 print(f"light {patchLightStatusRequest.lightLocation.name} IsOn cambiado a {patchLightStatusRequest.isOn}")
         except Exception as ex:
             print(f"Unexpected error on LightRepository -> PatchLightStatus {ex}")
