@@ -1,4 +1,3 @@
-from datetime import datetime
 
 from pydantic.dataclasses import dataclass
 
@@ -11,7 +10,6 @@ class CreatePresenceSensorRequestJson:
     presence: bool = False
     distanceCm: int = 0
     motion: str = ""
-    lastDetectedPresence: datetime = datetime.min
     model: str = ""
     manufacturer: str = ""
     macAddress: str = ""

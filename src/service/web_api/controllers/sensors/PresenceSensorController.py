@@ -44,7 +44,6 @@ class PresenceSensorController:
                     presence = createPresenceSensorRequestJson.presence,
                     distanceCm = createPresenceSensorRequestJson.distanceCm,
                     motion = createPresenceSensorRequestJson.motion,
-                    lastDetectedPresence = createPresenceSensorRequestJson.lastDetectedPresence,
                     model = createPresenceSensorRequestJson.model,
                     manufacturer = createPresenceSensorRequestJson.manufacturer,
                     macAddress = createPresenceSensorRequestJson.macAddress,

@@ -1,12 +1,7 @@
-from datetime import datetime
-
 from pydantic.dataclasses import dataclass
 
 @dataclass
 class PatchRoombaStateRequestJson:
-    # datetime.min hace de "default" de C#: el controlador lo sustituye por la
-    # hora actual, igual que el `== default` del RoombaController.
-    eventTime: datetime = datetime.min
     isActivation: bool = False
     isFinished: bool = False
     target: str = ""
