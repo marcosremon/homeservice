@@ -11,9 +11,9 @@ from application.event.RoombaActivatedEvent import RoombaActivatedEvent
 from domain.model.enum.roomba.RoombaAction import RoombaAction
 from domain.model.enum.roomba.RoombaPhase import RoombaPhase
 from domain.model.enum.roomba.RoombaTarget import RoombaTarget
-from infraestructure.gateway.roomba.payload.RoombaPayload import RoombaPayload
-from infraestructure.gateway.roomba.payload.RoombaRegion import RoombaRegion
-from infraestructure.gateway.roomba.payload.RoombaRegionParams import RoombaRegionParams
+from transversal.common.roomba.payload.RoombaPayload import RoombaPayload
+from transversal.common.roomba.payload.RoombaRegion import RoombaRegion
+from transversal.common.roomba.payload.RoombaRegionParams import RoombaRegionParams
 from transversal.common.configuration.Settings import Settings, GetSettings
 from transversal.common.roomba.RoombaState import RoombaState
 from transversal.common.utils.GeneralUtils import GeneralUtils

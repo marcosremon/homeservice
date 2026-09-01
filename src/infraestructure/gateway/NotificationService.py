@@ -1,7 +1,7 @@
 import httpx
 
-from application.data_transfer_object.notification.SendNotification.SendNotificationRequest import SendNotificationRequest
-from application.data_transfer_object.notification.SendNotification.SendNotificationResponse import SendNotificationResponse
+from application.data_transfer_object.notification.send_notification.SendNotificationRequest import SendNotificationRequest
+from application.data_transfer_object.notification.send_notification.SendNotificationResponse import SendNotificationResponse
 from application.interface.service.INotificationService import INotificationService
 from transversal.common.configuration.Settings import Settings
 from transversal.common.utils.GeneralUtils import GeneralUtils
@@ -15,7 +15,7 @@ class NotificationService(INotificationService):
         self._httpClient: httpx.AsyncClient = httpClient
         self._settings: Settings = settings
 
-    # region SendNotification
+    # region send_notification
     async def SendNotification(self, sendNotificationRequest: SendNotificationRequest) -> SendNotificationResponse:
         sendNotificationResponse: SendNotificationResponse = SendNotificationResponse()
         try:
@@ -46,11 +46,11 @@ class NotificationService(INotificationService):
         except httpx.TimeoutException:
             sendNotificationResponse.responseCode = ResponseCodes.UNEXPECTED_ERROR
             sendNotificationResponse.isSuccess = False
-            sendNotificationResponse.message = "Timeout on NotificationService -> SendNotification"
+            sendNotificationResponse.message = "Timeout on NotificationService -> send_notification"
         except Exception as ex:
             sendNotificationResponse.responseCode = ResponseCodes.UNEXPECTED_ERROR
             sendNotificationResponse.isSuccess = False
-            sendNotificationResponse.message = f"Unexpected error on NotificationService -> SendNotification: {ex}"
+            sendNotificationResponse.message = f"Unexpected error on NotificationService -> send_notification: {ex}"
 
         return sendNotificationResponse
     # endregion

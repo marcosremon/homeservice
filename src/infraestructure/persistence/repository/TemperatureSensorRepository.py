@@ -1,9 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
-from application.data_transfer_object.home_automation.sensor.temperature_sensor.CreateTemperatureSensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
-from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorRequest import PatchTemperatureSensorRequest
-from application.data_transfer_object.home_automation.sensor.temperature_sensor.PatchTemperatureSensor.PatchTemperatureSensorResponse import PatchTemperatureSensorResponse
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.create_temperature_sensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.create_temperature_sensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.patch_temperature_sensor.PatchTemperatureSensorRequest import PatchTemperatureSensorRequest
+from application.data_transfer_object.home_automation.sensor.temperature_sensor.patch_temperature_sensor.PatchTemperatureSensorResponse import PatchTemperatureSensorResponse
 from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
 from domain.model.entity.HouseZone import HouseZone
 from domain.model.entity.TemperatureSensor import TemperatureSensor
@@ -16,7 +16,7 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
     def __init__(self, session: AsyncSession):
         self._session: AsyncSession = session
 
-    #region CreateTemperatureSensor
+    #region create_temperature_sensor
     async def CreateTemperatureSensor(self, createTemperatureSensorRequest: CreateTemperatureSensorRequest) -> CreateTemperatureSensorResponse:
         createTemperatureSensorResponse: CreateTemperatureSensorResponse = CreateTemperatureSensorResponse()
         try:
@@ -75,7 +75,7 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
         return createTemperatureSensorResponse
     #endregion
 
-    #region PatchTemperatureSensor
+    #region patch_temperature_sensor
     async def PatchTemperatureSensor(self, patchTemperatureSensorRequest: PatchTemperatureSensorRequest) -> PatchTemperatureSensorResponse:
         patchTemperatureSensorResponse: PatchTemperatureSensorResponse = PatchTemperatureSensorResponse()
         try:

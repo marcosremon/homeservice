@@ -1,6 +1,6 @@
 from transversal.common.database_migration.Migration import Migration
 
-def Migration2026082700TemperatureSensor() -> Migration:
+def Migration2026082700() -> Migration:
     return Migration(
         version=2026082700,
         commands=[

@@ -11,19 +11,19 @@ class DatabaseMigrator:
     TIME_WAIT_RETRY_SECONDS: float = 2.0
     _NUMBER_TABLE_VERSION: str = "database_version"
 
-    # region create_or_update_database
+    # region CreateOrUpdateDatabase
     @classmethod
     async def CreateOrUpdateDatabase(cls) -> bool:
-        return await cls._runMigrations(GetSettings().databaseUrl, PostgresSqlMigrations.POSTGRESQL_MIGRATIONS)
+        return await cls._runMigrations(GetSettings().databaseUrl, PostgresSqlMigrations.GetPostgresSqlMigrations())
     # endregion
 
-    # region _get_pending_migrations
+    # region _getPendingMigrations
     @staticmethod
     def _getPendingMigrations(actualVersion: int, allVersions: list[Migration]) -> list[Migration]:
         return sorted((m for m in allVersions if m.version > actualVersion), key=lambda m: m.version)
     # endregion
 
-    # region _run_migrations
+    # region _runMigrations
     @classmethod
     async def _runMigrations(cls, connectionString: str, migrations: list[Migration]) -> bool:
         if not connectionString.strip():
@@ -102,7 +102,7 @@ class DatabaseMigrator:
             await engine.dispose()
     # endregion
 
-    # region _open_with_retry
+    # region _openWithRetry
     @classmethod
     async def _openWithRetry(cls, engine: AsyncEngine) -> AsyncConnection:
         """Espera a que Postgres acepte conexiones, igual que el bucle de C#."""

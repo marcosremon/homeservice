@@ -3,7 +3,7 @@ from pydantic.dataclasses import dataclass
 
 from transversal.common.configuration.JsonModelConfig import JSON_MODEL_CONFIG
 
-from infraestructure.gateway.roomba.payload.RoombaRegionParams import RoombaRegionParams
+from transversal.common.roomba.payload.RoombaRegionParams import RoombaRegionParams
 
 @dataclass(config = JSON_MODEL_CONFIG)
 class RoombaRegion:

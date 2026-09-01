@@ -1,6 +1,6 @@
 from transversal.common.database_migration.Migration import Migration
 
-def Migration2026072800SchemaBase() -> Migration:
+def Migration2026072800() -> Migration:
     return Migration(
         version=2026072800,
         commands=[

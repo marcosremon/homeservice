@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager, suppress
 
 from application.data_transfer_object.home_automation.sensor.presence_sensor.get_presence_sensors_status.GetPresenceSensorsStatusResponse import GetPresenceSensorsStatusResponse
 from application.interface.repository.IEventRepository import IEventRepository
-from infraestructure.gateway.roomba.RoombaUtils import RoombaUtils
+from transversal.common.utils.RoombaUtils import RoombaUtils
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
 from infraestructure.persistence.dependencies.DependencyInjection import BuildEventRepository
 

@@ -1,11 +1,11 @@
 import asyncio
 from contextlib import asynccontextmanager, suppress
 from datetime import datetime, timedelta
-from collections.abc import Sequence
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from domain.model.entity.RainSensor import RainSensor
+from application.data_transfer_object.home_automation.sensor.rain_sensor.get_raining_sensor.GetRainingSensorResponse import GetRainingSensorResponse
+from application.interface.repository.IRainSensorRepository import IRainSensorRepository
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
+from infraestructure.persistence.dependencies.DependencyInjection import BuildRainSensorRepository
 from transversal.common.utils.GeneralUtils import GeneralUtils
 
 _INTERVAL_SECONDS: int = 60
@@ -55,11 +55,13 @@ class RainSensorMonitor:
     # region _expireRainStatus
     @staticmethod
     async def _expireRainStatus(session: AsyncSession) -> None:
-        rainingSensors: list[RainSensor] = list(await session.scalars(select(RainSensor).where(RainSensor.isRaining)))
+        rainSensorRepository: IRainSensorRepository = BuildRainSensorRepository(session)
+
+        getRainingSensorResponse : GetRainingSensorResponse = await rainSensorRepository.GetRainingSensor()
 
         expiryLimit: datetime = GeneralUtils.UtcNow() - timedelta(minutes = _RAIN_EXPIRY_MINUTES)
 
-        for rainSensor in rainingSensors:
+        for rainSensor in getRainingSensorResponse.rainingSensors:
             if rainSensor.lastDetectedRain < expiryLimit:
                 rainSensor.isRaining = False
 

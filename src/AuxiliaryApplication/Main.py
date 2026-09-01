@@ -10,7 +10,7 @@ from domain.model.enum.roomba.RoombaAction import RoombaAction  # noqa: E402
 from domain.model.enum.roomba.RoombaPhase import RoombaPhase  # noqa: E402
 from domain.model.enum.roomba.RoombaTarget import RoombaTarget  # noqa: E402
 from infraestructure.background_tasks.job.RoombaActivationHandler import RoombaActivationHandler  # noqa: E402
-from infraestructure.gateway.roomba.RoombaUtils import RoombaUtils  # noqa: E402
+from transversal.common.utils.RoombaUtils import RoombaUtils  # noqa: E402
 from transversal.common.configuration.Settings import Settings, GetSettings  # noqa: E402
 
 PERSIST_TO_DATABASE: bool = True

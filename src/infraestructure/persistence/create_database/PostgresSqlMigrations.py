@@ -1,18 +1,20 @@
-from infraestructure.persistence.create_database.migrations.Migration2026072800SchemaBase import Migration2026072800SchemaBase
-from infraestructure.persistence.create_database.migrations.Migration2026072801CreateInitialSensors import Migration2026072801CreateInitialSensors
-from infraestructure.persistence.create_database.migrations.Migration2026072802DeviceAndPresenceSensorMetadata import Migration2026072802DeviceMetadata
-from infraestructure.persistence.create_database.migrations.Migration2026081800LightAndRoombaState import Migration2026081800LightAndRoombaState
-from infraestructure.persistence.create_database.migrations.Migration2026082700TemperatureSensor import Migration2026082700TemperatureSensor
-from infraestructure.persistence.create_database.migrations.Migration2026083000RainSensor import Migration2026083000RainSensor
+from infraestructure.persistence.create_database.migrations.Migration2026072800 import Migration2026072800
+from infraestructure.persistence.create_database.migrations.Migration2026072801 import Migration2026072801
+from infraestructure.persistence.create_database.migrations.Migration2026072802 import Migration2026072802
+from infraestructure.persistence.create_database.migrations.Migration2026081800 import Migration2026081800
+from infraestructure.persistence.create_database.migrations.Migration2026082700 import Migration2026082700
+from infraestructure.persistence.create_database.migrations.Migration2026083000 import Migration2026083000
 from transversal.common.database_migration.Migration import Migration
 
 class PostgresSqlMigrations:
 
-    POSTGRESQL_MIGRATIONS: list[Migration] = [
-        Migration2026072800SchemaBase(),
-        Migration2026072801CreateInitialSensors(),
-        Migration2026072802DeviceMetadata(),
-        Migration2026081800LightAndRoombaState(),
-        Migration2026082700TemperatureSensor(),
-        Migration2026083000RainSensor(),
-    ]
+    @staticmethod
+    def GetPostgresSqlMigrations() -> list[Migration]:
+        return [
+            Migration2026072800(),
+            Migration2026072801(),
+            Migration2026072802(),
+            Migration2026081800(),
+            Migration2026082700(),
+            Migration2026083000(),
+        ]

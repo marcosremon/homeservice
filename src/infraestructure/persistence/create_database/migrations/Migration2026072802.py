@@ -1,6 +1,6 @@
 from transversal.common.database_migration.Migration import Migration
 
-def Migration2026072802DeviceMetadata() -> Migration:
+def Migration2026072802() -> Migration:
     return Migration(
         version=2026072802,
         commands=[

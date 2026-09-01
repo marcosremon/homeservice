@@ -1,18 +1,18 @@
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
 from starlette import status
-from application.data_transfer_object.home_automation.sensor.rain_sensor.CreateRainSensor.CreateRainSensorRequest import CreateRainSensorRequest
-from application.data_transfer_object.home_automation.sensor.rain_sensor.CreateRainSensor.CreateRainSensorResponse import CreateRainSensorResponse
-from application.data_transfer_object.home_automation.sensor.rain_sensor.PatchRainSensor.PatchRainSensorRequest import PatchRainSensorRequest
-from application.data_transfer_object.home_automation.sensor.rain_sensor.PatchRainSensor.PatchRainSensorResponse import PatchRainSensorResponse
+from application.data_transfer_object.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorRequest import CreateRainSensorRequest
+from application.data_transfer_object.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorResponse import CreateRainSensorResponse
+from application.data_transfer_object.home_automation.sensor.rain_sensor.patch_rain_sensor.PatchRainSensorRequest import PatchRainSensorRequest
+from application.data_transfer_object.home_automation.sensor.rain_sensor.patch_rain_sensor.PatchRainSensorResponse import PatchRainSensorResponse
 from application.interface.application.IRainSensorApplication import IRainSensorApplication
 from infraestructure.persistence.dependencies.DependencyInjection import GetRainSensorApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
-from transversal.json_interchange.home_automation.sensor.rain_sensor.CreateRainSensor.CreateRainSensorRequestJson import CreateRainSensorRequestJson
-from transversal.json_interchange.home_automation.sensor.rain_sensor.CreateRainSensor.CreateRainSensorResponseJson import CreateRainSensorResponseJson
-from transversal.json_interchange.home_automation.sensor.rain_sensor.PatchRainSensor.PatchRainSensorRequestJson import PatchRainSensorRequestJson
-from transversal.json_interchange.home_automation.sensor.rain_sensor.PatchRainSensor.PatchRainSensorResponseJson import PatchRainSensorResponseJson
+from transversal.json_interchange.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorRequestJson import CreateRainSensorRequestJson
+from transversal.json_interchange.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorResponseJson import CreateRainSensorResponseJson
+from transversal.json_interchange.home_automation.sensor.rain_sensor.patch_rain_sensor.PatchRainSensorRequestJson import PatchRainSensorRequestJson
+from transversal.json_interchange.home_automation.sensor.rain_sensor.patch_rain_sensor.PatchRainSensorResponseJson import PatchRainSensorResponseJson
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 
 router: APIRouter = APIRouter(
@@ -24,7 +24,7 @@ router: APIRouter = APIRouter(
 class RainSensorController:
     _rainSensorApplication: IRainSensorApplication = Depends(GetRainSensorApplication)
 
-    #region CreateRainSensor
+    #region create_rain_sensor
     @router.post("/create-rain-sensor", response_model = CreateRainSensorResponseJson, status_code = status.HTTP_200_OK)
     async def CreateRainSensor(self, createRainSensorRequestJson: CreateRainSensorRequestJson) -> CreateRainSensorResponseJson:
         createRainSensorResponseJson: CreateRainSensorResponseJson = CreateRainSensorResponseJson()
@@ -64,7 +64,7 @@ class RainSensorController:
         return createRainSensorResponseJson
     # endregion
 
-    #region PatchRainSensor
+    #region patch_rain_sensor
     @router.post("/patch-rain-sensor", response_model = PatchRainSensorResponseJson, status_code = status.HTTP_200_OK)
     async def PatchRainSensor(self, patchRainSensorRequestJson: PatchRainSensorRequestJson) -> PatchRainSensorResponseJson:
         patchRainSensorResponseJson: PatchRainSensorResponseJson = PatchRainSensorResponseJson()

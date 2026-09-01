@@ -3,7 +3,7 @@ from datetime import timedelta
 from application.data_transfer_object.alexa.AlexaRequest import AlexaRequest
 from application.interface.service.IRoombaService import IRoombaService
 from domain.model.enum.roomba.RoombaTarget import RoombaTarget
-from infraestructure.gateway.roomba.RoombaUtils import RoombaUtils
+from transversal.common.utils.RoombaUtils import RoombaUtils
 from transversal.common.alexa.alexa_request.AlexaSlot import AlexaSlot
 from transversal.common.utils.AlexaUtils import AlexaUtils
 from transversal.common.utils.GeneralUtils import GeneralUtils

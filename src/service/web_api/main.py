@@ -36,8 +36,8 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         await presenceSensorMonitor.Stop()
 
 app: FastAPI = FastAPI(title = "HomeService API", lifespan = lifespan)
-app.include_router(presence_sensor_router, prefix="/api")
-app.include_router(temperature_sensor_router, prefix="/api")
+app.include_router(presence_sensor_router, prefix = "/api")
+app.include_router(temperature_sensor_router, prefix = "/api")
 app.include_router(rain_sensor_router, prefix = "/api")
 app.include_router(roomba_router, prefix = "/api")
 app.include_router(change_computer_status_router, prefix = "/api")

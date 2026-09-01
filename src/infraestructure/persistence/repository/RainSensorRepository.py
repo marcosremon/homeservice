@@ -1,10 +1,12 @@
 from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from application.data_transfer_object.home_automation.sensor.rain_sensor.CreateRainSensor.CreateRainSensorRequest import CreateRainSensorRequest
-from application.data_transfer_object.home_automation.sensor.rain_sensor.CreateRainSensor.CreateRainSensorResponse import CreateRainSensorResponse
-from application.data_transfer_object.home_automation.sensor.rain_sensor.PatchRainSensor.PatchRainSensorRequest import PatchRainSensorRequest
-from application.data_transfer_object.home_automation.sensor.rain_sensor.PatchRainSensor.PatchRainSensorResponse import PatchRainSensorResponse
+from application.data_transfer_object.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorRequest import CreateRainSensorRequest
+from application.data_transfer_object.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorResponse import CreateRainSensorResponse
+from application.data_transfer_object.home_automation.sensor.rain_sensor.get_raining_sensor.GetRainingSensorResponse import \
+    GetRainingSensorResponse
+from application.data_transfer_object.home_automation.sensor.rain_sensor.patch_rain_sensor.PatchRainSensorRequest import PatchRainSensorRequest
+from application.data_transfer_object.home_automation.sensor.rain_sensor.patch_rain_sensor.PatchRainSensorResponse import PatchRainSensorResponse
 from application.interface.repository.IRainSensorRepository import IRainSensorRepository
 from domain.model.entity.Device import Device
 from domain.model.entity.HouseZone import HouseZone
@@ -17,7 +19,7 @@ class RainSensorRepository(IRainSensorRepository):
     def __init__(self, session: AsyncSession):
         self._session: AsyncSession = session
 
-    #region CreateRainSensor
+    #region create_rain_sensor
     async def CreateRainSensor(self, createRainSensorRequest: CreateRainSensorRequest) -> CreateRainSensorResponse:
         createRainSensorResponse: CreateRainSensorResponse = CreateRainSensorResponse()
         try:
@@ -80,7 +82,7 @@ class RainSensorRepository(IRainSensorRepository):
         return createRainSensorResponse
     #endregion
 
-    #region PatchRainSensor
+    #region patch_rain_sensor
     async def PatchRainSensor(self, patchRainSensorRequest: PatchRainSensorRequest) -> PatchRainSensorResponse:
         patchRainSensorResponse: PatchRainSensorResponse = PatchRainSensorResponse()
         try:
@@ -139,3 +141,21 @@ class RainSensorRepository(IRainSensorRepository):
 
         return patchRainSensorResponse
     #endregion
+
+    # region GetRainingSensor
+    async def GetRainingSensor(self) -> GetRainingSensorResponse:
+        getRainingSensorResponse: GetRainingSensorResponse = GetRainingSensorResponse()
+        try:
+            rainingSensors: list[RainSensor] = list(await self._session.scalars(select(RainSensor).where(RainSensor.isRaining)))
+
+            getRainingSensorResponse.rainingSensors = rainingSensors if any(rainingSensors) else []
+            getRainingSensorResponse.responseCode = ResponseCodes.OK
+            getRainingSensorResponse.isSuccess = True
+            getRainingSensorResponse.message = f"raining sensors count: {len(getRainingSensorResponse.rainingSensors)}"
+        except Exception as ex:
+            getRainingSensorResponse.responseCode = ResponseCodes.UNEXPECTED_ERROR
+            getRainingSensorResponse.isSuccess = False
+            getRainingSensorResponse.message = f"Unexpected error on RainSensorRepository -> PatchRainSensor: {ex}"
+
+        return getRainingSensorResponse
+    # endregion

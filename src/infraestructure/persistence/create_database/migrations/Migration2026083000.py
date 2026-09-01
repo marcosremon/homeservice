@@ -1,6 +1,6 @@
 from transversal.common.database_migration.Migration import Migration
 
-def Migration2026083000RainSensor() -> Migration:
+def Migration2026083000() -> Migration:
     return Migration(
         version=2026083000,
         commands=[

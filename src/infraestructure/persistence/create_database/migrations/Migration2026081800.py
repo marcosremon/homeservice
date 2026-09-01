@@ -1,6 +1,6 @@
 from transversal.common.database_migration.Migration import Migration
 
-def Migration2026081800LightAndRoombaState() -> Migration:
+def Migration2026081800() -> Migration:
     return Migration(
         version=2026081800,
         commands=[
