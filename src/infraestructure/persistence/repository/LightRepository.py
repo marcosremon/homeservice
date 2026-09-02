@@ -19,7 +19,7 @@ class LightRepository(ILightRepository):
     def __init__(self, session: AsyncSession):
         self._session: AsyncSession = session
 
-    # region get_light_by_location
+    # region GetLightByLocation
     async def GetLightByLocation(self, getLightByLocationRequest: GetLightByLocationRequest) -> GetLightByLocationResponse:
         getLightByLocationResponse: GetLightByLocationResponse = GetLightByLocationResponse()
         try:
@@ -63,7 +63,7 @@ class LightRepository(ILightRepository):
         return getLightByLocationResponse
     # endregion
 
-    # region patch_light_status
+    # region PatchLightStatus
     async def PatchLightStatus(self, patchLightStatusRequest: PatchLightStatusRequest) -> None:
         try:
             location: str = patchLightStatusRequest.lightLocation.name

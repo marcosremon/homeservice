@@ -2,10 +2,10 @@ import asyncio
 from contextlib import asynccontextmanager, suppress
 
 from application.data_transfer_object.home_automation.sensor.presence_sensor.get_presence_sensors_status.GetPresenceSensorsStatusResponse import GetPresenceSensorsStatusResponse
-from application.interface.repository.IEventRepository import IEventRepository
+from application.interface.repository.IPresenceSensorRepository import IPresenceSensorRepository
 from transversal.common.utils.RoombaUtils import RoombaUtils
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
-from infraestructure.persistence.dependencies.DependencyInjection import BuildEventRepository
+from infraestructure.persistence.dependencies.DependencyInjection import BuildPresenceSensorRepository
 
 _INTERVAL_SECONDS: int = 30
 
@@ -47,9 +47,9 @@ class PresenceSensorMonitor:
         try:
             # HTTP no hay scope, hay que abrir la sesion a mano y cerrarla aqui.
             async with asynccontextmanager(GetSession)() as session:
-                eventRepository: IEventRepository = BuildEventRepository(session)
+                presenceSensorRepository: IPresenceSensorRepository = BuildPresenceSensorRepository(session)
 
-                getPresenceSensorsStatusResponse: GetPresenceSensorsStatusResponse = await eventRepository.GetPresenceSensorsStatus()
+                getPresenceSensorsStatusResponse: GetPresenceSensorsStatusResponse = await presenceSensorRepository.GetPresenceSensorsStatus()
 
                 if getPresenceSensorsStatusResponse.isSuccess and getPresenceSensorsStatusResponse.isHouseEmpty:
                     await RoombaUtils.StartRoombaIfHouseIsEmpty(getPresenceSensorsStatusResponse.lastRoombaActivation)

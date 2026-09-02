@@ -18,7 +18,7 @@ class RoombaRepository(IRoombaRepository):
     def __init__(self, session: AsyncSession):
         self._session: AsyncSession = session
 
-    # region create_roomba
+    # region CreateRoomba
     async def CreateRoomba(self, createRoombaRequest: CreateRoombaRequest) -> CreateRoombaResponse:
         createRoombaResponse: CreateRoombaResponse = CreateRoombaResponse()
         try:
@@ -94,7 +94,7 @@ class RoombaRepository(IRoombaRepository):
         return createRoombaResponse
     # endregion
 
-    # region patch_roomba_state
+    # region PatchRoombaState
     async def PatchRoombaState(self, patchRoombaStateRequest: PatchRoombaStateRequest) -> PatchRoombaStateResponse:
         patchRoombaStateResponse: PatchRoombaStateResponse = PatchRoombaStateResponse()
         try:

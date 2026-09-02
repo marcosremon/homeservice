@@ -21,13 +21,13 @@ class GeneralUtils:
 
     #region RemoveAccents
     @staticmethod
-    def RemoveAccents(value: str) -> str:
+    def RemoveAccents(self, value: str) -> str:
         """Quita tildes y dieresis para comparar lo que manda Alexa.
 
         Alexa no es consistente con los acentos en los valores de slot, asi
         que "salón" y "salon" tienen que caer en la misma rama del match.
         """
-        if GeneralUtils.IsNullOrEmpty(value):
+        if self.IsNullOrEmpty(value):
             return ""
 
         decomposed: str = unicodedata.normalize("NFD", value)

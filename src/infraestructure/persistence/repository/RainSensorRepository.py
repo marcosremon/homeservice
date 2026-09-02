@@ -19,7 +19,7 @@ class RainSensorRepository(IRainSensorRepository):
     def __init__(self, session: AsyncSession):
         self._session: AsyncSession = session
 
-    #region create_rain_sensor
+    #region CreateRainSensor
     async def CreateRainSensor(self, createRainSensorRequest: CreateRainSensorRequest) -> CreateRainSensorResponse:
         createRainSensorResponse: CreateRainSensorResponse = CreateRainSensorResponse()
         try:
@@ -82,7 +82,7 @@ class RainSensorRepository(IRainSensorRepository):
         return createRainSensorResponse
     #endregion
 
-    #region patch_rain_sensor
+    #region PatchRainSensor
     async def PatchRainSensor(self, patchRainSensorRequest: PatchRainSensorRequest) -> PatchRainSensorResponse:
         patchRainSensorResponse: PatchRainSensorResponse = PatchRainSensorResponse()
         try:

@@ -16,7 +16,7 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
     def __init__(self, session: AsyncSession):
         self._session: AsyncSession = session
 
-    #region create_temperature_sensor
+    #region CreateTemperatureSensor
     async def CreateTemperatureSensor(self, createTemperatureSensorRequest: CreateTemperatureSensorRequest) -> CreateTemperatureSensorResponse:
         createTemperatureSensorResponse: CreateTemperatureSensorResponse = CreateTemperatureSensorResponse()
         try:
@@ -75,7 +75,7 @@ class TemperatureSensorRepository(ITemperatureSensorRepository):
         return createTemperatureSensorResponse
     #endregion
 
-    #region patch_temperature_sensor
+    #region PatchTemperatureSensor
     async def PatchTemperatureSensor(self, patchTemperatureSensorRequest: PatchTemperatureSensorRequest) -> PatchTemperatureSensorResponse:
         patchTemperatureSensorResponse: PatchTemperatureSensorResponse = PatchTemperatureSensorResponse()
         try:

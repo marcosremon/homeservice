@@ -4,12 +4,10 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from application.interface.application.IAlexaApplication import IAlexaApplication
 from application.interface.application.IChangeComputerStatusApplication import IChangeComputerStatusApplication
-from application.interface.application.IEventApplication import IEventApplication
 from application.interface.application.IPresenceSensorApplication import IPresenceSensorApplication
 from application.interface.application.IRainSensorApplication import IRainSensorApplication
 from application.interface.application.IRoombaApplication import IRoombaApplication
 from application.interface.repository.IChangeComputerStatusRepository import IChangeComputerStatusRepository
-from application.interface.repository.IEventRepository import IEventRepository
 from application.interface.repository.ITemperatureSensorRepository import ITemperatureSensorRepository
 from application.interface.repository.IPresenceSensorRepository import IPresenceSensorRepository
 from application.interface.repository.IRainSensorRepository import IRainSensorRepository
@@ -26,14 +24,12 @@ from application.interface.service.IRoombaService import IRoombaService
 from application.interface.service.ITemperatureSensorService import ITemperatureSensorService
 from application.use_case.AlexaApplication import AlexaApplication
 from application.use_case.ChangeComputerStatusApplication import ChangeComputerStatusApplication
-from application.use_case.EventApplication import EventApplication
 from application.use_case.PresenceSensorApplication import PresenceSensorApplication
 from application.use_case.RainSensorApplication import RainSensorApplication
 from application.use_case.RoombaApplication import RoombaApplication
 from application.use_case.TemperatureSensorApplication import TemperatureSensorApplication
 from infraestructure.persistence.context.ApplicationDbContext import GetSession
 from infraestructure.persistence.repository.ChangeComputerStatusRepository import ChangeComputerStatusRepository
-from infraestructure.persistence.repository.EventRepository import EventRepository
 from infraestructure.gateway.AlexaService import AlexaService
 from infraestructure.gateway.ComputerStatusService import ComputerStatusService
 from infraestructure.gateway.GeminiService import GeminiService
@@ -50,8 +46,12 @@ from infraestructure.persistence.repository.TemperatureSensorRepository import T
 from transversal.common.configuration.Settings import Settings, GetSettings
 
 # region PresenceSensor
-def GetPresenceSensorRepository(session: AsyncSession = Depends(GetSession)) -> IPresenceSensorRepository:
+def BuildPresenceSensorRepository(session: AsyncSession) -> IPresenceSensorRepository:
+    """Fabrica sin Depends: la consume el monitor de presencia."""
     return PresenceSensorRepository(session)
+
+def GetPresenceSensorRepository(session: AsyncSession = Depends(GetSession)) -> IPresenceSensorRepository:
+    return BuildPresenceSensorRepository(session)
 
 def GetPresenceSensorApplication(presenceSensorRepository: IPresenceSensorRepository = Depends(GetPresenceSensorRepository)) -> IPresenceSensorApplication:
     return PresenceSensorApplication(presenceSensorRepository)
@@ -94,18 +94,6 @@ def GetChangeComputerStatusRepository(settings: Settings = Depends(GetSettings))
 
 def GetChangeComputerStatusApplication(changeComputerStatusRepository: IChangeComputerStatusRepository = Depends(GetChangeComputerStatusRepository)) -> IChangeComputerStatusApplication:
     return ChangeComputerStatusApplication(changeComputerStatusRepository)
-# endregion
-
-# region Event
-def BuildEventRepository(session: AsyncSession) -> IEventRepository:
-    """Fabrica sin Depends: la consume el monitor de presencia."""
-    return EventRepository(session)
-
-def GetEventRepository(session: AsyncSession = Depends(GetSession)) -> IEventRepository:
-    return BuildEventRepository(session)
-
-def GetEventApplication(eventRepository: IEventRepository = Depends(GetEventRepository)) -> IEventApplication:
-    return EventApplication(eventRepository)
 # endregion
 
 # region light
