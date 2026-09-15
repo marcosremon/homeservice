@@ -1,10 +1,12 @@
 from fastapi_utils.cbv import cbv
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
+from fastapi.responses import Response
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorRequest import CreatePresenceSensorRequest
 from application.data_transfer_object.home_automation.sensor.presence_sensor.create_presence_sensor.CreatePresenceSensorResponse import CreatePresenceSensorResponse
 from application.data_transfer_object.home_automation.sensor.presence_sensor.patch_presence_sensor_data.PatchPresenceSensorDataRequest import PatchPresenceSensorDataRequest
 from application.data_transfer_object.home_automation.sensor.presence_sensor.patch_presence_sensor_data.PatchPresenceSensorDataResponse import PatchPresenceSensorDataResponse
 from application.interface.application.IPresenceSensorApplication import IPresenceSensorApplication
+from transversal.common.utils.ControllerUtils import ControllerUtils
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 from infraestructure.persistence.dependencies.DependencyInjection import GetPresenceSensorApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils
@@ -24,8 +26,8 @@ class PresenceSensorController:
     _presenceSensorApplication: IPresenceSensorApplication = Depends(GetPresenceSensorApplication)
 
     #region CreatePresenceSensor
-    @router.post("/create-presence-sensor", response_model = CreatePresenceSensorResponseJson, status_code = status.HTTP_200_OK)
-    async def CreatePresenceSensor(self, createPresenceSensorRequestJson: CreatePresenceSensorRequestJson) -> CreatePresenceSensorResponseJson:
+    @router.post("/create-presence-sensor")
+    async def CreatePresenceSensor(self, createPresenceSensorRequestJson: CreatePresenceSensorRequestJson) -> Response:
         createPresenceSensorResponseJson: CreatePresenceSensorResponseJson = CreatePresenceSensorResponseJson()
         try:
             if (GeneralUtils.IsNullOrEmpty(createPresenceSensorRequestJson.callout) or
@@ -59,12 +61,12 @@ class PresenceSensorController:
             createPresenceSensorResponseJson.isSuccess = False
             createPresenceSensorResponseJson.message = f"Ha ocurrido un error al crear el sensor de presencia {ex}."
 
-        return createPresenceSensorResponseJson
+        return ControllerUtils.HttpResults(createPresenceSensorResponseJson.responseCodeJson, createPresenceSensorResponseJson)
     #endregion
 
     #region PatchPresenceSensorData
-    @router.post("/patch-presence-sensor-data", response_model = PatchPresenceSensorDataResponseJson, status_code = status.HTTP_200_OK)
-    async def PatchPresenceSensorData(self, patchPresenceSensorDataRequestJson: PatchPresenceSensorDataRequestJson) -> PatchPresenceSensorDataResponseJson:
+    @router.post("/patch-presence-sensor-data")
+    async def PatchPresenceSensorData(self, patchPresenceSensorDataRequestJson: PatchPresenceSensorDataRequestJson) -> Response:
         patchPresenceSensorDataResponseJson: PatchPresenceSensorDataResponseJson = PatchPresenceSensorDataResponseJson()
         try:
             if (GeneralUtils.IsNullOrEmpty(patchPresenceSensorDataRequestJson.callout) or
@@ -98,5 +100,5 @@ class PresenceSensorController:
             patchPresenceSensorDataResponseJson.isSuccess = False
             patchPresenceSensorDataResponseJson.message = f"Ha ocurrido un error al modificar los datos del sensor de presencia {ex}."
 
-        return patchPresenceSensorDataResponseJson
+        return ControllerUtils.HttpResults(patchPresenceSensorDataResponseJson.responseCodeJson, patchPresenceSensorDataResponseJson)
     #endregion

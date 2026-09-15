@@ -1,5 +1,6 @@
 from fastapi_utils.cbv import cbv
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
+from fastapi.responses import Response
 from application.data_transfer_object.roomba.create_roomba.CreateRoombaRequest import CreateRoombaRequest
 from application.data_transfer_object.roomba.create_roomba.CreateRoombaResponse import CreateRoombaResponse
 from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaStateRequest import PatchRoombaStateRequest
@@ -7,6 +8,7 @@ from application.data_transfer_object.roomba.patch_roomba_state.PatchRoombaState
 from application.interface.application.IRoombaApplication import IRoombaApplication
 from domain.model.enum.roomba.RoombaPhase import RoombaPhase
 from domain.model.enum.roomba.RoombaTarget import RoombaTarget
+from transversal.common.utils.ControllerUtils import ControllerUtils
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 from infraestructure.persistence.dependencies.DependencyInjection import GetRoombaApplication
 from transversal.common.utils.GeneralUtils import GeneralUtils
@@ -26,8 +28,8 @@ class RoombaController:
     _roombaApplication: IRoombaApplication = Depends(GetRoombaApplication)
 
     #region CreateRoomba
-    @router.post("/create-roomba", response_model = CreateRoombaResponseJson, status_code = status.HTTP_200_OK)
-    async def CreateRoomba(self, createRoombaRequestJson: CreateRoombaRequestJson) -> CreateRoombaResponseJson:
+    @router.post("/create-roomba")
+    async def CreateRoomba(self, createRoombaRequestJson: CreateRoombaRequestJson) -> Response:
         createRoombaResponseJson: CreateRoombaResponseJson = CreateRoombaResponseJson()
         try:
             if (GeneralUtils.IsNullOrEmpty(createRoombaRequestJson.callout) or
@@ -57,12 +59,12 @@ class RoombaController:
             createRoombaResponseJson.isSuccess = False
             createRoombaResponseJson.message = f"Ha ocurrido un error al crear el roomba {ex}."
 
-        return createRoombaResponseJson
+        return ControllerUtils.HttpResults(createRoombaResponseJson.responseCodeJson, createRoombaResponseJson)
     #endregion
 
     #region PatchRoombaState
-    @router.post("/patch-roomba-state", response_model = PatchRoombaStateResponseJson, status_code = status.HTTP_200_OK)
-    async def PatchRoombaState(self, patchRoombaStateRequestJson: PatchRoombaStateRequestJson) -> PatchRoombaStateResponseJson:
+    @router.post("/patch-roomba-state")
+    async def PatchRoombaState(self, patchRoombaStateRequestJson: PatchRoombaStateRequestJson) -> Response:
         patchRoombaStateResponseJson: PatchRoombaStateResponseJson = PatchRoombaStateResponseJson()
         try:
             roombaTarget: RoombaTarget = GeneralUtils.ParseEnum(RoombaTarget, patchRoombaStateRequestJson.target, RoombaTarget.FULL_HOUSE)
@@ -92,5 +94,5 @@ class RoombaController:
             patchRoombaStateResponseJson.isSuccess = False
             patchRoombaStateResponseJson.message = f"Ha ocurrido un error al actualizar el estado del roomba {ex}."
 
-        return patchRoombaStateResponseJson
+        return ControllerUtils.HttpResults(patchRoombaStateResponseJson.responseCodeJson, patchRoombaStateResponseJson)
     #endregion

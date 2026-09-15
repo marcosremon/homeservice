@@ -1,9 +1,11 @@
 from fastapi_utils.cbv import cbv
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
+from fastapi.responses import Response
 from application.data_transfer_object.change_computer_status.get_computer_status.GetComputerStatusResponse import GetComputerStatusResponse
 from application.data_transfer_object.change_computer_status.turn_off_computer.TurnOffComputerResponse import TurnOffComputerResponse
 from application.data_transfer_object.change_computer_status.turn_on_computer.TurnOnComputerResponse import TurnOnComputerResponse
 from application.interface.application.IChangeComputerStatusApplication import IChangeComputerStatusApplication
+from transversal.common.utils.ControllerUtils import ControllerUtils
 from transversal.security.filter.ApiKeyAuth import ApiKeyAuth
 from infraestructure.persistence.dependencies.DependencyInjection import GetChangeComputerStatusApplication
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
@@ -21,8 +23,8 @@ class ChangeComputerStatusController:
     _changeComputerStatusApplication: IChangeComputerStatusApplication = Depends(GetChangeComputerStatusApplication)
 
     #region TurnOnComputer
-    @router.get("/turn-on-computer", response_model = TurnOnComputerResponseJson, status_code = status.HTTP_200_OK)
-    async def TurnOnComputer(self) -> TurnOnComputerResponseJson:
+    @router.get("/turn-on-computer")
+    async def TurnOnComputer(self) -> Response:
         turnOnComputerResponseJson: TurnOnComputerResponseJson = TurnOnComputerResponseJson()
         try:
             turnOnComputerResponse: TurnOnComputerResponse = await self._changeComputerStatusApplication.TurnOnComputer()
@@ -35,12 +37,12 @@ class ChangeComputerStatusController:
             turnOnComputerResponseJson.isSuccess = False
             turnOnComputerResponseJson.message = f"Ha ocurrido un error al encender el ordenador {ex}."
 
-        return turnOnComputerResponseJson
+        return ControllerUtils.HttpResults(turnOnComputerResponseJson.responseCodeJson, turnOnComputerResponseJson)
     #endregion
 
     #region TurnOffComputer
-    @router.get("/turn-off-computer", response_model = TurnOffComputerResponseJson, status_code = status.HTTP_200_OK)
-    async def TurnOffComputer(self) -> TurnOffComputerResponseJson:
+    @router.get("/turn-off-computer")
+    async def TurnOffComputer(self) -> Response:
         turnOffComputerResponseJson: TurnOffComputerResponseJson = TurnOffComputerResponseJson()
         try:
             turnOffComputerResponse: TurnOffComputerResponse = await self._changeComputerStatusApplication.TurnOffComputer()
@@ -53,12 +55,12 @@ class ChangeComputerStatusController:
             turnOffComputerResponseJson.isSuccess = False
             turnOffComputerResponseJson.message = f"Ha ocurrido un error al apagar el ordenador {ex}."
 
-        return turnOffComputerResponseJson
+        return ControllerUtils.HttpResults(turnOffComputerResponseJson.responseCodeJson, turnOffComputerResponseJson)
     #endregion
 
     #region GetComputerStatus
-    @router.get("/get-computer-status", response_model = GetComputerStatusResponseJson, status_code = status.HTTP_200_OK)
-    async def GetComputerStatus(self) -> GetComputerStatusResponseJson:
+    @router.get("/get-computer-status")
+    async def GetComputerStatus(self) -> Response:
         getComputerStatusResponseJson: GetComputerStatusResponseJson = GetComputerStatusResponseJson()
         try:
             getComputerStatusResponse: GetComputerStatusResponse = await self._changeComputerStatusApplication.GetComputerStatus()
@@ -73,5 +75,5 @@ class ChangeComputerStatusController:
             getComputerStatusResponseJson.ComputerStatus = False
             getComputerStatusResponseJson.message = f"Ha ocurrido un error al consultar el estado del ordenador {ex}."
 
-        return getComputerStatusResponseJson
+        return ControllerUtils.HttpResults(getComputerStatusResponseJson.responseCodeJson, getComputerStatusResponseJson)
     #endregion

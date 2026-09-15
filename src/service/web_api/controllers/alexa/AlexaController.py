@@ -1,10 +1,12 @@
 from fastapi_utils.cbv import cbv
-from fastapi import APIRouter, Depends, Header, Request, status
+from fastapi import APIRouter, Depends, Header, Request
+from starlette.responses import Response
 from application.data_transfer_object.alexa.AlexaRequest import AlexaRequest
 from application.data_transfer_object.alexa.AlexaResponse import AlexaResponse
 from application.interface.application.IAlexaApplication import IAlexaApplication
 from application.interface.security.IAlexaRequestVerifier import IAlexaRequestVerifier
 from infraestructure.persistence.dependencies.DependencyInjection import GetAlexaApplication
+from transversal.common.utils.ControllerUtils import ControllerUtils
 from transversal.common.configuration.Settings import Settings, GetSettings
 from transversal.common.utils.AlexaUtils import AlexaUtils
 from transversal.common.wrappers.json.BaseResponseJson import BaseResponseJson
@@ -28,8 +30,8 @@ class AlexaController:
     _settings: Settings = Depends(GetSettings)
 
     #region SendAlexaOrder
-    @router.post("/alexa", status_code = status.HTTP_200_OK)
-    async def SendAlexaOrder(self, request: Request, xDebugKey: str = Header(default = "", alias = DebugBypass.HEADER_NAME)) -> AlexaResponseJson:
+    @router.post("/alexa")
+    async def SendAlexaOrder(self, request: Request, xDebugKey: str = Header(default = "", alias = DebugBypass.HEADER_NAME)) -> Response:
         alexaResponseJson: AlexaResponseJson = AlexaResponseJson()
         baseResponseJson: BaseResponseJson = BaseResponseJson()
         try:
@@ -75,5 +77,5 @@ class AlexaController:
             baseResponseJson.message = "Error inesperado al procesar la peticion"
             baseResponseJson.isSuccess = False
 
-        return alexaResponseJson
+        return ControllerUtils.HttpResults(alexaResponseJson.baseResponseJson.responseCodeJson, alexaResponseJson)
     #endregion

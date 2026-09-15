@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
-from starlette import status
+from fastapi.responses import Response
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.create_temperature_sensor.CreateTemperatureSensorRequest import CreateTemperatureSensorRequest
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.create_temperature_sensor.CreateTemperatureSensorResponse import CreateTemperatureSensorResponse
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.patch_temperature_sensor.PatchTemperatureSensorRequest import PatchTemperatureSensorRequest
 from application.data_transfer_object.home_automation.sensor.temperature_sensor.patch_temperature_sensor.PatchTemperatureSensorResponse import PatchTemperatureSensorResponse
 from application.interface.application.ITemperatureSensorApplication import ITemperatureSensorApplication
 from infraestructure.persistence.dependencies.DependencyInjection import GetTemperatureSensorApplication
+from transversal.common.utils.ControllerUtils import ControllerUtils
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
 from transversal.json_interchange.home_automation.sensor.temperature_sensor.create_temperature_sensor.CreateTemperatureSensorRequestJson import CreateTemperatureSensorRequestJson
@@ -25,8 +26,8 @@ class TemperatureController:
     _temperatureSensorApplication: ITemperatureSensorApplication = Depends(GetTemperatureSensorApplication)
 
     #region create_temperature_sensor
-    @router.post("/create-temperature-sensor", response_model = CreateTemperatureSensorResponseJson, status_code = status.HTTP_200_OK)
-    async def CreateTemperatureSensor(self, createTemperatureSensorRequestJson: CreateTemperatureSensorRequestJson) -> CreateTemperatureSensorResponseJson:
+    @router.post("/create-temperature-sensor")
+    async def CreateTemperatureSensor(self, createTemperatureSensorRequestJson: CreateTemperatureSensorRequestJson) -> Response:
         createTemperatureSensorResponseJson: CreateTemperatureSensorResponseJson = CreateTemperatureSensorResponseJson()
         try:
             if (GeneralUtils.IsNullOrEmpty(createTemperatureSensorRequestJson.callOut) or
@@ -64,12 +65,12 @@ class TemperatureController:
             createTemperatureSensorResponseJson.isSuccess = False
             createTemperatureSensorResponseJson.message = f"Ha ocurrido un error al crear el sensor de temperatura {ex}."
 
-        return createTemperatureSensorResponseJson
+        return ControllerUtils.HttpResults(createTemperatureSensorResponseJson.responseCodeJson, createTemperatureSensorResponseJson)
     # endregion
 
     #region patch_temperature_sensor
-    @router.post("/patch-temperature-sensor", response_model = PatchTemperatureSensorResponseJson, status_code = status.HTTP_200_OK)
-    async def PatchTemperatureSensor(self, patchTemperatureSensorRequestJson: PatchTemperatureSensorRequestJson) -> PatchTemperatureSensorResponseJson:
+    @router.post("/patch-temperature-sensor")
+    async def PatchTemperatureSensor(self, patchTemperatureSensorRequestJson: PatchTemperatureSensorRequestJson) -> Response:
         patchTemperatureSensorResponseJson: PatchTemperatureSensorResponseJson = PatchTemperatureSensorResponseJson()
         try:
             if (GeneralUtils.IsNullOrEmpty(patchTemperatureSensorRequestJson.callOut) or
@@ -101,5 +102,5 @@ class TemperatureController:
             patchTemperatureSensorResponseJson.isSuccess = False
             patchTemperatureSensorResponseJson.message = f"Ha ocurrido un error al modificar los datos del sensor de temperatura {ex}."
 
-        return patchTemperatureSensorResponseJson
+        return ControllerUtils.HttpResults(patchTemperatureSensorResponseJson.responseCodeJson, patchTemperatureSensorResponseJson)
     #endregion

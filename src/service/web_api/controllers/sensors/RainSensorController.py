@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
-from starlette import status
+from fastapi.responses import Response
 from application.data_transfer_object.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorRequest import CreateRainSensorRequest
 from application.data_transfer_object.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorResponse import CreateRainSensorResponse
 from application.data_transfer_object.home_automation.sensor.rain_sensor.patch_rain_sensor.PatchRainSensorRequest import PatchRainSensorRequest
 from application.data_transfer_object.home_automation.sensor.rain_sensor.patch_rain_sensor.PatchRainSensorResponse import PatchRainSensorResponse
 from application.interface.application.IRainSensorApplication import IRainSensorApplication
 from infraestructure.persistence.dependencies.DependencyInjection import GetRainSensorApplication
+from transversal.common.utils.ControllerUtils import ControllerUtils
 from transversal.common.utils.GeneralUtils import GeneralUtils
 from transversal.common.wrappers.json.ResponseCodesJson import ResponseCodesJson
 from transversal.json_interchange.home_automation.sensor.rain_sensor.create_rain_sensor.CreateRainSensorRequestJson import CreateRainSensorRequestJson
@@ -25,8 +26,8 @@ class RainSensorController:
     _rainSensorApplication: IRainSensorApplication = Depends(GetRainSensorApplication)
 
     #region create_rain_sensor
-    @router.post("/create-rain-sensor", response_model = CreateRainSensorResponseJson, status_code = status.HTTP_200_OK)
-    async def CreateRainSensor(self, createRainSensorRequestJson: CreateRainSensorRequestJson) -> CreateRainSensorResponseJson:
+    @router.post("/create-rain-sensor")
+    async def CreateRainSensor(self, createRainSensorRequestJson: CreateRainSensorRequestJson) -> Response:
         createRainSensorResponseJson: CreateRainSensorResponseJson = CreateRainSensorResponseJson()
         try:
             if (GeneralUtils.IsNullOrEmpty(createRainSensorRequestJson.callOut) or
@@ -61,12 +62,12 @@ class RainSensorController:
             createRainSensorResponseJson.isSuccess = False
             createRainSensorResponseJson.message = f"Ha ocurrido un error al crear el sensor de lluvia {ex}."
 
-        return createRainSensorResponseJson
+        return ControllerUtils.HttpResults(createRainSensorResponseJson.responseCodeJson, createRainSensorResponseJson)
     # endregion
 
     #region patch_rain_sensor
-    @router.post("/patch-rain-sensor", response_model = PatchRainSensorResponseJson, status_code = status.HTTP_200_OK)
-    async def PatchRainSensor(self, patchRainSensorRequestJson: PatchRainSensorRequestJson) -> PatchRainSensorResponseJson:
+    @router.post("/patch-rain-sensor")
+    async def PatchRainSensor(self, patchRainSensorRequestJson: PatchRainSensorRequestJson) -> Response:
         patchRainSensorResponseJson: PatchRainSensorResponseJson = PatchRainSensorResponseJson()
         try:
             if (GeneralUtils.IsNullOrEmpty(patchRainSensorRequestJson.callOut) or
@@ -99,5 +100,5 @@ class RainSensorController:
             patchRainSensorResponseJson.isSuccess = False
             patchRainSensorResponseJson.message = f"Ha ocurrido un error al modificar los datos del sensor de lluvia {ex}."
 
-        return patchRainSensorResponseJson
+        return ControllerUtils.HttpResults(patchRainSensorResponseJson.responseCodeJson, patchRainSensorResponseJson)
     #endregion
