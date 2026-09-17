@@ -66,7 +66,7 @@ class RainSensorController:
     # endregion
 
     #region patch_rain_sensor
-    @router.post("/patch-rain-sensor")
+    @router.patch("/patch-rain-sensor")
     async def PatchRainSensor(self, patchRainSensorRequestJson: PatchRainSensorRequestJson) -> Response:
         patchRainSensorResponseJson: PatchRainSensorResponseJson = PatchRainSensorResponseJson()
         try:

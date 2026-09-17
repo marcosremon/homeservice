@@ -69,7 +69,7 @@ class TemperatureController:
     # endregion
 
     #region patch_temperature_sensor
-    @router.post("/patch-temperature-sensor")
+    @router.patch("/patch-temperature-sensor")
     async def PatchTemperatureSensor(self, patchTemperatureSensorRequestJson: PatchTemperatureSensorRequestJson) -> Response:
         patchTemperatureSensorResponseJson: PatchTemperatureSensorResponseJson = PatchTemperatureSensorResponseJson()
         try:

@@ -65,7 +65,7 @@ class PresenceSensorController:
     #endregion
 
     #region PatchPresenceSensorData
-    @router.post("/patch-presence-sensor-data")
+    @router.patch("/patch-presence-sensor-data")
     async def PatchPresenceSensorData(self, patchPresenceSensorDataRequestJson: PatchPresenceSensorDataRequestJson) -> Response:
         patchPresenceSensorDataResponseJson: PatchPresenceSensorDataResponseJson = PatchPresenceSensorDataResponseJson()
         try:

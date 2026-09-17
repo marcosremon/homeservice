@@ -63,7 +63,7 @@ class RoombaController:
     #endregion
 
     #region PatchRoombaState
-    @router.post("/patch-roomba-state")
+    @router.patch("/patch-roomba-state")
     async def PatchRoombaState(self, patchRoombaStateRequestJson: PatchRoombaStateRequestJson) -> Response:
         patchRoombaStateResponseJson: PatchRoombaStateResponseJson = PatchRoombaStateResponseJson()
         try:
