@@ -143,20 +143,20 @@ ruff check src
 
 Todas las rutas llevan el prefijo `/api`.
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `POST` | `/alexa` | Entrada de la skill de Alexa |
-| `GET` | `/change-computer-status/turn-on-computer` | Wake-on-LAN |
-| `GET` | `/change-computer-status/turn-off-computer` | Apagado por SSH |
-| `GET` | `/change-computer-status/get-computer-status` | Estado por ping |
-| `POST` | `/roomba/create-roomba` | Registrar Roomba |
-| `POST` | `/roomba/patch-roomba-state` | Actualizar estado |
-| `POST` | `/sensor/presence-sensor/create-presence-sensor` | Registrar sensor de presencia |
-| `POST` | `/sensor/presence-sensor/patch-presence-sensor-data` | Enviar lectura de presencia |
-| `POST` | `/sensors/temperature-sensor/create-temperature-sensor` | Registrar sensor de temperatura |
-| `POST` | `/sensors/temperature-sensor/patch-temperature-sensor` | Enviar lectura de temperatura |
-| `POST` | `/sensors/rain-sensor/create-rain-sensor` | Registrar sensor de lluvia |
-| `POST` | `/sensors/rain-sensor/patch-rain-sensor` | Enviar detección de lluvia |
+| Método  | Ruta | Descripción |
+|---------|---|---|
+| `POST`  | `/alexa` | Entrada de la skill de Alexa |
+| `GET`   | `/change-computer-status/turn-on-computer` | Wake-on-LAN |
+| `GET`   | `/change-computer-status/turn-off-computer` | Apagado por SSH |
+| `GET`   | `/change-computer-status/get-computer-status` | Estado por ping |
+| `POST`  | `/roomba/create-roomba` | Registrar Roomba |
+| `PATCH`  | `/roomba/patch-roomba-state` | Actualizar estado |
+| `POST`  | `/sensor/presence-sensor/create-presence-sensor` | Registrar sensor de presencia |
+| `PATCH`  | `/sensor/presence-sensor/patch-presence-sensor-data` | Enviar lectura de presencia |
+| `POST`  | `/sensors/temperature-sensor/create-temperature-sensor` | Registrar sensor de temperatura |
+| `PATCH`  | `/sensors/temperature-sensor/patch-temperature-sensor` | Enviar lectura de temperatura |
+| `POST`  | `/sensors/rain-sensor/create-rain-sensor` | Registrar sensor de lluvia |
+| `PATCH` | `/sensors/rain-sensor/patch-rain-sensor` | Enviar detección de lluvia |
 
 La colección de Bruno (`bruno/`) usa el entorno `Local` (`http://127.0.0.1:5131`) con `apiKey`, `debugKey` y `alexaSkillId` como variables secretas.
 
