@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/Application/">
+    <Project Path="HomeService.Application.DataTransferObject/HomeService.Application.DataTransferObject.csproj" Id="bac8b913-5fca-4991-b2aa-0027bfe9b2e1" />
+    <Project Path="HomeService.Application.Event/HomeService.Application.Event.csproj" Id="2b04ab8e-3b95-4b87-91c2-1925e8092030" />
+    <Project Path="HomeService.Application.Interface/HomeService.Application.Interface.csproj" Id="20c58302-7656-4f5f-a884-8f04fffbf6a0" />
+    <Project Path="HomeService.Application.UseCase/HomeService.Application.UseCase.csproj" Id="13267435-7e76-4d63-872e-003270076f19" />
+  </Folder>
+  <Folder Name="/Domain/">
+    <Project Path="HomeService.Domain.Model/HomeService.Domain.Model.csproj" Id="f9e44f00-0d81-4690-8ad6-f98c23154a03" />
+  </Folder>
+  <Folder Name="/Infraestructure/">
+    <Project Path="HomeService.Infraestructure.BackgroundTasks/HomeService.Infraestructure.BackgroundTasks.csproj" Id="b69f0333-4a57-403e-aa4a-e87e3f3501a2" />
+    <Project Path="HomeService.Infraestructure.Gateway/HomeService.Infraestructure.Gateway.csproj" Id="25150eaa-0d7c-46fb-adb9-dc14022ad5fa" />
+    <Project Path="HomeService.Infraestructure.Persistence/HomeService.Infraestructure.Persistence.csproj" Id="48b10889-52f5-4d70-b9e9-64d7f705abc2" />
+  </Folder>
+  <Folder Name="/Service/">
+    <Project Path="HomeService.Service.WebApi/HomeService.Service.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/Transversal/">
+    <Project Path="HomeService.Transversal.Common/HomeService.Transversal.Common.csproj" Id="50fda593-f75b-4dd4-8a53-36a99dbcefa6" />
+    <Project Path="HomeService.Transversal.JsonInterchange/HomeService.Transversal.JsonInterchange.csproj" Id="ce08fd22-4849-43a8-b6d3-ad0b9a16fcc7" />
+    <Project Path="HomeService.Transversal.Security/HomeService.Transversal.Security.csproj" Id="52b11a9f-4175-47df-9bd8-c055c147156f" />
+  </Folder>
+</Solution>
