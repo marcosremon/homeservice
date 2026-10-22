@@ -1,5 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\HomeService.Application.Interface\HomeService.Application.Interface.csproj" />
+    <ProjectReference Include="..\HomeService.Application.DataTransferObject\HomeService.Application.DataTransferObject.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
