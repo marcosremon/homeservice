@@ -1,5 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\HomeService.Domain.Model\HomeService.Domain.Model.csproj" />
+    <ProjectReference Include="..\HomeService.Transversal.Wrapper\HomeService.Transversal.Wrapper.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

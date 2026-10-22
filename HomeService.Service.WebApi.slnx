@@ -20,5 +20,6 @@
     <Project Path="HomeService.Transversal.Common/HomeService.Transversal.Common.csproj" Id="50fda593-f75b-4dd4-8a53-36a99dbcefa6" />
     <Project Path="HomeService.Transversal.JsonInterchange/HomeService.Transversal.JsonInterchange.csproj" Id="ce08fd22-4849-43a8-b6d3-ad0b9a16fcc7" />
     <Project Path="HomeService.Transversal.Security/HomeService.Transversal.Security.csproj" Id="52b11a9f-4175-47df-9bd8-c055c147156f" />
+    <Project Path="HomeService.Transversal.Wrapper/HomeService.Transversal.Wrapper.csproj" />
   </Folder>
 </Solution>
