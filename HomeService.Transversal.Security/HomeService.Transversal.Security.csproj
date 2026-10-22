@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeService.Application.Interface\HomeService.Application.Interface.csproj" />
+    <ProjectReference Include="..\HomeService.Transversal.Common\HomeService.Transversal.Common.csproj" />
+  </ItemGroup>
+
 </Project>
