@@ -1,4 +1,8 @@
+using HomeService.Application.Interface.Application;
+using HomeService.Application.Interface.Repository;
 using HomeService.Application.Interface.Security;
+using HomeService.Application.UseCase;
+using HomeService.Infraestructure.Persistence.Repository;
 using HomeService.Transversal.Common.Configuration;
 using HomeService.Transversal.Security.Alexa;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,33 +43,32 @@ namespace HomeService.Infraestructure.Persistence.Dependencies
         #region _addRepositories
         private static void _addRepositories(IServiceCollection services)
         {
-            // PENDIENTE: las clases concretas todavia no estan portadas. Scoped porque
-            // reciben el ApplicationDbContext, menos el de computer status, que solo
-            // necesita Settings.
-            //
-            // services.AddScoped<IChangeComputerStatusRepository, ChangeComputerStatusRepository>();
-            // services.AddScoped<ILightRepository, LightRepository>();
-            // services.AddScoped<IPresenceSensorRepository, PresenceSensorRepository>();
-            // services.AddScoped<IRainSensorRepository, RainSensorRepository>();
-            // services.AddScoped<IRoombaRepository, RoombaRepository>();
-            // services.AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>();
+            // Scoped porque reciben el ApplicationDbContext, que es scoped; el de computer
+            // status solo necesita Settings, pero se deja igual por uniformidad.
+            services.AddScoped<IChangeComputerStatusRepository, ChangeComputerStatusRepository>();
+            services.AddScoped<ILightRepository, LightRepository>();
+            services.AddScoped<IPresenceSensorRepository, PresenceSensorRepository>();
+            services.AddScoped<IRainSensorRepository, RainSensorRepository>();
+            services.AddScoped<IRoombaRepository, RoombaRepository>();
+            services.AddScoped<ITemperatureSensorRepository, TemperatureSensorRepository>();
         }
         #endregion
 
         #region _addApplications
         private static void _addApplications(IServiceCollection services)
         {
-            // PENDIENTE: los casos de uso si existen, pero cada uno depende de su
-            // repositorio. Registrarlos antes de los de arriba rompe el arranque en
-            // Development, porque ahi builder.Build() valida el grafo completo.
+            services.AddScoped<IChangeComputerStatusApplication, ChangeComputerStatusApplication>();
+            services.AddScoped<ILightApplication, LightApplication>();
+            services.AddScoped<IPresenceSensorApplication, PresenceSensorApplication>();
+            services.AddScoped<IRoombaApplication, RoombaApplication>();
+            services.AddScoped<ITemperatureSensorApplication, TemperatureSensorApplication>();
+
+            // PENDIENTE: estos dos dependen de services del Gateway que aun no existen
+            // (INotificationService e IAlexaService). Registrarlos ya rompe el arranque
+            // en Development, porque ahi builder.Build() valida el grafo completo.
             //
-            // services.AddScoped<IAlexaApplication, AlexaApplication>();
-            // services.AddScoped<IChangeComputerStatusApplication, ChangeComputerStatusApplication>();
-            // services.AddScoped<ILightApplication, LightApplication>();
-            // services.AddScoped<IPresenceSensorApplication, PresenceSensorApplication>();
             // services.AddScoped<IRainSensorApplication, RainSensorApplication>();
-            // services.AddScoped<IRoombaApplication, RoombaApplication>();
-            // services.AddScoped<ITemperatureSensorApplication, TemperatureSensorApplication>();
+            // services.AddScoped<IAlexaApplication, AlexaApplication>();
         }
         #endregion
 
