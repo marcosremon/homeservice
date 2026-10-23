@@ -1,23 +1,69 @@
-var builder = WebApplication.CreateBuilder(args);
+using HomeService.Infraestructure.Persistence.Context;
+using HomeService.Infraestructure.Persistence.CreateDatabase;
+using HomeService.Infraestructure.Persistence.Dependencies;
+using HomeService.Transversal.Common.Configuration;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.EntityFrameworkCore;
 
-// Add services to the container.
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Insert(0, new RoutePrefixConvention("api"));
+});
+builder.Services.AddHttpClient();
+
+// La cadena sale de Settings (.env o variables de entorno), no de ConnectionStrings.
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(Settings.GetSettings().DatabaseUrl));
+
+builder.Services.AddInfrastructureServices();
 builder.Services.AddOpenApi();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Aplicar migraciones de base de datos al arrancar: pone la BBDD al dia sola.
+if (!DatabaseMigrator.CreateOrUpdateDatabase())
+    Console.WriteLine("Program -> Fallo al aplicar las migraciones de base de datos al arrancar.");
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// Permite releer el body (necesario para verificacion de firma Alexa)
+app.Use(async (context, next) =>
+{
+    context.Request.EnableBuffering();
+    await next();
+});
 
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
+
+public class RoutePrefixConvention : IApplicationModelConvention
+{
+    private readonly AttributeRouteModel _routePrefix;
+
+    public RoutePrefixConvention(string prefix)
+    {
+        _routePrefix = new AttributeRouteModel(new Microsoft.AspNetCore.Mvc.RouteAttribute(prefix));
+    }
+
+    public void Apply(ApplicationModel application)
+    {
+        foreach (ControllerModel controller in application.Controllers)
+        {
+            foreach (SelectorModel selector in controller.Selectors)
+            {
+                if (selector.AttributeRouteModel != null)
+                {
+                    selector.AttributeRouteModel = AttributeRouteModel.CombineAttributeRouteModel(
+                        _routePrefix,
+                        selector.AttributeRouteModel);
+                }
+            }
+        }
+    }
+}

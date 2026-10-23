@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HomeService.Infraestructure.Persistence\HomeService.Infraestructure.Persistence.csproj" />
+    <ProjectReference Include="..\HomeService.Transversal.Common\HomeService.Transversal.Common.csproj" />
+    <ProjectReference Include="..\HomeService.Transversal.Security\HomeService.Transversal.Security.csproj" />
+  </ItemGroup>
+
 </Project>

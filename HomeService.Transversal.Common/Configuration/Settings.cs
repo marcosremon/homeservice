@@ -7,36 +7,47 @@ public class Settings
 {
     private static readonly Lazy<Settings> Cached = new(Build);
 
-    #region properties
+    #region Properties
 
+    #region App
     [ConfigurationKeyName("APP_HOST")]
     public string AppHost { get; set; } = "0.0.0.0";
 
     [ConfigurationKeyName("APP_PORT")]
     public int AppPort { get; set; } = 8000;
+    #endregion
 
+    #region BBDD
     // postgresql://usuario:password@host:puerto/base_de_datos
     [ConfigurationKeyName("DATABASE_URL")]
     public string DatabaseUrl { get; set; } = string.Empty;
+    #endregion
 
+    #region ApiKeys
     [ConfigurationKeyName("INTERNAL_API_KEY")]
     public string InternalApiKey { get; set; } = string.Empty;
 
     [ConfigurationKeyName("DEBUG_BYPASS_KEY")]
     public string DebugBypassKey { get; set; } = string.Empty;
+    #endregion
 
+    #region Alexa
     [ConfigurationKeyName("ALEXA_VERSION")]
     public string AlexaVersion { get; set; } = "1.0";
 
     [ConfigurationKeyName("ALEXA_SKILL_ID")]
     public string AlexaSkillId { get; set; } = string.Empty;
+    #endregion
 
+    #region Gemini
     [ConfigurationKeyName("GEMINI_API_KEY")]
     public string GeminiApiKey { get; set; } = string.Empty;
 
     [ConfigurationKeyName("GEMINI_MODEL")]
     public string GeminiModel { get; set; } = string.Empty;
+    #endregion
 
+    #region Mqtt
     [ConfigurationKeyName("MQTT_HOST")]
     public string MqttHost { get; set; } = string.Empty;
 
@@ -48,7 +59,9 @@ public class Settings
 
     [ConfigurationKeyName("MQTT_PASSWORD")]
     public string MqttPassword { get; set; } = string.Empty;
+    #endregion
 
+    #region Roomba
     [ConfigurationKeyName("ROOMBA_ID")]
     public string RoombaId { get; set; } = string.Empty;
 
@@ -66,14 +79,18 @@ public class Settings
 
     [ConfigurationKeyName("ROOMBA_PMAP_VERSION")]
     public string RoombaPmapVersion { get; set; } = string.Empty;
+    #endregion
 
+    #region Ntfy
     // cualquiera que lo conozca puede publicar y leer, por eso el topic no tiene default.
     [ConfigurationKeyName("NTFY_BASE_URL")]
     public string NtfyBaseUrl { get; set; } = "https://ntfy.sh";
 
     [ConfigurationKeyName("NTFY_TOPIC")]
     public string NtfyTopic { get; set; } = string.Empty;
+    #endregion
 
+    #region Lan
     [ConfigurationKeyName("LAN_COMPUTER_IP")]
     public string LanComputerIp { get; set; } = string.Empty;
 
@@ -85,11 +102,11 @@ public class Settings
 
     [ConfigurationKeyName("LAN_CACHYOS_USER")]
     public string LanCachyosUser { get; set; } = string.Empty;
+    #endregion
 
     #endregion
 
     #region GetSettings
-    // Equivalente al @lru_cache del GetSettings() de python: una sola lectura por proceso.
     public static Settings GetSettings() => Cached.Value;
     #endregion
 

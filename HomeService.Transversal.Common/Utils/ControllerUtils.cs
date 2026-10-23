@@ -37,7 +37,6 @@ public static class ControllerUtils
     #endregion
 
     #region Json
-    private static IActionResult Json(int statusCode, object? content) =>
-        new JsonResult(content, JsonModelConfig.Default) { StatusCode = statusCode };
+    private static IActionResult Json(int statusCode, object? content) => new JsonResult(content, JsonModelConfig.Default) { StatusCode = statusCode };
     #endregion
 }

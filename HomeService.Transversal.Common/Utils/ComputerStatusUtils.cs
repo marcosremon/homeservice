@@ -13,9 +13,7 @@ public static class ComputerStatusUtils
     private const double SshTimeoutSeconds = 15.0;
     private const int WakeOnLanPort = 9;
 
-    private static readonly string SshKeyPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh", "homelab_key");
-
+    private static readonly string SshKeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh", "homelab_key");
     private static readonly Regex MacPattern = new(@"^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$", RegexOptions.Compiled);
     private static readonly Regex SshUserPattern = new(@"^[A-Za-z_][A-Za-z0-9_]*$", RegexOptions.Compiled);
 

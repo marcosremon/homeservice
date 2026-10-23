@@ -1,5 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\HomeService.Transversal.Common\HomeService.Transversal.Common.csproj" />
+    <ProjectReference Include="..\HomeService.Domain.Model\HomeService.Domain.Model.csproj" />
+    <ProjectReference Include="..\HomeService.Application.Interface\HomeService.Application.Interface.csproj" />
+    <ProjectReference Include="..\HomeService.Application.UseCase\HomeService.Application.UseCase.csproj" />
+    <ProjectReference Include="..\HomeService.Transversal.Security\HomeService.Transversal.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql" Version="10.0.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

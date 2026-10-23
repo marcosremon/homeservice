@@ -34,7 +34,10 @@ public static class GeneralUtils
     #endregion
 
     #region UtcNow
-    public static DateTime UtcNow() => DateTime.UtcNow;
+    // Kind Unspecified a proposito, igual que el .replace(tzinfo = None) de python:
+    // las columnas son timestamp without time zone y Npgsql rechaza escribir en
+    // ellas un DateTime con Kind Utc.
+    public static DateTime UtcNow() => DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
     #endregion
 
     #region ParseEnum

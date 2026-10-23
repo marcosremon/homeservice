@@ -14,6 +14,7 @@ namespace HomeService.Transversal.Common.Utils;
 
 public static class RoombaUtils
 {
+    #region Properties
     private static readonly SemaphoreSlim RoombaLock = new(1, 1);
 
     // Ventana en la que se permite el arranque automatico.
@@ -40,6 +41,7 @@ public static class RoombaUtils
 
     // Lo que escucha GetRoomInfo antes de rendirse.
     private const double RoomInfoListenSeconds = 30.0;
+    #endregion
 
     #region BuildClientOptions
     // Cliente MQTT contra la roomba: TLS 1.2 sin validar el certificado. El del
