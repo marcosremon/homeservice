@@ -5,6 +5,18 @@
     <Project Path="HomeService.Application.Interface/HomeService.Application.Interface.csproj" Id="20c58302-7656-4f5f-a884-8f04fffbf6a0" />
     <Project Path="HomeService.Application.UseCase/HomeService.Application.UseCase.csproj" Id="13267435-7e76-4d63-872e-003270076f19" />
   </Folder>
+  <Folder Name="/docs/" />
+  <Folder Name="/docs/decisions/">
+    <File Path="docs/decisions/0001-transversal-wrapper.md" />
+    <File Path="docs/decisions/0002-configuracion-settings-env.md" />
+    <File Path="docs/decisions/0003-esquema-databasemigrator.md" />
+    <File Path="docs/decisions/0004-persistence-registra-todo.md" />
+    <File Path="docs/decisions/0005-contratos-congelados.md" />
+  </Folder>
+  <Folder Name="/docs/runbooks/">
+    <File Path="docs/runbooks/nueva-migracion.md" />
+    <File Path="docs/runbooks/probar-en-local.md" />
+  </Folder>
   <Folder Name="/Domain/">
     <Project Path="HomeService.Domain.Model/HomeService.Domain.Model.csproj" Id="f9e44f00-0d81-4690-8ad6-f98c23154a03" />
   </Folder>
@@ -20,6 +32,6 @@
     <Project Path="HomeService.Transversal.Common/HomeService.Transversal.Common.csproj" Id="50fda593-f75b-4dd4-8a53-36a99dbcefa6" />
     <Project Path="HomeService.Transversal.JsonInterchange/HomeService.Transversal.JsonInterchange.csproj" Id="ce08fd22-4849-43a8-b6d3-ad0b9a16fcc7" />
     <Project Path="HomeService.Transversal.Security/HomeService.Transversal.Security.csproj" Id="52b11a9f-4175-47df-9bd8-c055c147156f" />
-    <Project Path="HomeService.Transversal.Wrapper/HomeService.Transversal.Wrapper.csproj" />
+    <Project Path="HomeService.Transversal.Wrapper/HomeService.Transversal.Wrapper.csproj" />
   </Folder>
 </Solution>
