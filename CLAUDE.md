@@ -43,6 +43,8 @@ Reglas que no se ven leyendo el código:
 
 El esquema lo crea `DatabaseMigrator` al arrancar, con SQL a mano; EF Core solo mapea. Para cambiarlo: [nueva migración](docs/runbooks/nueva-migracion.md). → [0003](docs/decisions/0003-esquema-databasemigrator.md)
 
+`Program.cs` desactiva las conversiones a `infinity` de Npgsql (`Npgsql.DisableDateTimeInfinityConversions`). Sin eso, `DateTime.MinValue` se guarda como `-infinity` y no como `'0001-01-01 00:00:00'`, que es lo que usa el resto del esquema. No quitarlo.
+
 ## Contratos que no se tocan
 
 Rutas HTTP, claves JSON e intents de Alexa: los usan los ESP32 y Amazon tal cual, erratas incluidas (`/api/sensor/presence-sensor` en singular, `callout` frente a `callOut`). → [0005](docs/decisions/0005-contratos-congelados.md)
@@ -54,7 +56,7 @@ Rutas HTTP, claves JSON e intents de Alexa: los usan los ESP32 y Amazon tal cual
 
 ## Pendiente o roto
 
-- `ApplicationDbContext`: los `DbSet` `Lights`, `PresenceSensors` y `RainSensors` tienen el tipo cruzado (`RainSensor` no está en el modelo) y `OnModelCreating` está vacío, así que EF buscaría `HouseZones` en vez de `house_zone`.
-- Los repositorios son esqueleto (`try` vacío, `catch` y `return`) salvo `ChangeComputerStatusRepository`: devuelven `IsSuccess = false` y código 998, que los endpoints REST convierten en un 500.
 - `LightController` sin portar: el Python estaba a medias e `ILightApplication` no tiene métodos.
 - «Enciende/apaga el ordenador» por voz no hace nada: `ComputerStatusService` solo consulta el estado. El encendido real está en `/api/change-computer-status`.
+- `CreatePresenceSensor` no comprueba si el sensor ya existe (lluvia y temperatura devuelven 409): cada alta repetida añade otra fila a `presence_sensor`, y `GetPresenceSensorsStatus` las cuenta todas, así que una fila vieja con presencia deja la casa «ocupada» para siempre.
+- Sin verificar contra un broker real: el cambio de estado de una luz (`LightService` → `PatchLightStatus`) solo llega a la BBDD si la publicación MQTT sale bien.

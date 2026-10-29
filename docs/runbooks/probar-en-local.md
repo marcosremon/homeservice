@@ -49,13 +49,30 @@ Para un intent, cambia `request` por `{"type":"IntentRequest","requestId":"r","t
 
 `Settings` se lee una vez por proceso: para cambiar de escenario hay que reiniciar la app.
 
+## Con una base de datos de verdad, desechable
+
+Si el equipo tiene PostgreSQL instalado (aquí, `C:\Program Files\PostgreSQL\17`), se puede levantar un cluster temporal en otro puerto sin tocar ninguna instancia existente. `DatabaseMigrator` crea el esquema desde cero al arrancar la app.
+
+```bash
+PG="/c/Program Files/PostgreSQL/17/bin"; DATA="C:/temp/homeservice-pgdata"
+"$PG/initdb" -D "$DATA" -U smoke --auth=trust -E UTF8 --locale=C
+"$PG/pg_ctl" -D "$DATA" -o "-p 55432 -c listen_addresses=127.0.0.1" -l "$DATA.log" -w start
+"$PG/createdb" -h 127.0.0.1 -p 55432 -U smoke homeservice_smoke
+export DATABASE_URL="Host=127.0.0.1;Port=55432;Database=homeservice_smoke;Username=smoke;Password=smoke"
+```
+
+Después, el resto de variables del bloque de arriba y la app. Al terminar: `"$PG/pg_ctl" -D "$DATA" -m fast stop` y borrar `$DATA`.
+
+- Las luces no tienen endpoint de alta: se insertan a mano en `device` (con `device_type = 'light'`) y en `light`.
+- `RainSensorMonitor` pasa cada 60 s. Para probar que la lluvia caduca, pon `last_detected_rain` a hace más de 5 minutos (en UTC).
+
 ## Qué esperar hoy
 
 | Petición | Resultado |
 |---|---|
 | Ruta sin `/api` | 404 |
 | REST sin clave o con clave mala | 401 |
-| REST con clave buena | 500 con `responseCodeJson: 998` y mensaje vacío, porque el repositorio es esqueleto; salvo `/api/change-computer-status`, que ya funciona (ver arriba) |
+| REST con clave buena | 500 con `responseCodeJson: 998`: sin base de datos, el repositorio falla al conectar. `/api/change-computer-status` sí responde, porque no usa la BBDD |
 | Alexa sin bypass ni firma | 401 |
 | `LaunchRequest` | 200, saludo con la sesión abierta |
 | `light_order_encender_luces_salon` | «No encuentro la luz de LIVING_ROOM» |

@@ -5,6 +5,10 @@ using HomeService.Transversal.Common.Configuration;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 
+// Npgsql guarda DateTime.MinValue como -infinity por defecto; el esquema y los datos
+// existentes usan '0001-01-01 00:00:00'. Tiene que ir antes de cualquier uso de Npgsql.
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
