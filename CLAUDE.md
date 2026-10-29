@@ -55,6 +55,6 @@ Rutas HTTP, claves JSON e intents de Alexa: los usan los ESP32 y Amazon tal cual
 ## Pendiente o roto
 
 - `ApplicationDbContext`: los `DbSet` `Lights`, `PresenceSensors` y `RainSensors` tienen el tipo cruzado (`RainSensor` no está en el modelo) y `OnModelCreating` está vacío, así que EF buscaría `HouseZones` en vez de `house_zone`.
-- Los 6 repositorios son esqueleto (`try` vacío, `catch` y `return`): devuelven `IsSuccess = false` y código 998, que los endpoints REST convierten en un 500.
+- Los repositorios son esqueleto (`try` vacío, `catch` y `return`) salvo `ChangeComputerStatusRepository`: devuelven `IsSuccess = false` y código 998, que los endpoints REST convierten en un 500.
 - `LightController` sin portar: el Python estaba a medias e `ILightApplication` no tiene métodos.
 - «Enciende/apaga el ordenador» por voz no hace nada: `ComputerStatusService` solo consulta el estado. El encendido real está en `/api/change-computer-status`.

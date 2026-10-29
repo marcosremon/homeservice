@@ -16,7 +16,8 @@ Desde Git Bash, en `HomeService.Service.WebApi`, después de compilar:
 export DATABASE_URL="Host=127.0.0.1;Port=1;Database=smoke;Username=smoke;Password=smoke"
 export INTERNAL_API_KEY=smoke DEBUG_BYPASS_KEY=smokebypass
 export MQTT_HOST=127.0.0.1 MQTT_PORT=1 ROOMBA_ID=127.0.0.1 ROOMBA_PORT=1
-export NTFY_BASE_URL=http://127.0.0.1:1 LAN_COMPUTER_IP=127.0.0.1 GEMINI_API_KEY=smoke
+export NTFY_BASE_URL=http://127.0.0.1:1 GEMINI_API_KEY=smoke
+export LAN_COMPUTER_IP=127.0.0.1 LAN_COMPUTER_MAC=00:00:5E:00:53:01 LAN_BROADCAST_IP=127.0.0.1 LAN_CACHYOS_USER=smoke
 export ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://127.0.0.1:5099
 dotnet bin/Debug/net10.0/HomeService.Service.WebApi.dll
 ```
@@ -39,13 +40,22 @@ Para un intent, cambia `request` por `{"type":"IntentRequest","requestId":"r","t
 
 **No pruebes `ConversationIntent`**: llama a Gemini, que es un servicio externo de verdad.
 
+## El ordenador
+
+`/api/change-computer-status` habla de verdad por la LAN: ping, Wake on LAN y SSH con `sudo systemctl poweroff`. Las cuatro variables `LAN_*` del bloque de arriba son las que lo mantienen lejos de tu PC; no quites ninguna.
+
+- `LAN_COMPUTER_IP=127.0.0.1` simula un ordenador **encendido**: encender responde «PC already on» y apagar intenta un SSH a este equipo, que se rechaza si no hay nada en el puerto 22.
+- `LAN_COMPUTER_IP=192.0.2.1` (IP de documentación, no existe) simula uno **apagado**: apagar no lanza SSH y encender manda el paquete mágico, que con `LAN_BROADCAST_IP=127.0.0.1` y la MAC de documentación no sale de este equipo. Se puede capturar escuchando UDP en `127.0.0.1:9`.
+
+`Settings` se lee una vez por proceso: para cambiar de escenario hay que reiniciar la app.
+
 ## Qué esperar hoy
 
 | Petición | Resultado |
 |---|---|
 | Ruta sin `/api` | 404 |
 | REST sin clave o con clave mala | 401 |
-| REST con clave buena | 500 con `responseCodeJson: 998` y mensaje vacío: el repositorio es esqueleto |
+| REST con clave buena | 500 con `responseCodeJson: 998` y mensaje vacío, porque el repositorio es esqueleto; salvo `/api/change-computer-status`, que ya funciona (ver arriba) |
 | Alexa sin bypass ni firma | 401 |
 | `LaunchRequest` | 200, saludo con la sesión abierta |
 | `light_order_encender_luces_salon` | «No encuentro la luz de LIVING_ROOM» |
