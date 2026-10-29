@@ -10,8 +10,10 @@ public class ChangeComputerStatusApplication : IChangeComputerStatusApplication
 {
     private readonly IChangeComputerStatusRepository _changeComputerStatusRepository;
 
-    public ChangeComputerStatusApplication(IChangeComputerStatusRepository changeComputerStatusRepository) =>
+    public ChangeComputerStatusApplication(IChangeComputerStatusRepository changeComputerStatusRepository)
+    {
         _changeComputerStatusRepository = changeComputerStatusRepository;
+    }
 
     #region GetComputerStatus
     public Task<GetComputerStatusResponse> GetComputerStatus() =>

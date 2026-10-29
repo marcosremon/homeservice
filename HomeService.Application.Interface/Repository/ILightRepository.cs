@@ -6,6 +6,5 @@ namespace HomeService.Application.Interface.Repository;
 public interface ILightRepository
 {
     Task<GetLightByLocationResponse> GetLightByLocation(GetLightByLocationRequest getLightByLocationRequest);
-
     Task PatchLightStatus(PatchLightStatusRequest patchLightStatusRequest);
 }

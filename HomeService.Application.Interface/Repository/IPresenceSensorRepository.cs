@@ -7,8 +7,6 @@ namespace HomeService.Application.Interface.Repository;
 public interface IPresenceSensorRepository
 {
     Task<CreatePresenceSensorResponse> CreatePresenceSensor(CreatePresenceSensorRequest createPresenceSensorRequest);
-
     Task<PatchPresenceSensorDataResponse> PatchPresenceSensorData(PatchPresenceSensorDataRequest patchPresenceSensorDataRequest);
-
     Task<GetPresenceSensorsStatusResponse> GetPresenceSensorsStatus();
 }

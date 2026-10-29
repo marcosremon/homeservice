@@ -6,6 +6,5 @@ namespace HomeService.Application.Interface.Repository;
 public interface ITemperatureSensorRepository
 {
     Task<CreateTemperatureSensorResponse> CreateTemperatureSensor(CreateTemperatureSensorRequest createTemperatureSensorRequest);
-
     Task<PatchTemperatureSensorResponse> PatchTemperatureSensor(PatchTemperatureSensorRequest patchTemperatureSensorRequest);
 }

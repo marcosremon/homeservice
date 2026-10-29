@@ -9,8 +9,10 @@ public class PresenceSensorApplication : IPresenceSensorApplication
 {
     private readonly IPresenceSensorRepository _presenceSensorRepository;
 
-    public PresenceSensorApplication(IPresenceSensorRepository presenceSensorRepository) =>
+    public PresenceSensorApplication(IPresenceSensorRepository presenceSensorRepository)
+    {
         _presenceSensorRepository = presenceSensorRepository;
+    }
 
     #region CreatePresenceSensor
     public Task<CreatePresenceSensorResponse> CreatePresenceSensor(CreatePresenceSensorRequest createPresenceSensorRequest) =>

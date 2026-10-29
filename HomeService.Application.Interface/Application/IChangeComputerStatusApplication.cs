@@ -7,8 +7,6 @@ namespace HomeService.Application.Interface.Application;
 public interface IChangeComputerStatusApplication
 {
     Task<GetComputerStatusResponse> GetComputerStatus();
-
     Task<TurnOffComputerResponse> TurnOffComputer();
-
     Task<TurnOnComputerResponse> TurnOnComputer();
 }

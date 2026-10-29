@@ -1,9 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\HomeService.Application.Interface\HomeService.Application.Interface.csproj" />
+    <ProjectReference Include="..\HomeService.Application.Event\HomeService.Application.Event.csproj" />
+    <ProjectReference Include="..\HomeService.Application.DataTransferObject\HomeService.Application.DataTransferObject.csproj" />
+    <ProjectReference Include="..\HomeService.Transversal.Common\HomeService.Transversal.Common.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
 </Project>

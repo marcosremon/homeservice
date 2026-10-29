@@ -4,7 +4,7 @@ namespace HomeService.Infraestructure.Persistence.CreateDatabase.Migrations;
 
 public static class Migration2026072800
 {
-    public static Migration Create() => new()
+    public static Migration Create() => new Migration()
     {
         Version = 2026072800,
         Commands =

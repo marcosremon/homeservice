@@ -75,5 +75,21 @@ namespace HomeService.Infraestructure.Persistence.Repository
             return getRainingSensorResponse;
         }
         #endregion
+
+        #region ExpireRainStatus
+        public async Task ExpireRainStatus(DateTime expiryLimit)
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                // Equivale al session.rollback(): descarta lo pendiente del contexto.
+                _context.ChangeTracker.Clear();
+
+                Console.WriteLine($"Unexpected error on RainSensorRepository -> ExpireRainStatus: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }

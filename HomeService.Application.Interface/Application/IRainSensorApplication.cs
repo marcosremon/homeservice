@@ -6,6 +6,5 @@ namespace HomeService.Application.Interface.Application;
 public interface IRainSensorApplication
 {
     Task<CreateRainSensorResponse> CreateRainSensor(CreateRainSensorRequest createRainSensorRequest);
-
     Task<PatchRainSensorResponse> PatchRainSensor(PatchRainSensorRequest patchRainSensorRequest);
 }

@@ -8,7 +8,10 @@ public class AlexaApplication : IAlexaApplication
 {
     private readonly IAlexaService _alexaService;
 
-    public AlexaApplication(IAlexaService alexaService) => _alexaService = alexaService;
+    public AlexaApplication(IAlexaService alexaService)
+    {
+        _alexaService = alexaService;
+    } 
 
     #region SendAlexaOrder
     public Task<AlexaResponse> SendAlexaOrder(AlexaRequest alexaRequest) =>

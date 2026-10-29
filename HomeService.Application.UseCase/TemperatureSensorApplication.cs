@@ -9,9 +9,10 @@ public class TemperatureSensorApplication : ITemperatureSensorApplication
 {
     private readonly ITemperatureSensorRepository _temperatureSensorRepository;
 
-    public TemperatureSensorApplication(ITemperatureSensorRepository temperatureSensorRepository) =>
+    public TemperatureSensorApplication(ITemperatureSensorRepository temperatureSensorRepository)
+    {
         _temperatureSensorRepository = temperatureSensorRepository;
-
+    }
     #region CreateTemperatureSensor
     public Task<CreateTemperatureSensorResponse> CreateTemperatureSensor(CreateTemperatureSensorRequest createTemperatureSensorRequest) =>
         _temperatureSensorRepository.CreateTemperatureSensor(createTemperatureSensorRequest);

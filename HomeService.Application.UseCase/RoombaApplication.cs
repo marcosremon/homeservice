@@ -9,7 +9,10 @@ public class RoombaApplication : IRoombaApplication
 {
     private readonly IRoombaRepository _roombaRepository;
 
-    public RoombaApplication(IRoombaRepository roombaRepository) => _roombaRepository = roombaRepository;
+    public RoombaApplication(IRoombaRepository roombaRepository)
+    {
+        _roombaRepository = roombaRepository;
+    }
 
     #region CreateRoomba
     public Task<CreateRoombaResponse> CreateRoomba(CreateRoombaRequest createRoombaRequest) =>

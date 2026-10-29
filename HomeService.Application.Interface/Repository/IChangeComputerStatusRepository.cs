@@ -7,8 +7,6 @@ namespace HomeService.Application.Interface.Repository;
 public interface IChangeComputerStatusRepository
 {
     Task<GetComputerStatusResponse> GetComputerStatus();
-
     Task<TurnOffComputerResponse> TurnOffComputer();
-
     Task<TurnOnComputerResponse> TurnOnComputer();
 }
