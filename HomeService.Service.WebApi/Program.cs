@@ -62,11 +62,7 @@ public class RoutePrefixConvention : IApplicationModelConvention
             foreach (SelectorModel selector in controller.Selectors)
             {
                 if (selector.AttributeRouteModel != null)
-                {
-                    selector.AttributeRouteModel = AttributeRouteModel.CombineAttributeRouteModel(
-                        _routePrefix,
-                        selector.AttributeRouteModel);
-                }
+                    selector.AttributeRouteModel = AttributeRouteModel.CombineAttributeRouteModel(_routePrefix, selector.AttributeRouteModel);
             }
         }
     }

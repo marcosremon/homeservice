@@ -37,8 +37,8 @@ namespace HomeService.Infraestructure.Persistence.Dependencies
         private static void _addSecurity(IServiceCollection services)
         {
             // Cliente tipado: el contenedor le pasa un HttpClient del pool y el ILogger.
-            // AlexaController lo recibe por constructor y AlexaAuth lo coge de aqui en
-            // vez de usar su fabrica estatica.
+            // Lo inyecta AlexaController. El filtro AlexaAuth tambien lo buscaria aqui,
+            // pero hoy no se aplica en ningun controlador.
             services.AddHttpClient<IAlexaRequestVerifier, AlexaRequestVerifier>(client =>
                 client.Timeout = TimeSpan.FromSeconds(10));
         }
@@ -74,9 +74,8 @@ namespace HomeService.Infraestructure.Persistence.Dependencies
         #region _addGatewayServices
         private static void _addGatewayServices(IServiceCollection services)
         {
-            // Singleton los que no dependen de nada scoped. MqttService comparte la
-            // conexion con el broker y RoombaService guarda temporizadores que tienen
-            // que sobrevivir a la peticion.
+            // Singleton los que no dependen de nada scoped: MqttService comparte la
+            // conexion con el broker y el resto no guarda estado por peticion.
             services.AddSingleton<IMqttService, MqttService>();
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<IComputerStatusService, ComputerStatusService>();

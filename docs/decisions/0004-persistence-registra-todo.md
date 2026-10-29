@@ -13,7 +13,7 @@
 - **Tareas de fondo**: son singleton y los repositorios scoped, así que abren un scope por vuelta (`CreateAsyncScope`) y piden el repositorio por interfaz.
 - **`RainSensorMonitor`**: en Python modificaba las entidades devueltas por el repositorio y hacía `session.commit()`, lo que en C# exigiría el `ApplicationDbContext`. Se movió a `IRainSensorRepository.ExpireRainStatus(expiryLimit)`.
 - **Lifetimes**:
-  - Singleton todo lo que no depende de nada scoped. `MqttService` comparte la conexión con el broker y `RoombaService` guarda los temporizadores de «limpia en X tiempo», que tienen que sobrevivir a la petición.
+  - Singleton todo lo que no depende de nada scoped: `MqttService` comparte la conexión con el broker y el resto no guarda estado por petición. Las limpiezas «en X tiempo» de `RoombaService` van en un `Task.Run`, que no depende del lifetime del servicio.
   - Scoped `LightService`, que usa `ILightRepository`, y `AlexaService`, que usa `LightService`.
 
 ## Consecuencias

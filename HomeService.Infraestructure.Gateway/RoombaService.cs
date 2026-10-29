@@ -6,8 +6,8 @@ using HomeService.Transversal.Wrapper.Alexa.AlexaRequest;
 
 namespace HomeService.Infraestructure.Gateway
 {
-    // Singleton: los temporizadores de "limpia en X tiempo" tienen que sobrevivir a
-    // la peticion que los programo.
+    // Sin estado. Las limpiezas "en X tiempo" se lanzan con Task.Run y siguen su
+    // curso aunque termine la peticion, sea cual sea el lifetime del servicio.
     public class RoombaService : IRoombaService
     {
         #region ExecuteRoombaOrder
