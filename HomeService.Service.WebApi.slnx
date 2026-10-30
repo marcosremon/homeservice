@@ -26,6 +26,7 @@
     <Project Path="HomeService.Infraestructure.Persistence/HomeService.Infraestructure.Persistence.csproj" Id="48b10889-52f5-4d70-b9e9-64d7f705abc2" />
   </Folder>
   <Folder Name="/Service/">
+    <Project Path="HomeService.Service.UnitTests/HomeService.Service.UnitTests.csproj" />
     <Project Path="HomeService.Service.WebApi/HomeService.Service.WebApi.csproj" />
   </Folder>
   <Folder Name="/Transversal/">
