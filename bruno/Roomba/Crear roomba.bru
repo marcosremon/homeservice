@@ -1,0 +1,27 @@
+meta {
+  name: Crear roomba
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/roomba/create-roomba
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "callout": "salon",
+    "deviceName": "roomba",
+    "deviceType": "roomba",
+    "model": "i7",
+    "manufacturer": "iRobot",
+    "macAddress": "50:14:79:00:00:01"
+  }
+}
+
+docs {
+  Solo puede haber una: la segunda da 409 con `responseCodeJson: 994`
+  (ANY_ROOMBA_EXIST).
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Encender ordenador
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/change-computer-status/turn-on-computer
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Manda el paquete magico (Wake on LAN) si el ordenador no responde al ping.
+  Si ya responde: "PC already on. Nothing to do."
+}

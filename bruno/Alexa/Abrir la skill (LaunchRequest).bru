@@ -1,0 +1,31 @@
+meta {
+  name: Abrir la skill (LaunchRequest)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "LaunchRequest",
+      "requestId": "bruno-launch",
+      "timestamp": "2026-10-30T10:00:00Z"
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.response.shouldEndSession: eq false
+}
+
+docs {
+  Saludo con la sesion abierta y reprompt. No toca ningun dispositivo.
+}

@@ -1,0 +1,34 @@
+meta {
+  name: Crear sensor de presencia
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/sensor/presence-sensor/create-presence-sensor
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "callout": "salon",
+    "deviceName": "presencia-salon",
+    "deviceType": "presence_sensor",
+    "ts": 1730000000,
+    "presence": false,
+    "distanceCm": 0,
+    "motion": "none",
+    "model": "LD2410",
+    "manufacturer": "HLK",
+    "macAddress": "AA:BB:CC:DD:EE:FF"
+  }
+}
+
+docs {
+  Obligatorios: `callout`, `deviceName`, `deviceType` (si falta alguno, 400 con
+  `responseCodeJson: 999`). Respuesta esperada: 201.
+
+  Ojo: no comprueba si el sensor ya existe. Cada alta repetida anade otra fila a
+  `presence_sensor` (pendiente en CLAUDE.md).
+}

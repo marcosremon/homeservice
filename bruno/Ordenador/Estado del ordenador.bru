@@ -1,0 +1,20 @@
+meta {
+  name: Estado del ordenador
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/change-computer-status/get-computer-status
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.ComputerStatus: isBoolean
+}
+
+docs {
+  Solo hace ping. La clave de respuesta es `ComputerStatus`, con mayuscula.
+}

@@ -1,0 +1,30 @@
+meta {
+  name: Actualizar sensor de lluvia
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/api/sensors/rain-sensor/patch-rain-sensor
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "callOut": "terraza",
+    "deviceName": "lluvia-terraza",
+    "deviceType": "rain_sensor",
+    "model": "YL-83",
+    "macAddress": "AA:BB:CC:00:11:22",
+    "adcValue": 1200,
+    "wetnessPercent": 70,
+    "isRaining": true
+  }
+}
+
+docs {
+  `rainStarted: true` solo en el paso de seco a mojado, y entonces manda la
+  notificacion por ntfy. Mandarlo dos veces seguidas con `isRaining: true` da
+  `rainStarted: false` la segunda vez.
+}

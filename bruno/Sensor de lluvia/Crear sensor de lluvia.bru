@@ -1,0 +1,30 @@
+meta {
+  name: Crear sensor de lluvia
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/sensors/rain-sensor/create-rain-sensor
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "callOut": "terraza",
+    "deviceName": "lluvia-terraza",
+    "deviceType": "rain_sensor",
+    "model": "YL-83",
+    "manufacturer": "Generic",
+    "macAddress": "AA:BB:CC:00:11:22",
+    "adcValue": 4095,
+    "wetnessPercent": 0,
+    "isRaining": false
+  }
+}
+
+docs {
+  Obligatorios: `callOut`, `deviceName`, `deviceType`, `model`, `manufacturer`.
+  201 al crear; 409 si ya existe un dispositivo con ese nombre y tipo en la zona.
+}

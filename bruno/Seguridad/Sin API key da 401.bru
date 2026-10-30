@@ -1,0 +1,20 @@
+meta {
+  name: Sin API key da 401
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/change-computer-status/get-computer-status
+  body: none
+  auth: none
+}
+
+headers {
+  X-Api-Key: clave-incorrecta
+}
+
+assert {
+  res.status: eq 401
+  res.body.detail: eq Unauthorized
+}

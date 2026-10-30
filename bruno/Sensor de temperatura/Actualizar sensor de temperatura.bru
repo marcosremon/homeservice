@@ -1,0 +1,25 @@
+meta {
+  name: Actualizar sensor de temperatura
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/api/sensors/temperature-sensor/patch-temperature-sensor
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "callOut": "cocina",
+    "deviceName": "temperatura-cocina",
+    "deviceType": "temperature_sensor",
+    "temperature": 22.5
+  }
+}
+
+docs {
+  Las lecturas son opcionales: solo se pisa lo que llega (aqui, solo la
+  temperatura).
+}

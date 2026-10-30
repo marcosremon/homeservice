@@ -1,0 +1,38 @@
+meta {
+  name: Actualizar estado de la roomba
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/api/roomba/patch-roomba-state
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "isActivation": true,
+    "isFinished": false,
+    "target": "KITCHEN",
+    "phase": "RUN",
+    "batteryPercent": 90,
+    "binFull": false,
+    "errorCode": 0,
+    "errorMessage": "",
+    "pmapId": "",
+    "userPmapvId": "",
+    "isOnline": true
+  }
+}
+
+docs {
+  `target`: KITCHEN, DIEGO, MARCOS, KITCHEN_AND_GRANDMOTHER, BEDROOMS,
+  BEDROOM_AND_TOILET, HALLWAY_AND_TOILET, LIVING_ROOM, FULL_HOUSE (si no se
+  reconoce, FULL_HOUSE).
+
+  `phase`: CHARGE, RUN, STOP, HM_USR_DOCK, STUCK (si no se reconoce, STOP).
+
+  Sin mayusculas obligatorias. `isActivation` guarda la hora de inicio;
+  `isFinished` calcula la duracion de la limpieza. 404 si no hay roomba creada.
+}

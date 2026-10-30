@@ -1,0 +1,38 @@
+meta {
+  name: Subir temperatura en una habitacion
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "bruno-temperatura",
+      "timestamp": "2026-10-30T10:00:00Z",
+      "intent": {
+        "name": "temperature_sensor_order_subir_x_temperatura_en_x_habitacion",
+        "confirmationStatus": "NONE",
+        "slots": {
+          "grados": { "name": "grados", "value": "3" },
+          "habitacion": { "name": "habitacion", "value": "salón" }
+        }
+      }
+    }
+  }
+}
+
+docs {
+  Publica `+3` (sin retain) en `home/living_room/thermostat/cmd`.
+
+  Otras ordenes: `temperature_sensor_order_subir_temperatura`,
+  `..._subir_x_temperatura`, `..._subir_temperatura_en_x_habitacion` y las mismas
+  con `bajar`. Sin `grados` sube o baja 2; sin `habitacion`, toda la casa.
+}

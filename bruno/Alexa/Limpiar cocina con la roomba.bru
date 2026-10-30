@@ -1,0 +1,38 @@
+meta {
+  name: Limpiar cocina con la roomba
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "bruno-roomba",
+      "timestamp": "2026-10-30T10:00:00Z",
+      "intent": {
+        "name": "roomba_order_limpiar_cocina",
+        "confirmationStatus": "NONE"
+      }
+    }
+  }
+}
+
+docs {
+  **Mueve la roomba** con el entorno Casa. Con el Local no llega a conectar:
+  "No se pudo obtener el estado del roomba." (tarda unos segundos por los
+  reintentos de conexion).
+
+  Otras: `roomba_order_limpiar_casa_completa`, `..._limpiar_comedor`,
+  `..._limpiar_cuarto_diego`, `..._limpiar_cuarto_marcos`,
+  `..._limpiar_cuarto_abuela_y_cocina`, `..._limpiar_cuarto_diego_y_cuarto_marcos`,
+  `..._limpiar_banyos_y_cuarto_padres`, `..._limpiar_pasillos_y_banyo`,
+  `roomba_order_pausar_roomba`, `roomba_order_enviar_roomba_a_casa`.
+}

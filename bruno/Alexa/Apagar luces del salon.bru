@@ -1,0 +1,26 @@
+meta {
+  name: Apagar luces del salon
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "bruno-luz-off",
+      "timestamp": "2026-10-30T10:00:00Z",
+      "intent": {
+        "name": "light_order_apagar_luces_salon",
+        "confirmationStatus": "NONE"
+      }
+    }
+  }
+}

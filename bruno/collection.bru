@@ -1,0 +1,20 @@
+headers {
+  X-Api-Key: {{apiKey}}
+}
+
+docs {
+  # HomeService
+
+  Todas las peticiones REST llevan `X-Api-Key: {{apiKey}}` desde aqui. Las de Alexa
+  usan `X-Debug-Key: {{debugKey}}` (ver la carpeta Alexa), que se salta la firma de
+  Amazon y la comprobacion del skill id.
+
+  ## Entornos
+
+  - **Local**: la app arrancada como en `docs/runbooks/probar-en-local.md`, con todo
+    lo externo apuntando a puertos cerrados de 127.0.0.1. Es el que hay que usar
+    para probar.
+  - **Casa**: la app de verdad. Las claves son secretas: se rellenan en Bruno
+    (Environment settings) y no se guardan en el repo. **Actua sobre dispositivos
+    reales**: enciende el ordenador, mueve la roomba, cambia el termostato.
+}

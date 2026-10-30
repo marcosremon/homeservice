@@ -1,0 +1,31 @@
+meta {
+  name: Actualizar sensor de presencia
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/api/sensor/presence-sensor/patch-presence-sensor-data
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "callout": "salon",
+    "deviceName": "presencia-salon",
+    "deviceType": "presence_sensor",
+    "model": "LD2410",
+    "manufacturer": "HLK",
+    "macAddress": "AA:BB:CC:DD:EE:FF",
+    "ts": 1730000060,
+    "presence": true,
+    "distanceCm": 120,
+    "motion": "moving"
+  }
+}
+
+docs {
+  Busca el sensor por `callout` + `deviceName` + `deviceType`: 404 si no existe.
+  Modelo, fabricante y MAC vacios no pisan lo guardado.
+}

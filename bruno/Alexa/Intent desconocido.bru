@@ -1,0 +1,31 @@
+meta {
+  name: Intent desconocido
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "bruno-desconocido",
+      "timestamp": "2026-10-30T10:00:00Z",
+      "intent": {
+        "name": "AMAZON.HelpIntent",
+        "confirmationStatus": "NONE"
+      }
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.response.outputSpeech.text: eq "No te he entendido, ¿puedes repetir?"
+}

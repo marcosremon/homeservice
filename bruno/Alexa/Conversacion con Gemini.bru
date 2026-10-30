@@ -1,0 +1,41 @@
+meta {
+  name: Conversacion con Gemini
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "session": {
+      "sessionId": "bruno-sesion",
+      "attributes": {
+        "history": "[]"
+      }
+    },
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "bruno-conversacion",
+      "timestamp": "2026-10-30T10:00:00Z",
+      "intent": {
+        "name": "ConversationIntent",
+        "confirmationStatus": "NONE",
+        "slots": {
+          "query": { "name": "query", "value": "cual es la capital de francia" }
+        }
+      }
+    }
+  }
+}
+
+docs {
+  **Llama a Gemini de verdad** (servicio externo). El historial viaja en
+  `sessionAttributes.history`: para seguir la conversacion, copia el de la
+  respuesta en `session.attributes.history` de la siguiente peticion.
+}

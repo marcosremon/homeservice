@@ -1,0 +1,17 @@
+meta {
+  name: Alexa
+  seq: 6
+}
+
+headers {
+  X-Debug-Key: {{debugKey}}
+}
+
+docs {
+  Sin la firma de Amazon: `X-Debug-Key` se salta la verificacion de la firma y la
+  del skill id. Sin esa cabecera (o con una clave mala) responde 401.
+
+  Estas ordenes **actuan de verdad** con el entorno Casa: luces y termostato por
+  MQTT, roomba, ordenador. `ConversationIntent` llama a Gemini, que es un servicio
+  externo de pago.
+}

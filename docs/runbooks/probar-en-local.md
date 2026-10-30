@@ -28,6 +28,8 @@ dotnet bin/Debug/net10.0/HomeService.Service.WebApi.dll
 
 ## Peticiones
 
+En `bruno/` hay una colección de [Bruno](https://www.usebruno.com/) con todos los endpoints: abrir la carpeta desde la app y elegir el entorno **Local**, que ya trae `smoke` y `smokebypass`. El entorno **Casa** es la app de verdad: sus claves se rellenan en Bruno y no se guardan en el repo.
+
 - Rutas publicadas: `GET http://127.0.0.1:5099/openapi/v1.json`
 - REST: cabecera `X-Api-Key: smoke`.
 - Alexa sin firma de Amazon: cabecera `X-Debug-Key: smokebypass`, que se salta la firma y la comprobación del skill id.

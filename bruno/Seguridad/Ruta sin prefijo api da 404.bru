@@ -1,0 +1,15 @@
+meta {
+  name: Ruta sin prefijo api da 404
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/change-computer-status/get-computer-status
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

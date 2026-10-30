@@ -1,0 +1,36 @@
+meta {
+  name: Limpiar casa dentro de un tiempo
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "bruno-roomba-timer",
+      "timestamp": "2026-10-30T10:00:00Z",
+      "intent": {
+        "name": "roomba_order_limpiar_casa_en_x_tiempo",
+        "confirmationStatus": "NONE",
+        "slots": {
+          "duracion": { "name": "duracion", "value": "PT30M" }
+        }
+      }
+    }
+  }
+}
+
+docs {
+  Responde al momento ("De acuerdo, limpiare en PT30M.") y programa la limpieza:
+  **la roomba arranca cuando vence el plazo** aunque se cierre Bruno. La duracion
+  es ISO-8601 (PT10M, PT1H30M) y va en el slot `duracion`, `tiempo` o `time`.
+  Sin slot: "No se encontro el tiempo indicado."
+}

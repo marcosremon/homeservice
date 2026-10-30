@@ -1,0 +1,35 @@
+meta {
+  name: Estado del ordenador por voz
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "bruno-ordenador",
+      "timestamp": "2026-10-30T10:00:00Z",
+      "intent": {
+        "name": "computer_status_order_get_status",
+        "confirmationStatus": "NONE"
+      }
+    }
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Solo hace ping. `computer_status_order_encender_ordenador` y `..._apagar_ordenador`
+  no encienden ni apagan nada (pendiente en CLAUDE.md).
+}

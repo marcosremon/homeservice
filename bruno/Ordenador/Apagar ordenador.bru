@@ -1,0 +1,16 @@
+meta {
+  name: Apagar ordenador
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/change-computer-status/turn-off-computer
+  body: none
+  auth: none
+}
+
+docs {
+  Si el ordenador responde al ping, lo apaga por SSH (CachyOS). Si no responde:
+  "El ordenador ya esta apagado."
+}

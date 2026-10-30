@@ -1,0 +1,30 @@
+meta {
+  name: Alexa sin firma da 401
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "LaunchRequest",
+      "requestId": "bruno-sin-firma",
+      "timestamp": "2026-10-30T10:00:00Z"
+    }
+  }
+}
+
+assert {
+  res.status: eq 401
+}
+
+docs {
+  Sin `X-Debug-Key` ni firma de Amazon.
+}

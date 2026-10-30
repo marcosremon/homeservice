@@ -1,0 +1,31 @@
+meta {
+  name: Encender luces del salon
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/alexa
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "1.0",
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "bruno-luz-on",
+      "timestamp": "2026-10-30T10:00:00Z",
+      "intent": {
+        "name": "light_order_encender_luces_salon",
+        "confirmationStatus": "NONE"
+      }
+    }
+  }
+}
+
+docs {
+  Publica `ON` en el topic MQTT de la luz y guarda el estado. Sin luz en la BBDD:
+  "No encuentro la luz de LIVING_ROOM". Apagar: `light_order_apagar_luces_salon`.
+}
