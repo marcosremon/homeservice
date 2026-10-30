@@ -13,7 +13,7 @@ namespace HomeService.Transversal.Security.Alexa;
 public class AlexaAuth : Attribute, IAsyncAuthorizationFilter
 {
     // Un unico HttpClient para todo el proceso: reutiliza el pool de conexiones.
-    private static readonly Lazy<HttpClient> SharedHttpClient = new(() => new HttpClient { Timeout = TimeSpan.FromSeconds(10.0) });
+    private static readonly Lazy<HttpClient> SharedHttpClient = new Lazy<HttpClient>(() => new HttpClient { Timeout = TimeSpan.FromSeconds(10.0) });
 
     #region GetAlexaRequestVerifier
     public static IAlexaRequestVerifier GetAlexaRequestVerifier() => new AlexaRequestVerifier(SharedHttpClient.Value);

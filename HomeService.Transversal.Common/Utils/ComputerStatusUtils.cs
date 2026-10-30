@@ -14,8 +14,8 @@ public static class ComputerStatusUtils
     private const int WakeOnLanPort = 9;
 
     private static readonly string SshKeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh", "homelab_key");
-    private static readonly Regex MacPattern = new(@"^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$", RegexOptions.Compiled);
-    private static readonly Regex SshUserPattern = new(@"^[A-Za-z_][A-Za-z0-9_]*$", RegexOptions.Compiled);
+    private static readonly Regex MacPattern = new Regex(@"^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$", RegexOptions.Compiled);
+    private static readonly Regex SshUserPattern = new Regex(@"^[A-Za-z_][A-Za-z0-9_]*$", RegexOptions.Compiled);
 
     #region ComputerStatus
     // True si el equipo responde al ping.
@@ -66,7 +66,7 @@ public static class ComputerStatusUtils
         for (int repetition = 0; repetition < 16; repetition++)
             macBytes.CopyTo(magicPacket, 6 + (repetition * macBytes.Length));
 
-        using UdpClient udpClient = new() { EnableBroadcast = true };
+        using UdpClient udpClient = new UdpClient() { EnableBroadcast = true };
         await udpClient.SendAsync(magicPacket, new IPEndPoint(IPAddress.Parse(broadcastIp), WakeOnLanPort));
     }
     #endregion
@@ -127,7 +127,7 @@ public static class ComputerStatusUtils
     private static async Task<(int ExitCode, string StandardOutput, string StandardError)> Run(
         string fileName, IEnumerable<string> arguments, double timeoutSeconds)
     {
-        ProcessStartInfo startInfo = new()
+        ProcessStartInfo startInfo = new ProcessStartInfo()
         {
             FileName = fileName,
             RedirectStandardOutput = true,
@@ -145,7 +145,7 @@ public static class ComputerStatusUtils
         Task<string> standardOutputTask = process.StandardOutput.ReadToEndAsync();
         Task<string> standardErrorTask = process.StandardError.ReadToEndAsync();
 
-        using CancellationTokenSource cancellation = new(TimeSpan.FromSeconds(timeoutSeconds));
+        using CancellationTokenSource cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
 
         try
         {

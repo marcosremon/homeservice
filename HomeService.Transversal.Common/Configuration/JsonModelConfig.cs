@@ -7,7 +7,7 @@ namespace HomeService.Transversal.Common.Configuration;
 // [JsonPropertyName] y el exclude_none se traduce en WhenWritingNull.
 public static class JsonModelConfig
 {
-    public static readonly JsonSerializerOptions Default = new()
+    public static readonly JsonSerializerOptions Default = new JsonSerializerOptions()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };

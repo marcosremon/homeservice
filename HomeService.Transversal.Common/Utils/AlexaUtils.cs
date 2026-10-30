@@ -10,10 +10,10 @@ namespace HomeService.Transversal.Common.Utils;
 
 public static class AlexaUtils
 {
-    private static readonly Regex DaysPattern = new(@"(\d+)D", RegexOptions.Compiled);
-    private static readonly Regex HoursPattern = new(@"(\d+)H", RegexOptions.Compiled);
-    private static readonly Regex MinutesPattern = new(@"(\d+)M", RegexOptions.Compiled);
-    private static readonly Regex SecondsPattern = new(@"(\d+)S", RegexOptions.Compiled);
+    private static readonly Regex DaysPattern = new Regex(@"(\d+)D", RegexOptions.Compiled);
+    private static readonly Regex HoursPattern = new Regex(@"(\d+)H", RegexOptions.Compiled);
+    private static readonly Regex MinutesPattern = new Regex(@"(\d+)M", RegexOptions.Compiled);
+    private static readonly Regex SecondsPattern = new Regex(@"(\d+)S", RegexOptions.Compiled);
 
     #region ParseAlexaDuration
     // Duracion ISO-8601 de alexa (P1DT2H30M) a TimeSpan, con su limitacion de siempre:
@@ -86,7 +86,7 @@ public static class AlexaUtils
     {
         string speech = GeneralUtils.IsNullOrEmpty(speechText) ? "Si?" : speechText;
 
-        AlexaResponseContent alexaResponseContent = new()
+        AlexaResponseContent alexaResponseContent = new AlexaResponseContent()
         {
             OutputSpeech = new AlexaOutputSpeech { Type = "PlainText", Text = speech },
             ShouldEndSession = !keepSessionOpen,

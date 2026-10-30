@@ -5,7 +5,7 @@ namespace HomeService.Transversal.Common.Configuration;
 
 public class Settings
 {
-    private static readonly Lazy<Settings> Cached = new(Build);
+    private static readonly Lazy<Settings> Cached = new Lazy<Settings>(Build);
 
     #region Properties
 
@@ -138,7 +138,7 @@ public class Settings
     {
         Dictionary<string, string?> values = [];
 
-        DirectoryInfo? directory = new(AppContext.BaseDirectory);
+        DirectoryInfo? directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory is not null && !File.Exists(Path.Combine(directory.FullName, ".env")))
             directory = directory.Parent;
 

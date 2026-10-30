@@ -13,9 +13,9 @@ public class AlexaResponseJson
     public Dictionary<string, string>? SessionAttributes { get; set; }
 
     [JsonPropertyName("response")]
-    public AlexaResponseContent AlexaResponseContent { get; set; } = new();
+    public AlexaResponseContent AlexaResponseContent { get; set; } = new AlexaResponseContent();
 
     // Control interno del controlador, no se serializa hacia Amazon.
     [JsonIgnore]
-    public BaseResponseJson BaseResponseJson { get; set; } = new();
+    public BaseResponseJson BaseResponseJson { get; set; } = new BaseResponseJson();
 }

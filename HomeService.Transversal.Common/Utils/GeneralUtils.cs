@@ -23,7 +23,7 @@ public static class GeneralUtils
             return string.Empty;
 
         string decomposed = value!.Normalize(NormalizationForm.FormD);
-        StringBuilder builder = new(decomposed.Length);
+        StringBuilder builder = new StringBuilder(decomposed.Length);
 
         foreach (char character in decomposed)
             if (CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark)

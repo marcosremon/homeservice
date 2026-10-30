@@ -5,7 +5,7 @@ namespace HomeService.Transversal.Wrapper.Alexa.AlexaResponse;
 public class AlexaResponseContent
 {
     [JsonPropertyName("outputSpeech")]
-    public AlexaOutputSpeech OutputSpeech { get; set; } = new();
+    public AlexaOutputSpeech OutputSpeech { get; set; } = new AlexaOutputSpeech();
 
     [JsonPropertyName("reprompt")]
     public AlexaReprompt? Reprompt { get; set; }

@@ -15,11 +15,11 @@ namespace HomeService.Transversal.Common.Utils;
 public static class RoombaUtils
 {
     #region Properties
-    private static readonly SemaphoreSlim RoombaLock = new(1, 1);
+    private static readonly SemaphoreSlim RoombaLock = new SemaphoreSlim(1, 1);
 
     // Ventana en la que se permite el arranque automatico.
-    private static readonly TimeOnly AutoStartFrom = new(8, 0);
-    private static readonly TimeOnly AutoStartTo = new(21, 0);
+    private static readonly TimeOnly AutoStartFrom = new TimeOnly(8, 0);
+    private static readonly TimeOnly AutoStartTo = new TimeOnly(21, 0);
 
     // Espera maxima a que la roomba confirme la orden (phase: run).
     private const double CommandConfirmationTimeoutSeconds = 8.0;
@@ -63,7 +63,7 @@ public static class RoombaUtils
     // Conecta reintentando: tras cerrar una sesion la roomba rechaza un rato.
     private static async Task<IMqttClient> Connect(Settings settings)
     {
-        MqttClientFactory mqttClientFactory = new();
+        MqttClientFactory mqttClientFactory = new MqttClientFactory();
         Exception lastError = new InvalidOperationException("sin intentos");
 
         for (int attempt = 0; attempt < ConnectRetryAttempts; attempt++)
@@ -243,7 +243,7 @@ public static class RoombaUtils
             return null;
         }
 
-        RoombaState roombaState = new();
+        RoombaState roombaState = new RoombaState();
 
         try
         {
@@ -292,7 +292,7 @@ public static class RoombaUtils
         }
 
         List<string> roomIds = roombaTarget is not null ? GetRoombaRoomsIds(roombaTarget.Value) : [];
-        RoombaState roombaState = new();
+        RoombaState roombaState = new RoombaState();
 
         try
         {
@@ -379,7 +379,7 @@ public static class RoombaUtils
         int errorCode = 0,
         string errorMessage = "",
         string pmapId = "",
-        string userPmapvId = "") => new()
+        string userPmapvId = "") => new PatchRoombaStateRequest()
         {
             IsActivation = isActivation,
             IsFinished = isFinished,

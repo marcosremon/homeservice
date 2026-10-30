@@ -5,7 +5,7 @@ namespace HomeService.Application.Event;
 public static class RoombaActivatedEvent
 {
     private static readonly List<Action<PatchRoombaStateRequest>> Handlers = [];
-    private static readonly Lock Gate = new();
+    private static readonly Lock Gate = new Lock();
 
     #region Subscribe
     public static void Subscribe(Action<PatchRoombaStateRequest> handler)

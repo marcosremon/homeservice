@@ -6,5 +6,5 @@ public class AlexaContext
 {
     // Amazon manda esta clave en mayuscula: "System", no "system".
     [JsonPropertyName("System")]
-    public SystemState System { get; set; } = new();
+    public SystemState System { get; set; } = new SystemState();
 }

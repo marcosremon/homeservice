@@ -30,7 +30,7 @@ public class RainSensorApplication : IRainSensorApplication
 
         if (patchRainSensorResponse.IsSuccess && patchRainSensorResponse.RainStarted)
         {
-            SendNotificationRequest sendNotificationRequest = new()
+            SendNotificationRequest sendNotificationRequest = new SendNotificationRequest()
             {
                 Title = "Esta lloviendo",
                 Message = $"El sensor {patchRainSensorRequest.DeviceName} de {patchRainSensorRequest.CallOut} ha detectado lluvia.",

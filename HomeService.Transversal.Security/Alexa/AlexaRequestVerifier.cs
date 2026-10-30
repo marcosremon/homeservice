@@ -23,7 +23,7 @@ public class AlexaRequestVerifier : IAlexaRequestVerifier
     private const int MaxTimestampToleranceSeconds = 150;
 
     private static readonly Dictionary<string, X509Certificate2> CertCache = [];
-    private static readonly SemaphoreSlim CacheLock = new(1, 1);
+    private static readonly SemaphoreSlim CacheLock = new SemaphoreSlim(1, 1);
 
     private readonly HttpClient _httpClient;
     private readonly ILogger _logger;
@@ -45,7 +45,7 @@ public class AlexaRequestVerifier : IAlexaRequestVerifier
             request.Body.Position = 0;
 
             byte[] rawBody;
-            using (MemoryStream buffer = new())
+            using (MemoryStream buffer = new MemoryStream())
             {
                 await request.Body.CopyToAsync(buffer);
                 rawBody = buffer.ToArray();
@@ -146,7 +146,7 @@ public class AlexaRequestVerifier : IAlexaRequestVerifier
             response.EnsureSuccessStatusCode();
 
             // El fichero de Amazon es un bundle PEM: hoja + intermedios.
-            X509Certificate2Collection collection = new();
+            X509Certificate2Collection collection = new X509Certificate2Collection();
             collection.ImportFromPem(await response.Content.ReadAsStringAsync());
 
             if (collection.Count == 0)
@@ -156,7 +156,7 @@ public class AlexaRequestVerifier : IAlexaRequestVerifier
 
             // X509Chain cubre la cadena y la vigencia de una vez; MatchesHostname busca
             // el SAN echo-api.amazon.com, como el build_server_verifier de python.
-            using X509Chain chain = new();
+            using X509Chain chain = new X509Chain();
             chain.ChainPolicy.TrustMode = X509ChainTrustMode.System;
             chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
 

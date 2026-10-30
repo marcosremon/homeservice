@@ -13,7 +13,7 @@ El esquema lo gestiona `DatabaseMigrator`, no EF Core: ver [0003](../decisions/0
 
    public static class Migration2026110100
    {
-       public static Migration Create() => new()
+       public static Migration Create() => new Migration()
        {
            Version = 2026110100,
            Commands =

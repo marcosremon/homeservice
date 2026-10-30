@@ -6,6 +6,6 @@ public class AlexaRequest
 {
     public string Version { get; set; } = "1.0";
     public AlexaSession? Session { get; set; }
-    public AlexaRequestData AlexaRequestData { get; set; } = new();
+    public AlexaRequestData AlexaRequestData { get; set; } = new AlexaRequestData();
     public AlexaContext? Context { get; set; }
 }

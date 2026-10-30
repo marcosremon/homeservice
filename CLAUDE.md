@@ -26,6 +26,7 @@ Reglas que no se ven leyendo el código:
 
 - Seguir el estilo C# del autor, no la estructura del proyecto Python.
 - Tipos explícitos en las declaraciones, sin `var`. `#region` por método.
+- Sin `new()` por tipo de destino: siempre `new Tipo()`, también en inicializadores de propiedad (`= new AlexaRequestData();`).
 - Privados en `_camelCase`, también métodos y constantes (`_runMigrations`, `_numberTableVersion`). Excepción heredada: `Transversal.Common` y `Transversal.Security` tienen privados en PascalCase.
 - Namespace de bloque en `Infraestructure.*` y `Service.WebApi`. Domain, Application y Transversal usan namespace de fichero (`namespace X;`); respetar el del fichero que se toque.
 - Async sin sufijo `Async` (`PatchRoombaState`, no `PatchRoombaStateAsync`).
